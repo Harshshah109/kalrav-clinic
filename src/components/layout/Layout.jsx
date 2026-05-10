@@ -11,7 +11,7 @@ export default function Layout() {
       <Sidebar />
 
       {/* Main */}
-      <main className="md:ml-[270px] pt-20 md:pt-0 pb-24 md:pb-6 p-4 md:p-8">
+      <main className="md:ml-[270px] pt-20 md:pt-0 pb-6 p-4 md:p-8">
 
         <Outlet />
       </main>
