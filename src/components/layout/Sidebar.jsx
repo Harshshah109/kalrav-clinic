@@ -6,7 +6,6 @@ import {
   Wallet,
   MessageSquare,
   LogOut,
-  Menu,
   X
 } from 'lucide-react'
 
@@ -69,6 +68,7 @@ const navSections = [
     ]
   }
 ]
+
 export default function Sidebar() {
 
   const [openMobile,
@@ -80,12 +80,9 @@ export default function Sidebar() {
       {/* MOBILE TOP BAR */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-16 bg-[#151515]/95 backdrop-blur-xl border-b border-[#2b2b2b] flex items-center justify-between px-5">
 
-        <div>
-
-          <h1 className="text-2xl font-bold">
-            Kalrav
-          </h1>
-        </div>
+        <h1 className="text-2xl font-bold">
+          Kalrav
+        </h1>
 
         <button
           onClick={() =>
@@ -94,7 +91,14 @@ export default function Sidebar() {
           className="w-11 h-11 rounded-xl border border-[#333] flex items-center justify-center"
         >
 
-          <Menu size={20} />
+          <div className="flex flex-col gap-1">
+
+            <div className="w-5 h-[2px] bg-white rounded-full"></div>
+
+            <div className="w-5 h-[2px] bg-white rounded-full"></div>
+
+            <div className="w-5 h-[2px] bg-white rounded-full"></div>
+          </div>
         </button>
       </div>
 
@@ -133,33 +137,50 @@ export default function Sidebar() {
                 </button>
               </div>
 
-              {/* Nav */}
-              <div className="p-4 space-y-2">
+              {/* MOBILE NAV */}
+              <div className="p-4">
 
-                {navItems.map((item) => (
+                {navSections.map((section) => (
 
-                  <NavLink
-                    key={item.name}
-                    to={item.path}
-                    end={item.path === '/'}
-                    onClick={() =>
-                      setOpenMobile(false)
-                    }
-                    className={({ isActive }) =>
-                      `flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all ${
-                        isActive
-                          ? 'bg-[#1d1d1d] border-white text-white'
-                          : 'border-[#343434] text-zinc-300'
-                      }`
-                    }
+                  <div
+                    key={section.title}
+                    className="mb-6"
                   >
 
-                    <item.icon size={18} />
+                    <p className="text-xs text-zinc-500 tracking-[0.2em] mb-4">
 
-                    <span className="font-medium">
-                      {item.name}
-                    </span>
-                  </NavLink>
+                      {section.title}
+                    </p>
+
+                    <div className="space-y-2">
+
+                      {section.items.map((item) => (
+
+                        <NavLink
+                          key={item.name}
+                          to={item.path}
+                          end={item.path === '/'}
+                          onClick={() =>
+                            setOpenMobile(false)
+                          }
+                          className={({ isActive }) =>
+                            `flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all ${
+                              isActive
+                                ? 'bg-[#1d1d1d] border-white text-white'
+                                : 'border-[#343434] text-zinc-300 hover:bg-[#1d1d1d]'
+                            }`
+                          }
+                        >
+
+                          <item.icon size={18} />
+
+                          <span className="font-medium">
+                            {item.name}
+                          </span>
+                        </NavLink>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -169,7 +190,7 @@ export default function Sidebar() {
 
               <button
                 onClick={logoutUser}
-                className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl border border-[#343434]"
+                className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl border border-[#343434] hover:bg-[#1d1d1d] transition-all text-zinc-300"
               >
 
                 <LogOut size={18} />
@@ -184,7 +205,6 @@ export default function Sidebar() {
       {/* DESKTOP SIDEBAR */}
       <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[270px] bg-[#151515] border-r border-[#2b2b2b] flex-col justify-between">
 
-        {/* Top */}
         <div>
 
           {/* Logo */}
@@ -204,30 +224,47 @@ export default function Sidebar() {
             </p>
           </div>
 
-          {/* Nav */}
-          <div className="px-4 py-5 space-y-2">
+          {/* DESKTOP NAV */}
+          <div className="flex-1 overflow-y-auto px-4 py-5">
 
-            {navItems.map((item) => (
+            {navSections.map((section) => (
 
-              <NavLink
-                key={item.name}
-                to={item.path}
-                end={item.path === '/'}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all duration-200 ${
-                    isActive
-                      ? 'bg-[#1d1d1d] border-white text-white'
-                      : 'border-[#343434] text-zinc-300 hover:bg-[#1d1d1d]'
-                  }`
-                }
+              <div
+                key={section.title}
+                className="mb-6"
               >
 
-                <item.icon size={18} />
+                <p className="text-xs text-zinc-500 tracking-[0.2em] mb-4">
 
-                <span className="font-medium">
-                  {item.name}
-                </span>
-              </NavLink>
+                  {section.title}
+                </p>
+
+                <div className="space-y-2">
+
+                  {section.items.map((item) => (
+
+                    <NavLink
+                      key={item.name}
+                      to={item.path}
+                      end={item.path === '/'}
+                      className={({ isActive }) =>
+                        `flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all duration-200 ${
+                          isActive
+                            ? 'bg-[#1d1d1d] border-white text-white'
+                            : 'border-[#343434] text-zinc-300 hover:bg-[#1d1d1d]'
+                        }`
+                      }
+                    >
+
+                      <item.icon size={18} />
+
+                      <span className="font-medium">
+                        {item.name}
+                      </span>
+                    </NavLink>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -246,33 +283,6 @@ export default function Sidebar() {
           </button>
         </div>
       </aside>
-
-      {/* MOBILE BOTTOM NAV */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-20 bg-[#151515]/95 backdrop-blur-xl border-t border-[#2b2b2b] flex items-center justify-around px-2">
-
-        {navItems.slice(0, 5).map((item) => (
-
-          <NavLink
-            key={item.name}
-            to={item.path}
-            end={item.path === '/'}
-            className={({ isActive }) =>
-              `flex flex-col items-center justify-center gap-1 text-xs ${
-                isActive
-                  ? 'text-white'
-                  : 'text-zinc-500'
-              }`
-            }
-          >
-
-            <item.icon size={20} />
-
-            <span>
-              {item.name}
-            </span>
-          </NavLink>
-        ))}
-      </div>
     </>
   )
 }
