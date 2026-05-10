@@ -22,44 +22,53 @@ import {
   useState
 } from 'react'
 
-const navItems = [
+const navSections = [
   {
-    name: 'Dashboard',
-    path: '/',
-    icon: LayoutDashboard
+    title: 'MAIN',
+    items: [
+      {
+        name: 'Dashboard',
+        path: '/',
+        icon: LayoutDashboard
+      },
+      {
+        name: 'Appointments',
+        path: '/appointments',
+        icon: CalendarDays
+      },
+      {
+        name: 'Calendar',
+        path: '/calendar',
+        icon: CalendarDays
+      },
+      {
+        name: 'Patients',
+        path: '/patients',
+        icon: Users
+      }
+    ]
   },
   {
-    name: 'Appointments',
-    path: '/appointments',
-    icon: CalendarDays
-  },
-  {
-    name: 'Calendar',
-    path: '/calendar',
-    icon: CalendarDays
-  },
-  {
-    name: 'Patients',
-    path: '/patients',
-    icon: Users
-  },
-  {
-    name: 'Therapists',
-    path: '/therapists',
-    icon: Stethoscope
-  },
-  {
-    name: 'Payments',
-    path: '/payments',
-    icon: Wallet
-  },
-  {
-    name: 'Messages',
-    path: '/messages',
-    icon: MessageSquare
+    title: 'CLINIC',
+    items: [
+      {
+        name: 'Therapists',
+        path: '/therapists',
+        icon: Stethoscope
+      },
+      {
+        name: 'Payments',
+        path: '/payments',
+        icon: Wallet
+      },
+      {
+        name: 'Messages',
+        path: '/messages',
+        icon: MessageSquare
+      }
+    ]
   }
 ]
-
 export default function Sidebar() {
 
   const [openMobile,
