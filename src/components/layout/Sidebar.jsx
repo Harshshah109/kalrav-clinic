@@ -283,6 +283,53 @@ export default function Sidebar() {
           </button>
         </div>
       </aside>
+      {/* MOBILE BOTTOM NAV */}
+<div className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-20 bg-[#151515]/95 backdrop-blur-xl border-t border-[#2b2b2b] flex items-center justify-around px-2">
+
+  {[
+    {
+      name: 'Dashboard',
+      path: '/',
+      icon: LayoutDashboard
+    },
+    {
+      name: 'Appointments',
+      path: '/appointments',
+      icon: CalendarDays
+    },
+    {
+      name: 'Patients',
+      path: '/patients',
+      icon: Users
+    },
+    {
+      name: 'Payments',
+      path: '/payments',
+      icon: Wallet
+    }
+  ].map((item) => (
+
+    <NavLink
+      key={item.name}
+      to={item.path}
+      end={item.path === '/'}
+      className={({ isActive }) =>
+        `flex flex-col items-center justify-center gap-1 text-xs ${
+          isActive
+            ? 'text-white'
+            : 'text-zinc-500'
+        }`
+      }
+    >
+
+      <item.icon size={20} />
+
+      <span>
+        {item.name}
+      </span>
+    </NavLink>
+  ))}
+</div>
     </>
   )
 }
