@@ -1,57 +1,99 @@
-import { useEffect, useState } from 'react'
+import {
+  useEffect,
+  useState
+} from 'react'
 
 import {
   X,
   Check
 } from 'lucide-react'
 
-import { addAppointment } from '../../services/appointmentService'
-import { getPatients } from '../../services/patientService'
+import {
+  addAppointment
+} from '../../services/appointmentService'
+
+import {
+  getPatients
+} from '../../services/patientService'
+
+import {
+  getTherapists
+} from '../../services/therapistService'
 
 export default function AddAppointmentModal({
   close,
   refresh
 }) {
 
-  const [patients, setPatients] = useState([])
+  const [patients,
+    setPatients] =
+      useState([])
 
-  const [form, setForm] = useState({
-    patient: '',
-    date: '',
-    time: '09:00 AM',
-    therapist: 'Dr. Meera Pillai',
-    therapy: 'Articulation Therapy',
-    duration: '30 min',
-    status: 'Pending'
-  })
+  const [therapists,
+    setTherapists] =
+      useState([])
+
+  const [form, setForm] =
+    useState({
+      patient: '',
+      date: '',
+      time: '09:00 AM',
+      therapist: '',
+      therapy: 'Articulation Therapy',
+      duration: '30 min',
+      status: 'Pending'
+    })
 
   useEffect(() => {
+
     loadPatients()
+
+    loadTherapists()
+
   }, [])
 
-  const loadPatients = async () => {
-    const data = await getPatients()
-    setPatients(data)
-  }
+  const loadPatients =
+    async () => {
+
+      const data =
+        await getPatients()
+
+      setPatients(data || [])
+    }
+
+  const loadTherapists =
+    async () => {
+
+      const data =
+        await getTherapists()
+
+      setTherapists(data || [])
+    }
 
   const handleChange = (e) => {
+
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+      [e.target.name]:
+        e.target.value
     })
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit =
+    async (e) => {
 
-    await addAppointment({
-      ...form,
-      createdAt: new Date()
-    })
+      e.preventDefault()
 
-    refresh()
-    close()
-  }
+      await addAppointment({
+        ...form,
+        createdAt:
+          new Date()
+      })
+
+      refresh()
+
+      close()
+    }
 
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3">
@@ -63,6 +105,7 @@ export default function AddAppointmentModal({
           onClick={close}
           className="absolute top-5 right-5 w-11 h-11 rounded-2xl border border-[#404040] flex items-center justify-center hover:bg-[#252525] transition-all"
         >
+
           <X size={18} />
         </button>
 
@@ -78,6 +121,7 @@ export default function AddAppointmentModal({
 
           {/* Patient */}
           <div>
+
             <label className="text-sm text-zinc-300 mb-2 block">
               Patient
             </label>
@@ -88,11 +132,13 @@ export default function AddAppointmentModal({
               className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
               required
             >
+
               <option value="">
                 Select Patient
               </option>
 
               {patients.map((patient) => (
+
                 <option
                   key={patient.id}
                   value={patient.name}
@@ -106,8 +152,8 @@ export default function AddAppointmentModal({
           {/* Date + Time */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-            {/* Date */}
             <div>
+
               <label className="text-sm text-zinc-300 mb-2 block">
                 Date
               </label>
@@ -121,8 +167,8 @@ export default function AddAppointmentModal({
               />
             </div>
 
-            {/* Time */}
             <div>
+
               <label className="text-sm text-zinc-300 mb-2 block">
                 Time
               </label>
@@ -132,6 +178,7 @@ export default function AddAppointmentModal({
                 onChange={handleChange}
                 className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
               >
+
                 <option>09:00 AM</option>
                 <option>10:00 AM</option>
                 <option>11:00 AM</option>
@@ -147,23 +194,37 @@ export default function AddAppointmentModal({
 
           {/* Therapist */}
           <div>
+
             <label className="text-sm text-zinc-300 mb-2 block">
               Therapist
             </label>
 
             <select
               name="therapist"
+              value={form.therapist}
               onChange={handleChange}
               className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
             >
-              <option>Dr. Meera Pillai</option>
-              <option>Dr. Suresh Rao</option>
-              <option>Dr. Priya Kapoor</option>
+
+              <option value="">
+                Select Therapist
+              </option>
+
+              {therapists.map((item) => (
+
+                <option
+                  key={item.id}
+                  value={item.name}
+                >
+                  {item.name}
+                </option>
+              ))}
             </select>
           </div>
 
           {/* Session Type */}
           <div>
+
             <label className="text-sm text-zinc-300 mb-2 block">
               Session Type
             </label>
@@ -173,16 +234,32 @@ export default function AddAppointmentModal({
               onChange={handleChange}
               className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
             >
-              <option>Articulation Therapy</option>
-              <option>Speech Therapy</option>
-              <option>Voice Therapy</option>
-              <option>Stuttering Therapy</option>
-              <option>Language Development</option>
+
+              <option>
+                Articulation Therapy
+              </option>
+
+              <option>
+                Speech Therapy
+              </option>
+
+              <option>
+                Voice Therapy
+              </option>
+
+              <option>
+                Stuttering Therapy
+              </option>
+
+              <option>
+                Language Development
+              </option>
             </select>
           </div>
 
           {/* Duration */}
           <div>
+
             <label className="text-sm text-zinc-300 mb-2 block">
               Duration
             </label>
@@ -192,6 +269,7 @@ export default function AddAppointmentModal({
               onChange={handleChange}
               className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
             >
+
               <option>30 min</option>
               <option>45 min</option>
               <option>60 min</option>
@@ -205,9 +283,10 @@ export default function AddAppointmentModal({
               type="submit"
               className="flex items-center justify-center gap-2 px-6 h-14 rounded-2xl bg-[#dffff2] text-black font-bold hover:opacity-90 transition-all"
             >
+
               <Check size={18} />
 
-              Book & Notify Patient
+              Book Appointment
             </button>
 
             <button
