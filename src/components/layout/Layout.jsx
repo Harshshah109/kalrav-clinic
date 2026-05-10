@@ -5,13 +5,14 @@ import Sidebar from './Sidebar'
 export default function Layout() {
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
+    <div className="min-h-screen bg-black text-white">
 
       {/* Sidebar */}
       <Sidebar />
 
-      {/* Main Content */}
-      <main className="flex-1 md:ml-[270px] p-5 md:p-8">
+      {/* Main */}
+      <main className="md:ml-[270px] pt-20 md:pt-0 pb-24 md:pb-6 p-4 md:p-8">
+
         <Outlet />
       </main>
     </div>
