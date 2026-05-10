@@ -1,213 +1,311 @@
-import { useEffect, useState } from 'react'
+import {
+  useState,
+  useEffect
+} from 'react'
 
 import {
   X,
-  Check
+  UserPlus
 } from 'lucide-react'
 
-import { addAppointment } from '../../services/appointmentService'
-import { getPatients } from '../../services/patientService'
+import {
+  addPatient
+} from '../../services/patientService'
 
-export default function AddAppointmentModal({
+import {
+  getTherapists
+} from '../../services/therapistService'
+
+export default function AddPatientModal({
   close,
   refresh
 }) {
 
-  const [patients, setPatients] = useState([])
+  const [therapists,
+    setTherapists] =
+      useState([])
 
-  const [form, setForm] = useState({
-    patient: '',
-    date: '',
-    time: '09:00 AM',
-    therapist: 'Dr. Meera Pillai',
-    therapy: 'Articulation Therapy',
-    duration: '30 min',
-    status: 'Pending'
-  })
+  const [form, setForm] =
+    useState({
+      firstName: '',
+      lastName: '',
+      age: '',
+      gender: 'Male',
+      phone: '',
+      condition: 'Articulation Disorder',
+      therapist: '',
+      notes: ''
+    })
 
   useEffect(() => {
-    loadPatients()
+    loadTherapists()
   }, [])
 
-  const loadPatients = async () => {
-    const data = await getPatients()
-    setPatients(data)
-  }
+  const loadTherapists =
+    async () => {
+
+      const data =
+        await getTherapists()
+
+      setTherapists(data || [])
+    }
 
   const handleChange = (e) => {
+
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+      [e.target.name]:
+        e.target.value
     })
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit =
+    async (e) => {
 
-    await addAppointment({
-      ...form,
-      createdAt: new Date()
-    })
+      e.preventDefault()
 
-    refresh()
-    close()
-  }
+      await addPatient({
+        name:
+          `${form.firstName} ${form.lastName}`,
+
+        age:
+          form.age,
+
+        gender:
+          form.gender,
+
+        phone:
+          form.phone,
+
+        condition:
+          form.condition,
+
+        therapist:
+          form.therapist,
+
+        notes:
+          form.notes,
+
+        createdAt:
+          new Date()
+      })
+
+      refresh()
+
+      close()
+    }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3">
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
 
-      <div className="w-full max-w-2xl bg-[#1b1b1b] border border-[#343434] rounded-3xl p-6 md:p-7 relative max-h-[90vh] overflow-y-auto">
+      <div className="w-full max-w-3xl bg-[#1b1b1b] border border-[#343434] rounded-3xl p-6 md:p-8 relative max-h-[90vh] overflow-y-auto">
 
         {/* Close */}
         <button
           onClick={close}
-          className="absolute top-5 right-5 w-11 h-11 rounded-2xl border border-[#404040] flex items-center justify-center hover:bg-[#252525] transition-all"
+          className="absolute top-6 right-6 w-12 h-12 rounded-2xl border border-[#404040] flex items-center justify-center hover:bg-[#252525] transition-all"
         >
-          <X size={18} />
+
+          <X size={20} />
         </button>
 
-        {/* Title */}
+        {/* Heading */}
         <h2 className="text-3xl font-bold mb-8">
-          New Appointment
+          Add New Patient
         </h2>
 
         <form
           onSubmit={handleSubmit}
-          className="space-y-5"
+          className="space-y-6"
         >
 
-          {/* Patient */}
-          <div>
-            <label className="text-sm text-zinc-300 mb-2 block">
-              Patient
-            </label>
+          {/* Row 1 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-            <select
-              name="patient"
-              onChange={handleChange}
-              className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
-              required
-            >
-              <option value="">
-                Select Patient
-              </option>
-
-              {patients.map((patient) => (
-                <option
-                  key={patient.id}
-                  value={patient.name}
-                >
-                  {patient.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Date + Time */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-            {/* Date */}
             <div>
+
               <label className="text-sm text-zinc-300 mb-2 block">
-                Date
+                First Name *
               </label>
 
               <input
-                type="date"
-                name="date"
+                type="text"
+                name="firstName"
+                placeholder="First name"
                 onChange={handleChange}
                 className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
                 required
               />
             </div>
 
-            {/* Time */}
             <div>
+
               <label className="text-sm text-zinc-300 mb-2 block">
-                Time
+                Last Name *
+              </label>
+
+              <input
+                type="text"
+                name="lastName"
+                placeholder="Last name"
+                onChange={handleChange}
+                className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Row 2 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+            <div>
+
+              <label className="text-sm text-zinc-300 mb-2 block">
+                Age
+              </label>
+
+              <input
+                type="number"
+                name="age"
+                placeholder="Age"
+                onChange={handleChange}
+                className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
+                required
+              />
+            </div>
+
+            <div>
+
+              <label className="text-sm text-zinc-300 mb-2 block">
+                Gender
               </label>
 
               <select
-                name="time"
+                name="gender"
                 onChange={handleChange}
                 className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
               >
-                <option>09:00 AM</option>
-                <option>10:00 AM</option>
-                <option>11:00 AM</option>
-                <option>12:00 PM</option>
-                <option>01:00 PM</option>
-                <option>02:00 PM</option>
-                <option>03:00 PM</option>
-                <option>04:00 PM</option>
-                <option>05:00 PM</option>
+
+                <option>
+                  Male
+                </option>
+
+                <option>
+                  Female
+                </option>
+
+                <option>
+                  Other
+                </option>
               </select>
             </div>
           </div>
 
+          {/* Phone */}
+          <div>
+
+            <label className="text-sm text-zinc-300 mb-2 block">
+              Phone *
+            </label>
+
+            <input
+              type="text"
+              name="phone"
+              placeholder="+91 XXXXX XXXXX"
+              onChange={handleChange}
+              className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
+              required
+            />
+          </div>
+
+          {/* Condition */}
+          <div>
+
+            <label className="text-sm text-zinc-300 mb-2 block">
+              Condition / Diagnosis
+            </label>
+
+            <select
+              name="condition"
+              onChange={handleChange}
+              className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
+            >
+
+              <option>
+                Articulation Disorder
+              </option>
+
+              <option>
+                Stuttering
+              </option>
+
+              <option>
+                Voice Therapy
+              </option>
+
+              <option>
+                Language Delay
+              </option>
+            </select>
+          </div>
+
           {/* Therapist */}
           <div>
+
             <label className="text-sm text-zinc-300 mb-2 block">
-              Therapist
+              Assign Therapist
             </label>
 
             <select
               name="therapist"
+              value={form.therapist}
               onChange={handleChange}
               className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
             >
-              <option>Dr. Meera Pillai</option>
-              <option>Dr. Suresh Rao</option>
-              <option>Dr. Priya Kapoor</option>
+
+              <option value="">
+                Select Therapist
+              </option>
+
+              {therapists.map((item) => (
+
+                <option
+                  key={item.id}
+                  value={item.name}
+                >
+                  {item.name}
+                </option>
+              ))}
             </select>
           </div>
 
-          {/* Session Type */}
+          {/* Notes */}
           <div>
+
             <label className="text-sm text-zinc-300 mb-2 block">
-              Session Type
+              Notes
             </label>
 
-            <select
-              name="therapy"
+            <textarea
+              name="notes"
+              rows="5"
+              placeholder="Medical history, referral notes..."
               onChange={handleChange}
-              className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
-            >
-              <option>Articulation Therapy</option>
-              <option>Speech Therapy</option>
-              <option>Voice Therapy</option>
-              <option>Stuttering Therapy</option>
-              <option>Language Development</option>
-            </select>
-          </div>
-
-          {/* Duration */}
-          <div>
-            <label className="text-sm text-zinc-300 mb-2 block">
-              Duration
-            </label>
-
-            <select
-              name="duration"
-              onChange={handleChange}
-              className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
-            >
-              <option>30 min</option>
-              <option>45 min</option>
-              <option>60 min</option>
-            </select>
+              className="w-full bg-[#222] border border-[#3a3a3a] rounded-2xl p-5 outline-none resize-none focus:border-[#7ddfc6]"
+            />
           </div>
 
           {/* Buttons */}
-          <div className="flex flex-col md:flex-row gap-3 pt-2">
+          <div className="flex flex-col md:flex-row gap-4 pt-2">
 
             <button
               type="submit"
-              className="flex items-center justify-center gap-2 px-6 h-14 rounded-2xl bg-[#dffff2] text-black font-bold hover:opacity-90 transition-all"
+              className="flex items-center justify-center gap-2 px-6 h-14 rounded-2xl bg-[#7ddfc6] text-black font-bold hover:opacity-90 transition-all"
             >
-              <Check size={18} />
 
-              Book & Notify Patient
+              <UserPlus size={18} />
+
+              Add Patient
             </button>
 
             <button
