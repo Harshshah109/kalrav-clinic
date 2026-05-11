@@ -39,34 +39,17 @@ export default function Dashboard() {
   const [therapists, setTherapists] =
     useState([])
 
-  const [revenue, setRevenue] =
-    useState(0)
+  const [payments, setPayments] =
+    useState([])
+
+  const [filter, setFilter] =
+    useState('monthly')
 
   useEffect(() => {
+
     loadDashboardData()
-    loadRevenue()
+
   }, [])
-
-  const loadRevenue =
-    async () => {
-
-      const payments =
-        await getPayments()
-
-      const total =
-        (payments || [])
-          .filter(
-            (item) =>
-              item.status === 'Paid'
-          )
-          .reduce(
-            (sum, item) =>
-              sum + Number(item.amount || 0),
-            0
-          )
-
-      setRevenue(total)
-    }
 
   const loadDashboardData =
     async () => {
@@ -80,6 +63,9 @@ export default function Dashboard() {
       const therapistData =
         await getTherapists()
 
+      const paymentData =
+        await getPayments()
+
       setAppointments(
         appointmentData || []
       )
@@ -90,6 +76,10 @@ export default function Dashboard() {
 
       setTherapists(
         therapistData || []
+      )
+
+      setPayments(
+        paymentData || []
       )
     }
 
@@ -106,6 +96,114 @@ export default function Dashboard() {
 
     return 'Good Evening'
   }
+
+  const filterPayments = () => {
+
+    const now =
+      new Date()
+
+    return payments.filter(
+      (item) => {
+
+        if (
+          item.status !== 'Paid'
+        ) return false
+
+        if (!item.date)
+          return false
+
+        const paymentDate =
+          item.date?.seconds
+            ? new Date(
+                item.date.seconds * 1000
+              )
+            : new Date(item.date)
+
+        if (filter === 'daily') {
+
+          return (
+            paymentDate.toDateString() ===
+            now.toDateString()
+          )
+        }
+
+        if (filter === 'weekly') {
+
+          const diff =
+            (now - paymentDate) /
+            (1000 * 60 * 60 * 24)
+
+          return diff <= 7
+        }
+
+        if (filter === 'monthly') {
+
+          return (
+            paymentDate.getMonth() ===
+              now.getMonth() &&
+            paymentDate.getFullYear() ===
+              now.getFullYear()
+          )
+        }
+
+        if (filter === 'yearly') {
+
+          return (
+            paymentDate.getFullYear() ===
+            now.getFullYear()
+          )
+        }
+
+        return true
+      }
+    )
+  }
+
+  const filteredPayments =
+    filterPayments()
+
+  const totalRevenue =
+    filteredPayments.reduce(
+      (sum, item) =>
+        sum + Number(item.amount || 0),
+      0
+    )
+
+  const cashRevenue =
+    filteredPayments
+      .filter(
+        (item) =>
+          item.method === 'Cash'
+      )
+      .reduce(
+        (sum, item) =>
+          sum + Number(item.amount || 0),
+        0
+      )
+
+  const digitalRevenue =
+    filteredPayments
+      .filter(
+        (item) =>
+          item.method !== 'Cash'
+      )
+      .reduce(
+        (sum, item) =>
+          sum + Number(item.amount || 0),
+        0
+      )
+
+  const pendingRevenue =
+    payments
+      .filter(
+        (item) =>
+          item.status === 'Pending'
+      )
+      .reduce(
+        (sum, item) =>
+          sum + Number(item.amount || 0),
+        0
+      )
 
   const today =
     `${new Date().getFullYear()}-${
@@ -134,12 +232,42 @@ export default function Dashboard() {
         </p>
       </div>
 
+      {/* Revenue Filter */}
+      <div className="flex flex-wrap gap-3 mb-6">
+
+        {[
+          'daily',
+          'weekly',
+          'monthly',
+          'yearly'
+        ].map((item) => (
+
+          <button
+            key={item}
+            onClick={() =>
+              setFilter(item)
+            }
+            className={`px-5 h-12 rounded-2xl border transition-all capitalize ${
+              filter === item
+                ? 'bg-[#dffff2] text-black border-[#dffff2]'
+                : 'border-[#2f2f2f] bg-[#171717] text-zinc-300'
+            }`}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+
       {/* Stats */}
       <StatsCards
         appointments={appointments}
         patients={patients}
         therapists={therapists}
-        revenue={revenue}
+        revenue={totalRevenue}
+        cashRevenue={cashRevenue}
+        digitalRevenue={digitalRevenue}
+        pendingRevenue={pendingRevenue}
+        revenueFilter={filter}
       />
 
       {/* Grid */}
