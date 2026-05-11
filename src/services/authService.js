@@ -3,7 +3,15 @@ import {
   signOut
 } from 'firebase/auth'
 
-import { auth } from './firebase'
+import {
+  doc,
+  getDoc
+} from 'firebase/firestore'
+
+import {
+  auth,
+  db
+} from './firebase'
 
 export const loginUser = async (
   email,
@@ -17,9 +25,27 @@ export const loginUser = async (
       password
     )
 
-  return userCredential.user
+  const user =
+    userCredential.user
+
+  const userDoc =
+    await getDoc(
+      doc(db, 'users', user.uid)
+    )
+
+  const role =
+    userDoc.exists()
+      ? userDoc.data().role
+      : 'therapist'
+
+  return {
+    ...user,
+    role
+  }
 }
 
-export const logoutUser = async () => {
-  await signOut(auth)
-}
+export const logoutUser =
+  async () => {
+
+    await signOut(auth)
+  }

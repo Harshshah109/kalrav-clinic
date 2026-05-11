@@ -69,7 +69,14 @@ const navSections = [
   }
 ]
 
-export default function Sidebar() {
+const therapistRestricted = [
+  'Payments',
+  'Therapists'
+]
+
+export default function Sidebar({
+  role
+}) {
 
   const [openMobile,
     setOpenMobile] =
@@ -109,7 +116,6 @@ export default function Sidebar() {
 
           <div className="w-[85%] max-w-[320px] h-full bg-[#151515] border-r border-[#2a2a2a] flex flex-col justify-between">
 
-            {/* Top */}
             <div>
 
               {/* Header */}
@@ -137,7 +143,7 @@ export default function Sidebar() {
                 </button>
               </div>
 
-              {/* MOBILE NAV */}
+              {/* Mobile Nav */}
               <div className="p-4">
 
                 {navSections.map((section) => (
@@ -154,31 +160,40 @@ export default function Sidebar() {
 
                     <div className="space-y-2">
 
-                      {section.items.map((item) => (
+                      {section.items
+                        .filter((item) =>
 
-                        <NavLink
-                          key={item.name}
-                          to={item.path}
-                          end={item.path === '/'}
-                          onClick={() =>
-                            setOpenMobile(false)
-                          }
-                          className={({ isActive }) =>
-                            `flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all ${
-                              isActive
-                                ? 'bg-[#1d1d1d] border-white text-white'
-                                : 'border-[#343434] text-zinc-300 hover:bg-[#1d1d1d]'
-                            }`
-                          }
-                        >
+                          role === 'admin'
+                            ? true
+                            : !therapistRestricted.includes(
+                                item.name
+                              )
+                        )
+                        .map((item) => (
 
-                          <item.icon size={18} />
+                          <NavLink
+                            key={item.name}
+                            to={item.path}
+                            end={item.path === '/'}
+                            onClick={() =>
+                              setOpenMobile(false)
+                            }
+                            className={({ isActive }) =>
+                              `flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all ${
+                                isActive
+                                  ? 'bg-[#1d1d1d] border-white text-white'
+                                  : 'border-[#343434] text-zinc-300 hover:bg-[#1d1d1d]'
+                              }`
+                            }
+                          >
 
-                          <span className="font-medium">
-                            {item.name}
-                          </span>
-                        </NavLink>
-                      ))}
+                            <item.icon size={18} />
+
+                            <span className="font-medium">
+                              {item.name}
+                            </span>
+                          </NavLink>
+                        ))}
                     </div>
                   </div>
                 ))}
@@ -224,7 +239,7 @@ export default function Sidebar() {
             </p>
           </div>
 
-          {/* DESKTOP NAV */}
+          {/* Desktop Nav */}
           <div className="px-4 py-5">
 
             {navSections.map((section) => (
@@ -241,28 +256,37 @@ export default function Sidebar() {
 
                 <div className="space-y-2">
 
-                  {section.items.map((item) => (
+                  {section.items
+                    .filter((item) =>
 
-                    <NavLink
-                      key={item.name}
-                      to={item.path}
-                      end={item.path === '/'}
-                      className={({ isActive }) =>
-                        `flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all duration-200 ${
-                          isActive
-                            ? 'bg-[#1d1d1d] border-white text-white'
-                            : 'border-[#343434] text-zinc-300 hover:bg-[#1d1d1d]'
-                        }`
-                      }
-                    >
+                      role === 'admin'
+                        ? true
+                        : !therapistRestricted.includes(
+                            item.name
+                          )
+                    )
+                    .map((item) => (
 
-                      <item.icon size={18} />
+                      <NavLink
+                        key={item.name}
+                        to={item.path}
+                        end={item.path === '/'}
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all duration-200 ${
+                            isActive
+                              ? 'bg-[#1d1d1d] border-white text-white'
+                              : 'border-[#343434] text-zinc-300 hover:bg-[#1d1d1d]'
+                          }`
+                        }
+                      >
 
-                      <span className="font-medium">
-                        {item.name}
-                      </span>
-                    </NavLink>
-                  ))}
+                        <item.icon size={18} />
+
+                        <span className="font-medium">
+                          {item.name}
+                        </span>
+                      </NavLink>
+                    ))}
                 </div>
               </div>
             ))}
@@ -283,53 +307,49 @@ export default function Sidebar() {
           </button>
         </div>
       </aside>
+
       {/* MOBILE BOTTOM NAV */}
-<div className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-20 bg-[#151515]/95 backdrop-blur-xl border-t border-[#2b2b2b] flex items-center justify-around px-2">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-20 bg-[#151515]/95 backdrop-blur-xl border-t border-[#2b2b2b] flex items-center justify-around px-2">
 
-  {[
-    {
-      name: 'Dashboard',
-      path: '/',
-      icon: LayoutDashboard
-    },
-    {
-      name: 'Appointments',
-      path: '/appointments',
-      icon: CalendarDays
-    },
-    {
-      name: 'Patients',
-      path: '/patients',
-      icon: Users
-    },
-    {
-      name: 'Payments',
-      path: '/payments',
-      icon: Wallet
-    }
-  ].map((item) => (
+        {[
+          {
+            name: 'Dashboard',
+            path: '/',
+            icon: LayoutDashboard
+          },
+          {
+            name: 'Appointments',
+            path: '/appointments',
+            icon: CalendarDays
+          },
+          {
+            name: 'Patients',
+            path: '/patients',
+            icon: Users
+          }
+        ].map((item) => (
 
-    <NavLink
-      key={item.name}
-      to={item.path}
-      end={item.path === '/'}
-      className={({ isActive }) =>
-        `flex flex-col items-center justify-center gap-1 text-xs ${
-          isActive
-            ? 'text-white'
-            : 'text-zinc-500'
-        }`
-      }
-    >
+          <NavLink
+            key={item.name}
+            to={item.path}
+            end={item.path === '/'}
+            className={({ isActive }) =>
+              `flex flex-col items-center justify-center gap-1 text-xs ${
+                isActive
+                  ? 'text-white'
+                  : 'text-zinc-500'
+              }`
+            }
+          >
 
-      <item.icon size={20} />
+            <item.icon size={20} />
 
-      <span>
-        {item.name}
-      </span>
-    </NavLink>
-  ))}
-</div>
+            <span>
+              {item.name}
+            </span>
+          </NavLink>
+        ))}
+      </div>
     </>
   )
 }

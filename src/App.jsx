@@ -1,32 +1,63 @@
 import {
   BrowserRouter,
   Routes,
-  Route
+  Route,
+  Navigate
 } from 'react-router-dom'
 
-import { useEffect, useState } from 'react'
-import CalendarPage from './pages/CalendarPage'
+import {
+  useEffect,
+  useState
+} from 'react'
 
 import {
   onAuthStateChanged
 } from 'firebase/auth'
 
-import { auth } from './services/firebase'
+import {
+  doc,
+  getDoc
+} from 'firebase/firestore'
 
-import Layout from './components/layout/Layout'
+import {
+  auth,
+  db
+} from './services/firebase'
 
-import Dashboard from './pages/Dashboard'
-import Appointments from './pages/Appointments'
-import Patients from './pages/Patients'
-import Therapists from './pages/Therapists'
-import Payments from './pages/Payments'
-import Messages from './pages/Messages'
+import Layout
+  from './components/layout/Layout'
 
-import Login from './pages/Login'
+import Dashboard
+  from './pages/Dashboard'
+
+import Appointments
+  from './pages/Appointments'
+
+import Patients
+  from './pages/Patients'
+
+import Therapists
+  from './pages/Therapists'
+
+import Payments
+  from './pages/Payments'
+
+import Messages
+  from './pages/Messages'
+
+import CalendarPage
+  from './pages/CalendarPage'
+
+import Login
+  from './pages/Login'
 
 export default function App() {
 
-  const [user, setUser] = useState(null)
+  const [user, setUser] =
+    useState(null)
+
+  const [role, setRole] =
+    useState(null)
 
   const [loading, setLoading] =
     useState(true)
@@ -35,10 +66,38 @@ export default function App() {
 
     const unsubscribe =
       onAuthStateChanged(
+
         auth,
-        (currentUser) => {
+
+        async (currentUser) => {
+
+          if (!currentUser) {
+
+            setUser(null)
+            setRole(null)
+            setLoading(false)
+
+            return
+          }
+
+          const userDoc =
+            await getDoc(
+              doc(
+                db,
+                'users',
+                currentUser.uid
+              )
+            )
+
+          const userRole =
+            userDoc.exists()
+              ? userDoc.data().role
+              : 'therapist'
 
           setUser(currentUser)
+
+          setRole(userRole)
+
           setLoading(false)
         }
       )
@@ -48,14 +107,17 @@ export default function App() {
   }, [])
 
   if (loading) {
+
     return (
       <div className="min-h-screen bg-black flex items-center justify-center text-white text-2xl">
+
         Loading...
       </div>
     )
   }
 
   if (!user) {
+
     return (
       <Login
         onLogin={() => {}}
@@ -70,41 +132,75 @@ export default function App() {
 
         <Route
           path="/"
-          element={<Layout />}
+          element={
+            <Layout role={role} />
+          }
         >
 
+          {/* Dashboard */}
           <Route
             index
             element={<Dashboard />}
           />
 
+          {/* Appointments */}
           <Route
             path="appointments"
-            element={<Appointments />}
+            element={
+              <Appointments
+                role={role}
+              />
+            }
           />
 
+          {/* Patients */}
           <Route
             path="patients"
-            element={<Patients />}
+            element={
+              <Patients
+                role={role}
+              />
+            }
           />
 
+          {/* Calendar */}
           <Route
-            path="therapists"
-            element={<Therapists />}
+            path="calendar"
+            element={<CalendarPage />}
           />
 
-          <Route
-            path="payments"
-            element={<Payments />}
-          />
-          <Route
-  path="/calendar"
-  element={<CalendarPage />}
-/>
+          {/* Therapist Management */}
+          {
+            role === 'admin' && (
 
+              <Route
+                path="therapists"
+                element={<Therapists />}
+              />
+            )
+          }
+
+          {/* Payments */}
+          {
+            role === 'admin' && (
+
+              <Route
+                path="payments"
+                element={<Payments />}
+              />
+            )
+          }
+
+          {/* Messages */}
           <Route
             path="messages"
             element={<Messages />}
+          />
+
+          {/* Block Invalid */}
+          <Route
+            path="*"
+            element={<Navigate to="/" />}
           />
         </Route>
       </Routes>
