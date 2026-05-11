@@ -1,3 +1,28 @@
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  setDoc
+} from 'firebase/firestore'
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword
+} from 'firebase/auth'
+
+import {
+  db
+} from './firebase'
+
+const therapistRef =
+  collection(
+    db,
+    'therapists'
+  )
+
+/* ADD THERAPIST */
 export const addTherapist =
   async (data) => {
 
@@ -46,5 +71,39 @@ export const addTherapist =
     await addDoc(
       therapistRef,
       therapistData
+    )
+  }
+
+/* GET THERAPISTS */
+export const getTherapists =
+  async () => {
+
+    const snapshot =
+      await getDocs(
+        therapistRef
+      )
+
+    return snapshot.docs.map(
+      (docItem) => ({
+        id: docItem.id,
+        ...docItem.data()
+      })
+    )
+  }
+
+/* UPDATE THERAPIST */
+export const updateTherapist =
+  async (id, data) => {
+
+    const therapistDoc =
+      doc(
+        db,
+        'therapists',
+        id
+      )
+
+    await updateDoc(
+      therapistDoc,
+      data
     )
   }
