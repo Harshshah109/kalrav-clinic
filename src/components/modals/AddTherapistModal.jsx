@@ -290,7 +290,7 @@ export default function AddTherapistModal({
               <div>
 
                 <label className="text-sm text-zinc-300 mb-2 block">
-                  Email
+                  Email (Optional)
                 </label>
 
                 <input
@@ -299,7 +299,6 @@ export default function AddTherapistModal({
                   value={form.email}
                   onChange={handleChange}
                   className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
-                  required
                 />
               </div>
 
@@ -318,7 +317,7 @@ export default function AddTherapistModal({
                     onChange={handleChange}
                     className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
                     placeholder="Create login password"
-                    required
+                    required={!!form.email}
                   />
                 </div>
               )}

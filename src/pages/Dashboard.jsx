@@ -260,15 +260,38 @@ export default function Dashboard() {
 
       {/* Stats */}
       <StatsCards
-        appointments={appointments}
-        patients={patients}
-        therapists={therapists}
-        revenue={totalRevenue}
-        cashRevenue={cashRevenue}
-        digitalRevenue={digitalRevenue}
-        pendingRevenue={pendingRevenue}
-        revenueFilter={filter}
-      />
+  appointments={appointments}
+  patients={patients}
+  therapists={therapists}
+
+  revenue={
+    role === 'admin'
+      ? totalRevenue
+      : 0
+  }
+
+  cashRevenue={
+    role === 'admin'
+      ? cashRevenue
+      : 0
+  }
+
+  digitalRevenue={
+    role === 'admin'
+      ? digitalRevenue
+      : 0
+  }
+
+  pendingRevenue={
+    role === 'admin'
+      ? pendingRevenue
+      : 0
+  }
+
+  revenueFilter={filter}
+
+  role={role}
+/>
 
       {/* Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
