@@ -254,11 +254,11 @@ export default function Appointments({
       const message =
 `Hello ${item.patient},
 
-This is a reminder for your therapy session today.
+Please confirm your therapy session Tommrow.
 
 📅 Date: ${item.date}
 ⏰ Time: ${item.time}
-👩‍⚕ Therapist: ${item.therapist}
+
 
 Please arrive 10 minutes early.
 
