@@ -28,7 +28,9 @@ import {
   getPayments
 } from '../services/paymentService'
 
-export default function Dashboard() {
+export default function Dashboard({
+  role
+}) {
 
   const [appointments, setAppointments] =
     useState([])

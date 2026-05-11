@@ -57,7 +57,7 @@ export default function App() {
     useState(null)
 
   const [role, setRole] =
-    useState(null)
+    useState('therapist')
 
   const [loading, setLoading] =
     useState(true)
@@ -74,29 +74,40 @@ export default function App() {
           if (!currentUser) {
 
             setUser(null)
-            setRole(null)
+
+            setRole('therapist')
+
             setLoading(false)
 
             return
           }
 
-          const userDoc =
-            await getDoc(
-              doc(
-                db,
-                'users',
-                currentUser.uid
+          try {
+
+            const userDoc =
+              await getDoc(
+                doc(
+                  db,
+                  'users',
+                  currentUser.uid
+                )
               )
-            )
 
-          const userRole =
-            userDoc.exists()
-              ? userDoc.data().role
-              : 'therapist'
+            const userRole =
+              userDoc.exists()
+                ? userDoc.data().role
+                : 'therapist'
 
-          setUser(currentUser)
+            setUser(currentUser)
 
-          setRole(userRole)
+            setRole(userRole)
+
+          } catch (err) {
+
+            console.log(err)
+
+            setRole('therapist')
+          }
 
           setLoading(false)
         }
@@ -140,7 +151,11 @@ export default function App() {
           {/* Dashboard */}
           <Route
             index
-            element={<Dashboard />}
+            element={
+              <Dashboard
+                role={role}
+              />
+            }
           />
 
           {/* Appointments */}
@@ -166,41 +181,44 @@ export default function App() {
           {/* Calendar */}
           <Route
             path="calendar"
-            element={<CalendarPage />}
+            element={
+              <CalendarPage
+                role={role}
+              />
+            }
           />
 
-          {/* Therapist Management */}
-          {
-            role === 'admin' && (
+          {/* Messages */}
+          <Route
+            path="messages"
+            element={
+              <Messages
+                role={role}
+              />
+            }
+          />
 
+          {/* ADMIN ONLY */}
+          {role === 'admin' && (
+            <>
               <Route
                 path="therapists"
                 element={<Therapists />}
               />
-            )
-          }
-
-          {/* Payments */}
-          {
-            role === 'admin' && (
 
               <Route
                 path="payments"
                 element={<Payments />}
               />
-            )
-          }
+            </>
+          )}
 
-          {/* Messages */}
-          <Route
-            path="messages"
-            element={<Messages />}
-          />
-
-          {/* Block Invalid */}
+          {/* INVALID */}
           <Route
             path="*"
-            element={<Navigate to="/" />}
+            element={
+              <Navigate to="/" />
+            }
           />
         </Route>
       </Routes>

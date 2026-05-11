@@ -20,8 +20,9 @@ import {
   deleteAppointment
 } from '../services/appointmentService'
 
-export default function Appointments() {
-
+export default function Appointments({
+  role
+}) {
   const [appointments, setAppointments] =
     useState([])
 

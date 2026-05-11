@@ -37,7 +37,9 @@ import AddSessionModal
 import SessionHistory
   from '../components/patients/SessionHistory'
 
-export default function Patients() {
+export default function Patients({
+  role
+}) {
 
   const [patients, setPatients] =
     useState([])
