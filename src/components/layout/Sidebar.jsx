@@ -71,7 +71,8 @@ const navSections = [
 
 const therapistRestricted = [
   'Payments',
-  'Therapists'
+  'Therapists',
+  'Messages'
 ]
 
 export default function Sidebar({
@@ -146,7 +147,14 @@ export default function Sidebar({
               {/* Mobile Nav */}
               <div className="p-4">
 
-                {navSections.map((section) => (
+                {navSections
+                  .filter((section) =>
+
+                    role === 'admin'
+                      ? true
+                      : section.title !== 'CLINIC'
+                  )
+                  .map((section) => (
 
                   <div
                     key={section.title}
@@ -242,7 +250,14 @@ export default function Sidebar({
           {/* Desktop Nav */}
           <div className="px-4 py-5">
 
-            {navSections.map((section) => (
+            {navSections
+              .filter((section) =>
+
+                role === 'admin'
+                  ? true
+                  : section.title !== 'CLINIC'
+              )
+              .map((section) => (
 
               <div
                 key={section.title}
