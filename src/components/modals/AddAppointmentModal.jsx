@@ -9,7 +9,8 @@ import {
 } from 'lucide-react'
 
 import {
-  addAppointment
+  addAppointment,
+  updateAppointment
 } from '../../services/appointmentService'
 
 import {
@@ -22,7 +23,9 @@ import {
 
 export default function AddAppointmentModal({
   close,
-  refresh
+  refresh,
+  editData,
+  isEdit
 }) {
 
   const [patients,
@@ -35,13 +38,26 @@ export default function AddAppointmentModal({
 
   const [form, setForm] =
     useState({
-      patient: '',
-      date: '',
-      time: '09:00 AM',
-      therapist: '',
-      therapy: 'Articulation Therapy',
-      duration: '30 min',
-      status: 'Pending'
+      patient:
+        editData?.patient || '',
+
+      date:
+        editData?.date || '',
+
+      time:
+        editData?.time || '09:00 AM',
+
+      therapist:
+        editData?.therapist || '',
+
+      therapy:
+        editData?.therapy || 'Articulation Therapy',
+
+      duration:
+        editData?.duration || '30 min',
+
+      status:
+        editData?.status || 'Pending'
     })
 
   useEffect(() => {
@@ -84,15 +100,36 @@ export default function AddAppointmentModal({
 
       e.preventDefault()
 
-      await addAppointment({
-        ...form,
-        createdAt:
-          new Date()
-      })
+      try {
 
-      refresh()
+        if (isEdit) {
 
-      close()
+          await updateAppointment(
+            editData.id,
+            form
+          )
+
+        } else {
+
+          await addAppointment({
+            ...form,
+            createdAt:
+              new Date()
+          })
+        }
+
+        refresh()
+
+        close()
+
+      } catch (err) {
+
+        console.log(err)
+
+        alert(
+          'Error saving appointment'
+        )
+      }
     }
 
   return (
@@ -111,7 +148,10 @@ export default function AddAppointmentModal({
 
         {/* Title */}
         <h2 className="text-3xl font-bold mb-8">
-          New Appointment
+
+          {isEdit
+            ? 'Edit Appointment'
+            : 'New Appointment'}
         </h2>
 
         <form
@@ -128,6 +168,7 @@ export default function AddAppointmentModal({
 
             <select
               name="patient"
+              value={form.patient}
               onChange={handleChange}
               className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
               required
@@ -161,6 +202,7 @@ export default function AddAppointmentModal({
               <input
                 type="date"
                 name="date"
+                value={form.date}
                 onChange={handleChange}
                 className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
                 required
@@ -175,6 +217,7 @@ export default function AddAppointmentModal({
 
               <select
                 name="time"
+                value={form.time}
                 onChange={handleChange}
                 className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
               >
@@ -231,6 +274,7 @@ export default function AddAppointmentModal({
 
             <select
               name="therapy"
+              value={form.therapy}
               onChange={handleChange}
               className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
             >
@@ -266,6 +310,7 @@ export default function AddAppointmentModal({
 
             <select
               name="duration"
+              value={form.duration}
               onChange={handleChange}
               className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
             >
@@ -273,6 +318,26 @@ export default function AddAppointmentModal({
               <option>30 min</option>
               <option>45 min</option>
               <option>60 min</option>
+            </select>
+          </div>
+
+          {/* Status */}
+          <div>
+
+            <label className="text-sm text-zinc-300 mb-2 block">
+              Status
+            </label>
+
+            <select
+              name="status"
+              value={form.status}
+              onChange={handleChange}
+              className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
+            >
+
+              <option>Pending</option>
+              <option>Confirmed</option>
+              <option>Cancelled</option>
             </select>
           </div>
 
@@ -286,7 +351,9 @@ export default function AddAppointmentModal({
 
               <Check size={18} />
 
-              Book Appointment
+              {isEdit
+                ? 'Save Changes'
+                : 'Book Appointment'}
             </button>
 
             <button
