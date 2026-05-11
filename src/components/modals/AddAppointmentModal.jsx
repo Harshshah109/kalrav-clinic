@@ -38,8 +38,12 @@ export default function AddAppointmentModal({
 
   const [form, setForm] =
     useState({
+
       patient:
         editData?.patient || '',
+
+      patientPhone:
+        editData?.patientPhone || '',
 
       date:
         editData?.date || '',
@@ -88,11 +92,29 @@ export default function AddAppointmentModal({
 
   const handleChange = (e) => {
 
-    setForm({
+    const updatedForm = {
+
       ...form,
       [e.target.name]:
         e.target.value
-    })
+    }
+
+    /* AUTO SET PHONE */
+    if (
+      e.target.name === 'patient'
+    ) {
+
+      const selectedPatient =
+        patients.find(
+          (p) =>
+            p.name === e.target.value
+        )
+
+      updatedForm.patientPhone =
+        selectedPatient?.phone || ''
+    }
+
+    setForm(updatedForm)
   }
 
   const handleSubmit =
@@ -102,17 +124,33 @@ export default function AddAppointmentModal({
 
       try {
 
+        const selectedPatient =
+          patients.find(
+            (p) =>
+              p.name === form.patient
+          )
+
+        const appointmentData = {
+
+          ...form,
+
+          patientPhone:
+            selectedPatient?.phone || ''
+        }
+
         if (isEdit) {
 
           await updateAppointment(
             editData.id,
-            form
+            appointmentData
           )
 
         } else {
 
           await addAppointment({
-            ...form,
+
+            ...appointmentData,
+
             createdAt:
               new Date()
           })
@@ -335,9 +373,17 @@ export default function AddAppointmentModal({
               className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
             >
 
-              <option>Pending</option>
-              <option>Confirmed</option>
-              <option>Cancelled</option>
+              <option>
+                Pending
+              </option>
+
+              <option>
+                Confirmed
+              </option>
+
+              <option>
+                Cancelled
+              </option>
             </select>
           </div>
 
