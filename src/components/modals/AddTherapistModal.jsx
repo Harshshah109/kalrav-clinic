@@ -65,7 +65,10 @@ export default function AddTherapistModal({
   const [specializations,
     setSpecializations] =
       useState(
-        editData?.specializations || []
+
+        editData?.specialization
+          ? editData.specialization.split(', ')
+          : []
       )
 
   const days = [
@@ -133,6 +136,18 @@ export default function AddTherapistModal({
     })
   }
 
+  const removeSpecialization =
+    (item) => {
+
+      setSpecializations(
+
+        specializations.filter(
+          (spec) =>
+            spec !== item
+        )
+      )
+    }
+
   const handleSubmit =
     async (e) => {
 
@@ -158,7 +173,8 @@ export default function AddTherapistModal({
         qualification:
           form.qualification,
 
-        specializations,
+        specialization:
+          specializations.join(', '),
 
         availability:
           form.availability,
@@ -179,25 +195,36 @@ export default function AddTherapistModal({
           form.notes
       }
 
-      if (isEdit) {
+      try {
 
-        await updateTherapist(
-          editData.id,
-          therapistData
+        if (isEdit) {
+
+          await updateTherapist(
+            editData.id,
+            therapistData
+          )
+
+        } else {
+
+          await addTherapist({
+            ...therapistData,
+            createdAt:
+              new Date()
+          })
+        }
+
+        refresh()
+
+        close()
+
+      } catch (err) {
+
+        console.log(err)
+
+        alert(
+          'Error saving therapist'
         )
-
-      } else {
-
-        await addTherapist({
-          ...therapistData,
-          createdAt:
-            new Date()
-        })
       }
-
-      refresh()
-
-      close()
     }
 
   return (
@@ -365,11 +392,25 @@ export default function AddTherapistModal({
                   — Add specialization —
                 </option>
 
-                <option>Articulation Disorder</option>
-                <option>Voice Therapy</option>
-                <option>Speech Therapy</option>
-                <option>Stuttering Therapy</option>
-                <option>Language Development</option>
+                <option>
+                  Articulation Disorder
+                </option>
+
+                <option>
+                  Voice Therapy
+                </option>
+
+                <option>
+                  Speech Therapy
+                </option>
+
+                <option>
+                  Stuttering Therapy
+                </option>
+
+                <option>
+                  Language Development
+                </option>
               </select>
 
               <button
@@ -386,42 +427,47 @@ export default function AddTherapistModal({
 
               {specializations.map((item, index) => (
 
-                <span
+                <button
                   key={index}
+                  type="button"
+                  onClick={() =>
+                    removeSpecialization(item)
+                  }
                   className="px-3 py-2 rounded-full bg-[#dffff2] text-black text-sm font-semibold"
                 >
                   {item}
-                </span>
+                </button>
               ))}
             </div>
           </div>
+
           {/* STATUS */}
-<div>
+          <div>
 
-  <h3 className="text-xs tracking-widest text-zinc-500 font-bold mb-5">
-    STATUS
-  </h3>
+            <h3 className="text-xs tracking-widest text-zinc-500 font-bold mb-5">
+              STATUS
+            </h3>
 
-  <select
-    name="status"
-    value={form.status}
-    onChange={handleChange}
-    className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
-  >
+            <select
+              name="status"
+              value={form.status}
+              onChange={handleChange}
+              className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+            >
 
-    <option>
-      Active
-    </option>
+              <option>
+                Active
+              </option>
 
-    <option>
-      On Leave
-    </option>
+              <option>
+                On Leave
+              </option>
 
-    <option>
-      Inactive
-    </option>
-  </select>
-</div>
+              <option>
+                Inactive
+              </option>
+            </select>
+          </div>
 
           {/* BUTTONS */}
           <div className="flex flex-col md:flex-row gap-3 pt-2">
@@ -435,7 +481,7 @@ export default function AddTherapistModal({
 
               {isEdit
                 ? 'Save Changes'
-                : 'Save to Firebase'}
+                : 'Save Therapist'}
             </button>
 
             <button
