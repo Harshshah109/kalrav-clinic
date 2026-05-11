@@ -32,13 +32,8 @@ export default function AddTherapistModal({
     email:
       editData?.email || '',
 
-    password: '',
-
     role:
       editData?.role || '',
-
-    systemRole:
-      editData?.systemRole || 'therapist',
 
     experience:
       editData?.experience || '',
@@ -135,14 +130,8 @@ export default function AddTherapistModal({
         email:
           form.email,
 
-        password:
-          form.password,
-
         role:
           form.role,
-
-        systemRole:
-          form.systemRole,
 
         experience:
           form.experience,
@@ -302,26 +291,6 @@ export default function AddTherapistModal({
                 />
               </div>
 
-              {/* PASSWORD */}
-              {!isEdit && (
-                <div>
-
-                  <label className="text-sm text-zinc-300 mb-2 block">
-                    Login Password
-                  </label>
-
-                  <input
-                    type="password"
-                    name="password"
-                    value={form.password}
-                    onChange={handleChange}
-                    className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
-                    placeholder="Create login password"
-                    required={!!form.email}
-                  />
-                </div>
-              )}
-
               <div>
 
                 <label className="text-sm text-zinc-300 mb-2 block">
@@ -335,30 +304,6 @@ export default function AddTherapistModal({
                   onChange={handleChange}
                   className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
                 />
-              </div>
-
-              {/* SYSTEM ROLE */}
-              <div>
-
-                <label className="text-sm text-zinc-300 mb-2 block">
-                  System Access Role
-                </label>
-
-                <select
-                  name="systemRole"
-                  value={form.systemRole}
-                  onChange={handleChange}
-                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
-                >
-
-                  <option value="therapist">
-                    Therapist
-                  </option>
-
-                  <option value="admin">
-                    Admin
-                  </option>
-                </select>
               </div>
 
               <div>
