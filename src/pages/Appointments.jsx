@@ -23,11 +23,16 @@ import {
 export default function Appointments({
   role
 }) {
+
   const [appointments, setAppointments] =
     useState([])
 
   const [openModal, setOpenModal] =
     useState(false)
+
+  const [selectedAppointment,
+    setSelectedAppointment] =
+      useState(null)
 
   const [search, setSearch] =
     useState('')
@@ -63,16 +68,20 @@ export default function Appointments({
           </p>
         </div>
 
-        <button
-          onClick={() => setOpenModal(true)}
-          className="flex items-center justify-center gap-2 border border-[#3a3a3a] rounded-2xl px-6 py-4 hover:bg-[#1c1c1c] transition-all"
-        >
-          <Plus size={20} />
+        {/* ADMIN ONLY */}
+        {role === 'admin' && (
 
-          <span className="font-semibold">
-            New Appointment
-          </span>
-        </button>
+          <button
+            onClick={() => setOpenModal(true)}
+            className="flex items-center justify-center gap-2 border border-[#3a3a3a] rounded-2xl px-6 py-4 hover:bg-[#1c1c1c] transition-all"
+          >
+            <Plus size={20} />
+
+            <span className="font-semibold">
+              New Appointment
+            </span>
+          </button>
+        )}
       </div>
 
       {/* Search + Filter */}
@@ -153,14 +162,14 @@ export default function Appointments({
               {/* Time */}
               <div className="min-w-[140px]">
 
-  <h3 className="text-xl font-bold text-white">
-    {item.time}
-  </h3>
+                <h3 className="text-xl font-bold text-white">
+                  {item.time}
+                </h3>
 
-  <p className="text-sm text-zinc-500 mt-1">
-    {item.date}
-  </p>
-</div>
+                <p className="text-sm text-zinc-500 mt-1">
+                  {item.date}
+                </p>
+              </div>
 
               {/* Avatar */}
               <div className="w-14 h-14 rounded-full bg-[#dffff2] text-black flex items-center justify-center font-bold text-lg uppercase">
@@ -182,7 +191,8 @@ export default function Appointments({
               {/* Status */}
               <div>
 
-                {item.status === 'Pending'
+                {role === 'admin' &&
+                item.status === 'Pending'
                   ? (
                     <button
                       onClick={async () => {
@@ -206,6 +216,8 @@ export default function Appointments({
                       className={`px-4 py-2 rounded-full text-sm font-semibold ${
                         item.status === 'Confirmed'
                           ? 'bg-emerald-100 text-emerald-700'
+                          : item.status === 'Pending'
+                          ? 'bg-yellow-100 text-yellow-700'
                           : 'bg-red-100 text-red-700'
                       }`}
                     >
@@ -217,31 +229,44 @@ export default function Appointments({
               {/* Actions */}
               <div className="flex gap-3">
 
-                <button className="w-12 h-12 rounded-2xl border border-[#383838] text-white flex items-center justify-center hover:bg-[#222] transition-all">
-                  <Pencil size={18} />
-                </button>
+                {/* ADMIN ONLY */}
+                {role === 'admin' && (
+                  <>
+                    {/* Edit */}
+                    <button
+                      onClick={() =>
+                        setSelectedAppointment(item)
+                      }
+                      className="w-12 h-12 rounded-2xl border border-[#383838] text-white flex items-center justify-center hover:bg-[#222] transition-all"
+                    >
+                      <Pencil size={18} />
+                    </button>
 
-                <button
-                  onClick={async () => {
+                    {/* Delete */}
+                    <button
+                      onClick={async () => {
 
-                    const confirmDelete =
-                      window.confirm(
-                        'Delete appointment?'
-                      )
+                        const confirmDelete =
+                          window.confirm(
+                            'Delete appointment?'
+                          )
 
-                    if (!confirmDelete) return
+                        if (!confirmDelete) return
 
-                    await deleteAppointment(
-                      item.id
-                    )
+                        await deleteAppointment(
+                          item.id
+                        )
 
-                    loadAppointments()
-                  }}
-                  className="w-12 h-12 rounded-2xl border border-red-500/30 text-red-400 flex items-center justify-center hover:bg-red-500/10 transition-all"
-                >
-                  <Trash2 size={18} />
-                </button>
+                        loadAppointments()
+                      }}
+                      className="w-12 h-12 rounded-2xl border border-red-500/30 text-red-400 flex items-center justify-center hover:bg-red-500/10 transition-all"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </>
+                )}
 
+                {/* Message */}
                 <button className="w-12 h-12 rounded-2xl border border-[#383838] flex items-center justify-center hover:bg-[#222]">
                   <MessageSquare size={18} />
                 </button>
@@ -251,10 +276,22 @@ export default function Appointments({
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Add Modal */}
       {openModal && (
         <AddAppointmentModal
           close={() => setOpenModal(false)}
+          refresh={loadAppointments}
+        />
+      )}
+
+      {/* Edit Modal */}
+      {selectedAppointment && (
+        <AddAppointmentModal
+          editData={selectedAppointment}
+          isEdit={true}
+          close={() =>
+            setSelectedAppointment(null)
+          }
           refresh={loadAppointments}
         />
       )}
