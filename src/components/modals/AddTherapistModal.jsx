@@ -322,7 +322,6 @@ export default function AddTherapistModal({
               </div>
             </div>
 
-            {/* Qualification */}
             <div className="mt-4">
 
               <label className="text-sm text-zinc-300 mb-2 block">
@@ -339,7 +338,7 @@ export default function AddTherapistModal({
             </div>
           </div>
 
-          {/* SPECIALIZATIONS */}
+          {/* SPECIALIZATION */}
           <div>
 
             <h3 className="text-xs tracking-widest text-zinc-500 font-bold mb-5">
