@@ -3,10 +3,18 @@ import {
   addDoc,
   getDocs,
   doc,
-  updateDoc
+  updateDoc,
+  setDoc
 } from 'firebase/firestore'
 
-import { db } from './firebase'
+import {
+  getAuth,
+  createUserWithEmailAndPassword
+} from 'firebase/auth'
+
+import {
+  db
+} from './firebase'
 
 const therapistRef =
   collection(
@@ -17,9 +25,41 @@ const therapistRef =
 export const addTherapist =
   async (data) => {
 
+    const auth =
+      getAuth()
+
+    const userCredential =
+      await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      )
+
+    const user =
+      userCredential.user
+
+    await setDoc(
+      doc(db, 'users', user.uid),
+      {
+        role:
+          data.systemRole || 'therapist',
+
+        email:
+          data.email
+      }
+    )
+
+    const therapistData = {
+      ...data,
+      uid: user.uid
+    }
+
+    delete therapistData.password
+    delete therapistData.systemRole
+
     await addDoc(
       therapistRef,
-      data
+      therapistData
     )
   }
 

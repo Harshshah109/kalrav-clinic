@@ -32,8 +32,13 @@ export default function AddTherapistModal({
     email:
       editData?.email || '',
 
+    password: '',
+
     role:
       editData?.role || '',
+
+    systemRole:
+      editData?.systemRole || 'therapist',
 
     experience:
       editData?.experience || '',
@@ -70,40 +75,6 @@ export default function AddTherapistModal({
           ? editData.specialization.split(', ')
           : []
       )
-
-  const days = [
-    'Mon',
-    'Tue',
-    'Wed',
-    'Thu',
-    'Fri',
-    'Sat',
-    'Sun'
-  ]
-
-  const toggleDay = (day) => {
-
-    if (form.availability.includes(day)) {
-
-      setForm({
-        ...form,
-        availability:
-          form.availability.filter(
-            (d) => d !== day
-          )
-      })
-
-    } else {
-
-      setForm({
-        ...form,
-        availability: [
-          ...form.availability,
-          day
-        ]
-      })
-    }
-  }
 
   const handleChange = (e) => {
 
@@ -164,8 +135,14 @@ export default function AddTherapistModal({
         email:
           form.email,
 
+        password:
+          form.password,
+
         role:
           form.role,
+
+        systemRole:
+          form.systemRole,
 
         experience:
           form.experience,
@@ -222,6 +199,7 @@ export default function AddTherapistModal({
         console.log(err)
 
         alert(
+          err.message ||
           'Error saving therapist'
         )
       }
@@ -321,8 +299,29 @@ export default function AddTherapistModal({
                   value={form.email}
                   onChange={handleChange}
                   className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                  required
                 />
               </div>
+
+              {/* PASSWORD */}
+              {!isEdit && (
+                <div>
+
+                  <label className="text-sm text-zinc-300 mb-2 block">
+                    Login Password
+                  </label>
+
+                  <input
+                    type="password"
+                    name="password"
+                    value={form.password}
+                    onChange={handleChange}
+                    className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                    placeholder="Create login password"
+                    required
+                  />
+                </div>
+              )}
 
               <div>
 
@@ -337,6 +336,30 @@ export default function AddTherapistModal({
                   onChange={handleChange}
                   className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
                 />
+              </div>
+
+              {/* SYSTEM ROLE */}
+              <div>
+
+                <label className="text-sm text-zinc-300 mb-2 block">
+                  System Access Role
+                </label>
+
+                <select
+                  name="systemRole"
+                  value={form.systemRole}
+                  onChange={handleChange}
+                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                >
+
+                  <option value="therapist">
+                    Therapist
+                  </option>
+
+                  <option value="admin">
+                    Admin
+                  </option>
+                </select>
               </div>
 
               <div>
@@ -422,7 +445,6 @@ export default function AddTherapistModal({
               </button>
             </div>
 
-            {/* Tags */}
             <div className="flex flex-wrap gap-2 mt-4">
 
               {specializations.map((item, index) => (
@@ -481,7 +503,7 @@ export default function AddTherapistModal({
 
               {isEdit
                 ? 'Save Changes'
-                : 'Save Therapist'}
+                : 'Create Therapist'}
             </button>
 
             <button
