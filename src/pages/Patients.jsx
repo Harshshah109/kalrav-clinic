@@ -134,21 +134,24 @@ export default function Patients({
           </h1>
 
           <p className="text-zinc-400">
-            Manage patient records, sessions and billing
+            Manage patient records and sessions
           </p>
         </div>
 
-        {/* Add Patient */}
-        <button
-          onClick={() => setOpenModal(true)}
-          className="flex items-center justify-center gap-2 border border-[#3a3a3a] rounded-2xl px-6 py-4 hover:bg-[#1c1c1c] transition-all"
-        >
-          <Plus size={20} />
+        {/* ADMIN ONLY */}
+        {role === 'admin' && (
 
-          <span className="font-semibold">
-            Add Patient
-          </span>
-        </button>
+          <button
+            onClick={() => setOpenModal(true)}
+            className="flex items-center justify-center gap-2 border border-[#3a3a3a] rounded-2xl px-6 py-4 hover:bg-[#1c1c1c] transition-all"
+          >
+            <Plus size={20} />
+
+            <span className="font-semibold">
+              Add Patient
+            </span>
+          </button>
+        )}
       </div>
 
       {/* Search */}
@@ -242,76 +245,79 @@ export default function Patients({
                       </div>
                     </div>
 
-                    {/* PAYMENT CARDS */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
+                    {/* ADMIN ONLY PAYMENT CARDS */}
+                    {role === 'admin' && (
 
-                      {/* Total Paid */}
-                      <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
 
-                        <div className="flex items-center gap-2 mb-2 text-zinc-500 text-sm">
+                        {/* Total Paid */}
+                        <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
 
-                          <IndianRupee size={15} />
+                          <div className="flex items-center gap-2 mb-2 text-zinc-500 text-sm">
 
-                          Total Paid
+                            <IndianRupee size={15} />
+
+                            Total Paid
+                          </div>
+
+                          <h3 className="text-2xl font-bold text-emerald-400">
+                            ₹{totalPaid}
+                          </h3>
                         </div>
 
-                        <h3 className="text-2xl font-bold text-emerald-400">
-                          ₹{totalPaid}
-                        </h3>
-                      </div>
+                        {/* Pending Due */}
+                        <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
 
-                      {/* Pending Due */}
-                      <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
+                          <div className="flex items-center gap-2 mb-2 text-zinc-500 text-sm">
 
-                        <div className="flex items-center gap-2 mb-2 text-zinc-500 text-sm">
+                            <AlertCircle size={15} />
 
-                          <AlertCircle size={15} />
+                            Pending Due
+                          </div>
 
-                          Pending Due
-                        </div>
-
-                        <h3 className={`text-2xl font-bold ${
-                          pendingDue > 0
-                            ? 'text-yellow-400'
-                            : 'text-emerald-400'
-                        }`}>
-                          {
+                          <h3 className={`text-2xl font-bold ${
                             pendingDue > 0
-                              ? `₹${pendingDue}`
-                              : 'No Due'
+                              ? 'text-yellow-400'
+                              : 'text-emerald-400'
+                          }`}>
+                            {
+                              pendingDue > 0
+                                ? `₹${pendingDue}`
+                                : 'No Due'
+                            }
+                          </h3>
+                        </div>
+
+                        {/* Status */}
+                        <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
+
+                          <p className="text-zinc-500 text-sm mb-2">
+                            Payment Status
+                          </p>
+
+                          {
+                            pendingDue > 0 ? (
+
+                              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
+                                Pending
+                              </span>
+
+                            ) : (
+
+                              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
+                                Cleared
+                              </span>
+                            )
                           }
-                        </h3>
+                        </div>
                       </div>
-
-                      {/* Status */}
-                      <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
-
-                        <p className="text-zinc-500 text-sm mb-2">
-                          Payment Status
-                        </p>
-
-                        {
-                          pendingDue > 0 ? (
-
-                            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
-                              Pending
-                            </span>
-
-                          ) : (
-
-                            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
-                              Cleared
-                            </span>
-                          )
-                        }
-                      </div>
-                    </div>
+                    )}
                   </div>
 
                   {/* Actions */}
                   <div className="flex gap-3">
 
-                    {/* Add Session */}
+                    {/* Create Session */}
                     <button
                       onClick={() =>
                         setSessionPatient(patient)
@@ -321,42 +327,47 @@ export default function Patients({
                       <ClipboardPen size={18} />
                     </button>
 
-                    {/* Edit */}
-                    <button
-                      onClick={() =>
-                        setSelectedPatient(patient)
-                      }
-                      className="w-12 h-12 rounded-2xl border border-[#383838] flex items-center justify-center hover:bg-[#222] transition-all text-white"
-                    >
-                      <Pencil size={18} />
-                    </button>
+                    {/* ADMIN ONLY */}
+                    {role === 'admin' && (
+                      <>
+                        {/* Edit */}
+                        <button
+                          onClick={() =>
+                            setSelectedPatient(patient)
+                          }
+                          className="w-12 h-12 rounded-2xl border border-[#383838] flex items-center justify-center hover:bg-[#222] transition-all text-white"
+                        >
+                          <Pencil size={18} />
+                        </button>
 
-                    {/* Delete */}
-                    <button
-                      onClick={async () => {
+                        {/* Delete */}
+                        <button
+                          onClick={async () => {
 
-                        const confirmDelete =
-                          window.confirm(
-                            'Delete this patient and all related appointments?'
-                          )
+                            const confirmDelete =
+                              window.confirm(
+                                'Delete this patient and all related appointments?'
+                              )
 
-                        if (!confirmDelete)
-                          return
+                            if (!confirmDelete)
+                              return
 
-                        await deleteAppointmentsByPatient(
-                          patient.name
-                        )
+                            await deleteAppointmentsByPatient(
+                              patient.name
+                            )
 
-                        await deletePatient(
-                          patient.id
-                        )
+                            await deletePatient(
+                              patient.id
+                            )
 
-                        loadPatients()
-                      }}
-                      className="w-12 h-12 rounded-2xl border border-red-500/30 text-red-400 flex items-center justify-center hover:bg-red-500/10 transition-all"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                            loadPatients()
+                          }}
+                          className="w-12 h-12 rounded-2xl border border-red-500/30 text-red-400 flex items-center justify-center hover:bg-red-500/10 transition-all"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
 
