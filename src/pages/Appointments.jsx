@@ -252,18 +252,12 @@ export default function Appointments({
         phone.replace(/\D/g, '')
 
       const message =
-`Hello ${item.patient},
+`Hello ,
 
 Please confirm your therapy session Tommrow.
 
-📅 Date: ${item.date}
 ⏰ Time: ${item.time}
-
-
-Please arrive 10 minutes early.
-
-Thank you,
-Kalrav Speech Therapy Clinic`
+`
 
       const whatsappURL =
 `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(message)}`
