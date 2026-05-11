@@ -5,7 +5,9 @@ import {
   CalendarDays,
   Pencil,
   Trash2,
-  ClipboardPen
+  ClipboardPen,
+  IndianRupee,
+  AlertCircle
 } from 'lucide-react'
 
 import { useEffect, useState } from 'react'
@@ -18,6 +20,10 @@ import {
 import {
   deleteAppointmentsByPatient
 } from '../services/appointmentService'
+
+import {
+  getPayments
+} from '../services/paymentService'
 
 import AddPatientModal
   from '../components/modals/AddPatientModal'
@@ -34,6 +40,9 @@ import SessionHistory
 export default function Patients() {
 
   const [patients, setPatients] =
+    useState([])
+
+  const [payments, setPayments] =
     useState([])
 
   const [openModal, setOpenModal] =
@@ -53,6 +62,7 @@ export default function Patients() {
 
   useEffect(() => {
     loadPatients()
+    loadPayments()
   }, [])
 
   const loadPatients = async () => {
@@ -62,6 +72,53 @@ export default function Patients() {
 
     setPatients(data)
   }
+
+  const loadPayments = async () => {
+
+    const data =
+      await getPayments()
+
+    setPayments(data)
+  }
+
+  const getPatientPayments =
+    (patientName) => {
+
+      return payments.filter(
+        (item) =>
+          item.patient === patientName
+      )
+    }
+
+  const getTotalPaid =
+    (patientName) => {
+
+      return getPatientPayments(patientName)
+        .filter(
+          (item) =>
+            item.status === 'Paid'
+        )
+        .reduce(
+          (sum, item) =>
+            sum + Number(item.amount || 0),
+          0
+        )
+    }
+
+  const getPendingDue =
+    (patientName) => {
+
+      return getPatientPayments(patientName)
+        .filter(
+          (item) =>
+            item.status === 'Pending'
+        )
+        .reduce(
+          (sum, item) =>
+            sum + Number(item.amount || 0),
+          0
+        )
+    }
 
   return (
     <div className="pb-10">
@@ -75,7 +132,7 @@ export default function Patients() {
           </h1>
 
           <p className="text-zinc-400">
-            Manage patient records and therapy sessions
+            Manage patient records, sessions and billing
           </p>
         </div>
 
@@ -115,7 +172,7 @@ export default function Patients() {
       </div>
 
       {/* Patients */}
-      <div className="space-y-4">
+      <div className="space-y-5">
 
         {patients
           .filter((patient) =>
@@ -125,130 +182,209 @@ export default function Patients() {
                 search.toLowerCase()
               )
           )
-          .map((patient) => (
+          .map((patient) => {
 
-          <div
-            key={patient.id}
-            className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-5"
-          >
+            const totalPaid =
+              getTotalPaid(
+                patient.name
+              )
 
-            {/* Top */}
-            <div className="flex flex-col lg:flex-row lg:items-center gap-5">
+            const pendingDue =
+              getPendingDue(
+                patient.name
+              )
 
-              {/* Avatar */}
-              <div className="w-16 h-16 rounded-full bg-[#dffff2] text-black flex items-center justify-center text-lg font-bold">
-                {patient.name?.slice(0, 2)}
-              </div>
+            return (
 
-              {/* Info */}
-              <div className="flex-1">
+              <div
+                key={patient.id}
+                className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-5"
+              >
 
-                <div className="flex flex-col md:flex-row md:items-center gap-3 mb-2">
+                {/* Top */}
+                <div className="flex flex-col xl:flex-row xl:items-center gap-5">
 
-                  <h2 className="text-2xl font-bold">
-                    {patient.name}
-                  </h2>
-
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 w-fit">
-                    Active
-                  </span>
-                </div>
-
-                <p className="text-zinc-400 mb-3">
-                  {patient.condition} • Age {patient.age}
-                </p>
-
-                <div className="flex flex-wrap gap-4 text-sm text-zinc-400">
-
-                  <div className="flex items-center gap-2">
-                    <CalendarDays size={16} />
-                    Sessions
+                  {/* Avatar */}
+                  <div className="w-16 h-16 rounded-full bg-[#dffff2] text-black flex items-center justify-center text-lg font-bold">
+                    {patient.name?.slice(0, 2)}
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <Phone size={16} />
-                    {patient.phone}
+                  {/* Info */}
+                  <div className="flex-1">
+
+                    <div className="flex flex-col md:flex-row md:items-center gap-3 mb-2">
+
+                      <h2 className="text-2xl font-bold">
+                        {patient.name}
+                      </h2>
+
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 w-fit">
+                        Active
+                      </span>
+                    </div>
+
+                    <p className="text-zinc-400 mb-3">
+                      {patient.condition} • Age {patient.age}
+                    </p>
+
+                    <div className="flex flex-wrap gap-4 text-sm text-zinc-400">
+
+                      <div className="flex items-center gap-2">
+                        <CalendarDays size={16} />
+                        Sessions
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Phone size={16} />
+                        {patient.phone}
+                      </div>
+                    </div>
+
+                    {/* PAYMENT CARDS */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
+
+                      {/* Total Paid */}
+                      <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
+
+                        <div className="flex items-center gap-2 mb-2 text-zinc-500 text-sm">
+
+                          <IndianRupee size={15} />
+
+                          Total Paid
+                        </div>
+
+                        <h3 className="text-2xl font-bold text-emerald-400">
+                          ₹{totalPaid}
+                        </h3>
+                      </div>
+
+                      {/* Pending Due */}
+                      <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
+
+                        <div className="flex items-center gap-2 mb-2 text-zinc-500 text-sm">
+
+                          <AlertCircle size={15} />
+
+                          Pending Due
+                        </div>
+
+                        <h3 className={`text-2xl font-bold ${
+                          pendingDue > 0
+                            ? 'text-yellow-400'
+                            : 'text-emerald-400'
+                        }`}>
+                          {
+                            pendingDue > 0
+                              ? `₹${pendingDue}`
+                              : 'No Due'
+                          }
+                        </h3>
+                      </div>
+
+                      {/* Status */}
+                      <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
+
+                        <p className="text-zinc-500 text-sm mb-2">
+                          Payment Status
+                        </p>
+
+                        {
+                          pendingDue > 0 ? (
+
+                            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
+                              Pending
+                            </span>
+
+                          ) : (
+
+                            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
+                              Cleared
+                            </span>
+                          )
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-3">
+
+                    {/* Add Session */}
+                    <button
+                      onClick={() =>
+                        setSessionPatient(patient)
+                      }
+                      className="w-12 h-12 rounded-2xl border border-[#383838] flex items-center justify-center hover:bg-[#222] transition-all text-white"
+                    >
+                      <ClipboardPen size={18} />
+                    </button>
+
+                    {/* Edit */}
+                    <button
+                      onClick={() =>
+                        setSelectedPatient(patient)
+                      }
+                      className="w-12 h-12 rounded-2xl border border-[#383838] flex items-center justify-center hover:bg-[#222] transition-all text-white"
+                    >
+                      <Pencil size={18} />
+                    </button>
+
+                    {/* Delete */}
+                    <button
+                      onClick={async () => {
+
+                        const confirmDelete =
+                          window.confirm(
+                            'Delete this patient and all related appointments?'
+                          )
+
+                        if (!confirmDelete)
+                          return
+
+                        await deleteAppointmentsByPatient(
+                          patient.name
+                        )
+
+                        await deletePatient(
+                          patient.id
+                        )
+
+                        loadPatients()
+                      }}
+                      className="w-12 h-12 rounded-2xl border border-red-500/30 text-red-400 flex items-center justify-center hover:bg-red-500/10 transition-all"
+                    >
+                      <Trash2 size={18} />
+                    </button>
                   </div>
                 </div>
-              </div>
 
-              {/* Actions */}
-              <div className="flex gap-3">
-
-                {/* Add Session */}
+                {/* Session History Toggle */}
                 <button
                   onClick={() =>
-                    setSessionPatient(patient)
-                  }
-                  className="w-12 h-12 rounded-2xl border border-[#383838] flex items-center justify-center hover:bg-[#222] transition-all text-white"
-                >
-                  <ClipboardPen size={18} />
-                </button>
 
-                {/* Edit */}
-                <button
-                  onClick={() =>
-                    setSelectedPatient(patient)
-                  }
-                  className="w-12 h-12 rounded-2xl border border-[#383838] flex items-center justify-center hover:bg-[#222] transition-all text-white"
-                >
-                  <Pencil size={18} />
-                </button>
+                    setExpandedPatient(
 
-                {/* Delete */}
-                <button
-                  onClick={async () => {
-
-                    const confirmDelete =
-                      window.confirm(
-                        'Delete this patient and all related appointments?'
-                      )
-
-                    if (!confirmDelete) return
-
-                    await deleteAppointmentsByPatient(
-                      patient.name
+                      expandedPatient === patient.id
+                        ? null
+                        : patient.id
                     )
-
-                    await deletePatient(
-                      patient.id
-                    )
-
-                    loadPatients()
-                  }}
-                  className="w-12 h-12 rounded-2xl border border-red-500/30 text-red-400 flex items-center justify-center hover:bg-red-500/10 transition-all"
+                  }
+                  className="mt-5 text-sm text-[#dffff2]"
                 >
-                  <Trash2 size={18} />
+                  {expandedPatient === patient.id
+                    ? 'Hide Session History'
+                    : 'View Session History'}
                 </button>
+
+                {/* Session History */}
+                {expandedPatient === patient.id && (
+                  <SessionHistory
+                    patient={patient}
+                  />
+                )}
               </div>
-            </div>
-
-            {/* Session History Toggle */}
-            <button
-              onClick={() =>
-
-                setExpandedPatient(
-
-                  expandedPatient === patient.id
-                    ? null
-                    : patient.id
-                )
-              }
-              className="mt-5 text-sm text-[#dffff2]"
-            >
-              {expandedPatient === patient.id
-                ? 'Hide Session History'
-                : 'View Session History'}
-            </button>
-
-            {/* Session History */}
-            {expandedPatient === patient.id && (
-              <SessionHistory
-                patient={patient}
-              />
-            )}
-          </div>
-        ))}
+            )
+          })}
       </div>
 
       {/* Add Patient Modal */}

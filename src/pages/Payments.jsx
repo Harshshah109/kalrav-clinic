@@ -1,18 +1,22 @@
 import {
   IndianRupee,
   Plus,
-  Trash2
+  Trash2,
+  TrendingUp,
+  AlertCircle,
+  CheckCircle2
 } from 'lucide-react'
 
 import {
   useEffect,
+  useMemo,
   useState
 } from 'react'
 
 import {
   getPayments,
-deletePayment,
-updatePayment
+  deletePayment,
+  updatePayment
 } from '../services/paymentService'
 
 import AddPaymentModal
@@ -25,6 +29,9 @@ export default function Payments() {
 
   const [openModal, setOpenModal] =
     useState(false)
+
+  const [filter, setFilter] =
+    useState('monthly')
 
   useEffect(() => {
     loadPayments()
@@ -45,23 +52,82 @@ export default function Payments() {
     }
   }
 
+  const filteredPayments = useMemo(() => {
+
+    const now = new Date()
+
+    return payments.filter((item) => {
+
+      if (!item.date)
+        return false
+
+      const paymentDate =
+        item.date?.seconds
+          ? new Date(item.date.seconds * 1000)
+          : new Date(item.date)
+
+      if (filter === 'weekly') {
+
+        const diff =
+          (now - paymentDate) /
+          (1000 * 60 * 60 * 24)
+
+        return diff <= 7
+      }
+
+      if (filter === 'monthly') {
+
+        return (
+          paymentDate.getMonth() === now.getMonth() &&
+          paymentDate.getFullYear() === now.getFullYear()
+        )
+      }
+
+      if (filter === 'yearly') {
+
+        return (
+          paymentDate.getFullYear() === now.getFullYear()
+        )
+      }
+
+      return true
+    })
+
+  }, [payments, filter])
+
   const totalRevenue =
-    payments
-      .filter(
-        (item) =>
-          item.status === 'Paid'
-      )
+    filteredPayments
+      .filter((item) => item.status === 'Paid')
       .reduce(
         (acc, item) =>
           acc + Number(item.amount || 0),
         0
       )
 
+  const pendingRevenue =
+    filteredPayments
+      .filter((item) => item.status === 'Pending')
+      .reduce(
+        (acc, item) =>
+          acc + Number(item.amount || 0),
+        0
+      )
+
+  const paidCount =
+    filteredPayments.filter(
+      (item) => item.status === 'Paid'
+    ).length
+
+  const pendingCount =
+    filteredPayments.filter(
+      (item) => item.status === 'Pending'
+    ).length
+
   return (
     <div className="pb-10">
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
 
         <div>
 
@@ -70,71 +136,119 @@ export default function Payments() {
           </h1>
 
           <p className="text-zinc-400">
-            Track clinic payments and revenue
+            Manage patient billing and clinic revenue
           </p>
         </div>
 
-        <button
-          onClick={() =>
-            setOpenModal(true)
-          }
-          className="flex items-center justify-center gap-2 border border-[#3a3a3a] rounded-2xl px-6 py-4 hover:bg-[#1c1c1c] transition-all"
-        >
-          <Plus size={20} />
+        <div className="flex flex-col md:flex-row gap-3">
 
-          <span className="font-semibold">
-            Add Payment
-          </span>
-        </button>
-      </div>
+          {/* Filters */}
+          <div className="flex bg-[#171717] border border-[#2f2f2f] rounded-2xl p-1">
 
-      {/* Revenue Card */}
-      <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6 mb-6">
+            {['weekly', 'monthly', 'yearly'].map((item) => (
 
-        <h3 className="text-zinc-400 mb-2">
-          Total Revenue
-        </h3>
-
-        <h2 className="text-5xl font-bold">
-          ₹{totalRevenue}
-        </h2>
-      </div>
-
-      {/* Empty State */}
-      {payments.length === 0 && (
-        <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-12 text-center">
-
-          <div className="w-20 h-20 rounded-3xl bg-[#222] flex items-center justify-center mx-auto mb-5">
-            <IndianRupee size={36} />
+              <button
+                key={item}
+                onClick={() => setFilter(item)}
+                className={`px-4 h-11 rounded-xl text-sm font-semibold transition-all ${
+                  filter === item
+                    ? 'bg-[#dffff2] text-black'
+                    : 'text-zinc-400'
+                }`}
+              >
+                {item.charAt(0).toUpperCase() + item.slice(1)}
+              </button>
+            ))}
           </div>
 
-          <h2 className="text-2xl font-bold mb-2">
-            No Payments Yet
-          </h2>
-
-          <p className="text-zinc-400 mb-6">
-            Start adding clinic payments
-          </p>
-
+          {/* Add Payment */}
           <button
             onClick={() =>
               setOpenModal(true)
             }
-            className="px-6 h-12 rounded-2xl bg-[#dffff2] text-black font-semibold"
+            className="flex items-center justify-center gap-2 border border-[#3a3a3a] rounded-2xl px-6 py-4 hover:bg-[#1c1c1c] transition-all"
           >
-            Add First Payment
+            <Plus size={20} />
+
+            <span className="font-semibold">
+              Add Payment
+            </span>
           </button>
         </div>
-      )}
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+
+        <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+
+          <div className="w-12 h-12 rounded-2xl bg-[#222] flex items-center justify-center mb-5">
+            <IndianRupee size={22} />
+          </div>
+
+          <h3 className="text-zinc-400 mb-2">
+            Total Revenue
+          </h3>
+
+          <h2 className="text-4xl font-bold">
+            ₹{totalRevenue}
+          </h2>
+        </div>
+
+        <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+
+          <div className="w-12 h-12 rounded-2xl bg-[#222] flex items-center justify-center mb-5">
+            <AlertCircle size={22} />
+          </div>
+
+          <h3 className="text-zinc-400 mb-2">
+            Pending Amount
+          </h3>
+
+          <h2 className="text-4xl font-bold text-yellow-400">
+            ₹{pendingRevenue}
+          </h2>
+        </div>
+
+        <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+
+          <div className="w-12 h-12 rounded-2xl bg-[#222] flex items-center justify-center mb-5">
+            <CheckCircle2 size={22} />
+          </div>
+
+          <h3 className="text-zinc-400 mb-2">
+            Paid Transactions
+          </h3>
+
+          <h2 className="text-4xl font-bold text-emerald-400">
+            {paidCount}
+          </h2>
+        </div>
+
+        <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+
+          <div className="w-12 h-12 rounded-2xl bg-[#222] flex items-center justify-center mb-5">
+            <TrendingUp size={22} />
+          </div>
+
+          <h3 className="text-zinc-400 mb-2">
+            Pending Transactions
+          </h3>
+
+          <h2 className="text-4xl font-bold text-yellow-400">
+            {pendingCount}
+          </h2>
+        </div>
+      </div>
 
       {/* Payments List */}
       <div className="space-y-4">
 
-        {payments.map((item) => (
+        {filteredPayments.map((item) => (
 
           <div
             key={item.id}
-            className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-5 flex flex-col lg:flex-row lg:items-center gap-5"
+            className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-5 flex flex-col xl:flex-row xl:items-center gap-5"
           >
 
             {/* Icon */}
@@ -150,56 +264,53 @@ export default function Payments() {
               </h2>
 
               <p className="text-zinc-400">
-  {item.method} • {
-
-    item.date?.seconds
-      ? new Date(
-          item.date.seconds * 1000
-        ).toLocaleDateString()
-
-      : item.date
-  }
-</p>
+                {item.method} • {
+                  item.date?.seconds
+                    ? new Date(
+                        item.date.seconds * 1000
+                      ).toLocaleDateString()
+                    : item.date
+                }
+              </p>
             </div>
 
             {/* Amount */}
-            <div className="text-3xl font-bold">
-              ₹{item.amount}
+            <div>
+
+              <h2 className="text-3xl font-bold">
+                ₹{item.amount}
+              </h2>
             </div>
 
             {/* Status */}
-            {/* Status */}
-<div>
+            <div>
 
-  {item.status === 'Pending' ? (
+              {item.status === 'Pending' ? (
 
-    <button
-      onClick={async () => {
+                <button
+                  onClick={async () => {
 
-        await updatePayment(
-          item.id,
-          {
-            status: 'Paid'
-          }
-        )
+                    await updatePayment(
+                      item.id,
+                      {
+                        status: 'Paid'
+                      }
+                    )
 
-        loadPayments()
-      }}
-      className="px-5 h-11 rounded-2xl bg-emerald-100 text-emerald-700 font-semibold hover:opacity-90"
-    >
-      Mark Paid
-    </button>
+                    loadPayments()
+                  }}
+                  className="px-5 h-11 rounded-2xl bg-yellow-100 text-yellow-700 font-semibold hover:opacity-90"
+                >
+                  Mark Paid
+                </button>
 
-  ) : (
+              ) : (
 
-    <span
-      className="px-4 py-2 rounded-full text-sm font-semibold bg-emerald-100 text-emerald-700"
-    >
-      Paid
-    </span>
-
-  )}
-</div>
+                <span className="px-4 py-2 rounded-full text-sm font-semibold bg-emerald-100 text-emerald-700">
+                  Paid
+                </span>
+              )}
+            </div>
 
             {/* Delete */}
             <button
@@ -210,7 +321,8 @@ export default function Payments() {
                     'Delete payment?'
                   )
 
-                if (!confirmDelete) return
+                if (!confirmDelete)
+                  return
 
                 await deletePayment(
                   item.id
