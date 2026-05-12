@@ -155,6 +155,9 @@ export default function Appointments({
               const parseDateTime =
                 (item) => {
 
+                  if (!item.time)
+                    return new Date(0)
+
                   const [time, modifier] =
                     item.time.split(' ')
 
@@ -176,7 +179,11 @@ export default function Appointments({
                   }
 
                   const date =
-                    new Date(item.date)
+                    item.date?.seconds
+                      ? new Date(
+                          item.date.seconds * 1000
+                        )
+                      : new Date(item.date)
 
                   date.setHours(
                     hours,
@@ -195,8 +202,14 @@ export default function Appointments({
             .filter((item) => {
 
               const matchesSearch =
-                item.patient
-                  ?.toLowerCase()
+                (
+                  item.patient ||
+                  item.patientName ||
+                  ''
+                )
+
+                  .toLowerCase()
+
                   .includes(
                     search.toLowerCase()
                   )
@@ -231,24 +244,40 @@ export default function Appointments({
                 </h3>
 
                 <p className="text-sm text-zinc-500 mt-1">
-                  {item.date}
+                  {
+                    item.date?.seconds
+                      ? new Date(
+                          item.date.seconds * 1000
+                        ).toLocaleDateString()
+                      : item.date
+                  }
                 </p>
               </div>
 
               {/* Avatar */}
               <div className="w-14 h-14 rounded-full bg-[#dffff2] text-black flex items-center justify-center font-bold text-lg uppercase">
-                {(item.patient || 'PT').slice(0, 2)}
+                {
+                  (
+                    item.patient ||
+                    item.patientName ||
+                    'PT'
+                  ).slice(0, 2)
+                }
               </div>
 
               {/* Info */}
               <div className="flex-1">
 
                 <h3 className="text-xl font-bold mb-1">
-                  {item.patient || 'Patient'}
+                  {
+                    item.patient ||
+                    item.patientName ||
+                    'Patient'
+                  }
                 </h3>
 
                 <p className="text-zinc-400">
-                  {item.therapy || 'Speech Therapy'} • {item.therapist || 'Therapist'} • {item.duration || '30 min'}
+                  {item.therapy || 'Speech Therapy'} • {item.therapist || item.therapistName || 'Therapist'} • {item.duration || '30 min'}
                 </p>
               </div>
 
@@ -297,10 +326,14 @@ export default function Appointments({
                 <button
                   onClick={() => {
 
+                    const patientName =
+                      item.patient ||
+                      item.patientName
+
                     const patientData =
                       patients.find(
                         (p) =>
-                          p.name === item.patient
+                          p.name === patientName
                       )
 
                     const phone =

@@ -32,12 +32,29 @@ export const getAppointments =
       )
 
     return snapshot.docs.map(
-      (docItem) => ({
+      (docItem) => {
 
-        id: docItem.id,
+        const data =
+          docItem.data()
 
-        ...docItem.data()
-      })
+        return {
+
+          id: docItem.id,
+
+          ...data,
+
+          /* BACKWARD COMPATIBILITY */
+          patient:
+            data.patient ||
+            data.patientName ||
+            '',
+
+          therapist:
+            data.therapist ||
+            data.therapistName ||
+            ''
+        }
+      }
     )
   }
 
@@ -87,10 +104,16 @@ export const deleteAppointmentsByPatient =
 
       const patientAppointments =
         snapshot.docs.filter(
-          (docItem) =>
+          (docItem) => {
 
-            docItem.data().patient ===
-            patientName
+            const data =
+              docItem.data()
+
+            return (
+              data.patient === patientName ||
+              data.patientName === patientName
+            )
+          }
         )
 
       for (const appointment of patientAppointments) {

@@ -302,17 +302,29 @@ export default function Dashboard({
             appointments={
               (appointments || [])
 
-                /* ONLY TODAY */
-                .filter(
-                  (item) =>
-                    item.date === today
-                )
+                /* TODAY ONLY */
+                .filter((item) => {
 
-                /* SORT BY TIME */
+                  const appointmentDate =
+                    item.date?.seconds
+                      ? new Date(
+                          item.date.seconds * 1000
+                        )
+                          .toISOString()
+                          .split('T')[0]
+                      : item.date
+
+                  return appointmentDate === today
+                })
+
+                /* SORT */
                 .sort((a, b) => {
 
                   const parseTime =
                     (timeString) => {
+
+                      if (!timeString)
+                        return 0
 
                       const [time, modifier] =
                         timeString.split(' ')
