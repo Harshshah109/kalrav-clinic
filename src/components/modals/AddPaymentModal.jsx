@@ -93,11 +93,10 @@ export default function AddPaymentModal({
           selectedPatient.pendingDue || 0
         )
 
-      let updatedWallet =
-        currentWallet
+      let updatedWallet = 0
+      let updatedDue = 0
 
-      let updatedDue =
-        currentDue
+      let walletUsed = 0
 
       /* ADVANCE PAYMENT */
       if (
@@ -108,49 +107,58 @@ export default function AddPaymentModal({
         updatedWallet =
           currentWallet +
           paymentAmount
+
+        updatedDue =
+          currentDue
       }
 
-      /* DUE CLEARANCE */
-      else if (
-        form.paymentType ===
-        'Due Clearance'
-      ) {
-
-        if (
-          paymentAmount >= currentDue
-        ) {
-
-          updatedWallet =
-            paymentAmount -
-            currentDue
-
-          updatedDue = 0
-
-        } else {
-
-          updatedDue =
-            currentDue -
-            paymentAmount
-        }
-      }
-
-      /* MONTHLY SETTLEMENT */
       else {
 
+        /* AUTO WALLET DEDUCTION */
         if (
-          paymentAmount >= currentDue
+          currentWallet >= currentDue
         ) {
 
+          walletUsed =
+            currentDue
+
           updatedWallet =
-            paymentAmount -
+            currentWallet -
             currentDue
 
           updatedDue = 0
 
         } else {
 
+          walletUsed =
+            currentWallet
+
           updatedDue =
             currentDue -
+            currentWallet
+
+          updatedWallet = 0
+        }
+
+        /* APPLY PAYMENT */
+        if (
+          paymentAmount >= updatedDue
+        ) {
+
+          const extraAmount =
+            paymentAmount -
+            updatedDue
+
+          updatedWallet =
+            updatedWallet +
+            extraAmount
+
+          updatedDue = 0
+
+        } else {
+
+          updatedDue =
+            updatedDue -
             paymentAmount
         }
       }
@@ -168,6 +176,8 @@ export default function AddPaymentModal({
 
         previousDue:
           currentDue,
+
+        walletUsed,
 
         remainingWallet:
           updatedWallet,
@@ -310,19 +320,21 @@ export default function AddPaymentModal({
 
             <div className="grid grid-cols-2 gap-4">
 
+              {/* Wallet */}
               <div className="bg-[#171717] border border-[#2f2f2f] rounded-2xl p-4">
 
                 <p className="text-zinc-400 text-sm mb-2">
                   Wallet Balance
                 </p>
 
-                <h2 className="text-3xl font-bold text-emerald-400">
+                <h2 className="text-3xl font-bold text-cyan-400">
                   ₹{
                     selectedPatient.walletBalance || 0
                   }
                 </h2>
               </div>
 
+              {/* Due */}
               <div className="bg-[#171717] border border-[#2f2f2f] rounded-2xl p-4">
 
                 <p className="text-zinc-400 text-sm mb-2">
@@ -465,7 +477,9 @@ export default function AddPaymentModal({
               type="submit"
               className="flex items-center justify-center gap-2 px-6 h-14 rounded-2xl bg-[#dffff2] text-black font-bold hover:opacity-90"
             >
+
               <IndianRupee size={16} />
+
               Save Payment
             </button>
 
