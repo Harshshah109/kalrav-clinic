@@ -4,7 +4,8 @@ import Select from 'react-select'
 
 import {
   X,
-  IndianRupee
+  IndianRupee,
+  Wallet
 } from 'lucide-react'
 
 import { addPayment }
@@ -27,23 +28,28 @@ export default function AddPaymentModal({
     setSelectedPatient] =
       useState(null)
 
-  const [form, setForm] = useState({
+  const [walletUsage,
+    setWalletUsage] =
+      useState(0)
 
-    patient: '',
+  const [form, setForm] =
+    useState({
 
-    amount: '',
+      patient: '',
 
-    method: 'Cash',
+      amount: '',
 
-    status: 'Paid',
+      method: 'Cash',
 
-    paymentType:
-      'Monthly Settlement',
+      status: 'Paid',
 
-    date: '',
+      paymentType:
+        'Monthly Settlement',
 
-    notes: ''
-  })
+      date: '',
+
+      notes: ''
+    })
 
   useEffect(() => {
 
@@ -93,10 +99,20 @@ export default function AddPaymentModal({
           selectedPatient.pendingDue || 0
         )
 
-      let updatedWallet = 0
-      let updatedDue = 0
+      const usableWallet =
+        Math.min(
+          walletUsage,
+          currentWallet,
+          currentDue
+        )
 
-      let walletUsed = 0
+      let updatedWallet =
+        currentWallet -
+        usableWallet
+
+      let updatedDue =
+        currentDue -
+        usableWallet
 
       /* ADVANCE PAYMENT */
       if (
@@ -114,33 +130,7 @@ export default function AddPaymentModal({
 
       else {
 
-        /* AUTO WALLET DEDUCTION */
-        if (
-          currentWallet >= currentDue
-        ) {
-
-          walletUsed =
-            currentDue
-
-          updatedWallet =
-            currentWallet -
-            currentDue
-
-          updatedDue = 0
-
-        } else {
-
-          walletUsed =
-            currentWallet
-
-          updatedDue =
-            currentDue -
-            currentWallet
-
-          updatedWallet = 0
-        }
-
-        /* APPLY PAYMENT */
+        /* APPLY NEW PAYMENT */
         if (
           paymentAmount >= updatedDue
         ) {
@@ -177,7 +167,8 @@ export default function AddPaymentModal({
         previousDue:
           currentDue,
 
-        walletUsed,
+        walletUsed:
+          usableWallet,
 
         remainingWallet:
           updatedWallet,
@@ -217,6 +208,7 @@ export default function AddPaymentModal({
 
       <div className="w-full max-w-2xl bg-[#1b1b1b] border border-[#343434] rounded-3xl p-6 relative max-h-[90vh] overflow-y-auto">
 
+        {/* CLOSE */}
         <button
           onClick={close}
           className="absolute top-5 right-5 w-10 h-10 rounded-xl border border-[#404040] flex items-center justify-center hover:bg-[#252525]"
@@ -255,6 +247,8 @@ export default function AddPaymentModal({
                   )
 
                 setSelectedPatient(patient)
+
+                setWalletUsage(0)
 
                 setForm({
                   ...form,
@@ -315,7 +309,7 @@ export default function AddPaymentModal({
             />
           </div>
 
-          {/* BALANCE INFO */}
+          {/* BALANCES */}
           {selectedPatient && (
 
             <div className="grid grid-cols-2 gap-4">
@@ -350,13 +344,50 @@ export default function AddPaymentModal({
             </div>
           )}
 
+          {/* USE WALLET */}
+          {selectedPatient &&
+            selectedPatient.walletBalance > 0 &&
+            selectedPatient.pendingDue > 0 && (
+
+            <div>
+
+              <label className="text-sm text-zinc-300 mb-2 block">
+                Use Wallet Balance
+              </label>
+
+              <div className="relative">
+
+                <Wallet
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-400"
+                />
+
+                <input
+                  type="number"
+                  value={walletUsage}
+                  onChange={(e) =>
+                    setWalletUsage(
+                      Number(e.target.value)
+                    )
+                  }
+                  max={
+                    selectedPatient.walletBalance
+                  }
+                  min={0}
+                  placeholder="0"
+                  className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl pl-12 pr-5 outline-none"
+                />
+              </div>
+            </div>
+          )}
+
           {/* AMOUNT + DATE */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
             <div>
 
               <label className="text-sm text-zinc-300 mb-2 block">
-                Amount
+                New Payment Amount
               </label>
 
               <input

@@ -4,16 +4,15 @@ import {
   getDocs,
   doc,
   updateDoc,
-  deleteDoc,
-  query,
-  where
+  deleteDoc
 } from 'firebase/firestore'
 
 import { db } from './firebase'
 
 const appointmentRef =
-  collection(db, 'sessions')
+  collection(db, 'appointments')
 
+/* ADD */
 export const addAppointment =
   async (data) => {
 
@@ -23,6 +22,7 @@ export const addAppointment =
     )
   }
 
+/* GET */
 export const getAppointments =
   async () => {
 
@@ -33,19 +33,22 @@ export const getAppointments =
 
     return snapshot.docs.map(
       (docItem) => ({
+
         id: docItem.id,
+
         ...docItem.data()
       })
     )
   }
 
+/* UPDATE */
 export const updateAppointment =
   async (id, data) => {
 
     const appointmentDoc =
       doc(
         db,
-        'sessions',
+        'appointments',
         id
       )
 
@@ -55,13 +58,14 @@ export const updateAppointment =
     )
   }
 
+/* DELETE SINGLE */
 export const deleteAppointment =
   async (id) => {
 
     const appointmentDoc =
       doc(
         db,
-        'sessions',
+        'appointments',
         id
       )
 
@@ -70,28 +74,41 @@ export const deleteAppointment =
     )
   }
 
+/* DELETE ALL BY PATIENT */
 export const deleteAppointmentsByPatient =
   async (patientName) => {
 
-    const q = query(
-      appointmentRef,
-      where(
-        'patient',
-        '==',
-        patientName
-      )
-    )
+    try {
 
-    const snapshot =
-      await getDocs(q)
+      const snapshot =
+        await getDocs(
+          appointmentRef
+        )
 
-    const deletePromises =
-      snapshot.docs.map(
-        (docItem) =>
-          deleteDoc(docItem.ref)
-      )
+      const patientAppointments =
+        snapshot.docs.filter(
+          (docItem) =>
 
-    await Promise.all(
-      deletePromises
-    )
+            docItem.data().patient ===
+            patientName
+        )
+
+      for (const appointment of patientAppointments) {
+
+        const appointmentDoc =
+          doc(
+            db,
+            'appointments',
+            appointment.id
+          )
+
+        await deleteDoc(
+          appointmentDoc
+        )
+      }
+
+    } catch (err) {
+
+      console.log(err)
+    }
   }

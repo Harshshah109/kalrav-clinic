@@ -21,6 +21,18 @@ import {
   deleteAppointmentsByPatient
 } from '../services/appointmentService'
 
+import {
+  getPayments
+} from '../services/paymentService'
+
+import {
+  doc,
+  deleteDoc
+} from 'firebase/firestore'
+
+import { db }
+  from '../services/firebase'
+
 import AddPatientModal
   from '../components/modals/AddPatientModal'
 
@@ -297,21 +309,55 @@ export default function Patients({
 
                           const confirmDelete =
                             window.confirm(
-                              'Delete this patient and all related appointments?'
+                              'Delete patient, appointments and payments permanently?'
                             )
 
                           if (!confirmDelete)
                             return
 
-                          await deleteAppointmentsByPatient(
-                            patient.name
-                          )
+                          try {
 
-                          await deletePatient(
-                            patient.id
-                          )
+                            /* DELETE APPOINTMENTS */
+                            await deleteAppointmentsByPatient(
+                              patient.name
+                            )
 
-                          loadPatients()
+                            /* DELETE PAYMENTS */
+                            const payments =
+                              await getPayments()
+
+                            const patientPayments =
+                              payments.filter(
+                                (item) =>
+                                  item.patient === patient.name
+                              )
+
+                            for (const payment of patientPayments) {
+
+                              const paymentDoc =
+                                doc(
+                                  db,
+                                  'payments',
+                                  payment.id
+                                )
+
+                              await deleteDoc(
+                                paymentDoc
+                              )
+                            }
+
+                            /* DELETE PATIENT */
+                            await deletePatient(
+                              patient.id
+                            )
+
+                            /* REFRESH */
+                            loadPatients()
+
+                          } catch (err) {
+
+                            console.log(err)
+                          }
                         }}
                         className="w-12 h-12 rounded-2xl border border-red-500/30 text-red-400 flex items-center justify-center hover:bg-red-500/10 transition-all"
                       >

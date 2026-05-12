@@ -120,7 +120,6 @@ export default function Payments() {
 
     }, [payments, filter])
 
-  /* TOTAL REVENUE */
   const totalRevenue =
     filteredPayments
       .filter(
@@ -133,7 +132,6 @@ export default function Payments() {
         0
       )
 
-  /* WALLET TOTAL */
   const totalWalletBalance =
     patients.reduce(
       (acc, patient) =>
@@ -143,7 +141,6 @@ export default function Payments() {
       0
     )
 
-  /* TOTAL DUE */
   const pendingRevenue =
     patients.reduce(
       (acc, patient) =>
@@ -278,7 +275,6 @@ export default function Payments() {
 
         {filteredPayments
 
-          /* LATEST FIRST */
           .sort((a, b) => {
 
             const dateA =
@@ -307,13 +303,11 @@ export default function Payments() {
 
               <div className="flex flex-col xl:flex-row xl:items-center gap-5">
 
-                {/* Icon */}
                 <div className="w-14 h-14 rounded-2xl bg-[#dffff2] text-black flex items-center justify-center">
 
                   <IndianRupee size={24} />
                 </div>
 
-                {/* Info */}
                 <div className="flex-1">
 
                   <div className="flex flex-wrap items-center gap-3 mb-2">
@@ -341,7 +335,6 @@ export default function Payments() {
                   </p>
                 </div>
 
-                {/* Amount */}
                 <div>
 
                   <h2 className="text-3xl font-bold">
@@ -349,7 +342,6 @@ export default function Payments() {
                   </h2>
                 </div>
 
-                {/* Status */}
                 <div>
 
                   {item.status === 'Pending'
@@ -380,20 +372,20 @@ export default function Payments() {
                     )}
                 </div>
 
-                {/* Delete */}
+                {/* DELETE */}
                 <button
                   onClick={async () => {
 
                     const confirmDelete =
                       window.confirm(
-                        'Delete payment?'
+                        'Delete payment and rollback balances?'
                       )
 
                     if (!confirmDelete)
                       return
 
                     await deletePayment(
-                      item.id
+                      item
                     )
 
                     loadData()
@@ -408,7 +400,6 @@ export default function Payments() {
               {/* Wallet + Due */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                {/* Wallet */}
                 <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
 
                   <p className="text-zinc-500 text-sm mb-2">
@@ -422,7 +413,6 @@ export default function Payments() {
                   </h3>
                 </div>
 
-                {/* Due */}
                 <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
 
                   <p className="text-zinc-500 text-sm mb-2">
