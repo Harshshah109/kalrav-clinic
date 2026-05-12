@@ -106,6 +106,16 @@ export default function Appointments({
   const today =
     formatDate(new Date())
 
+  const tomorrowDate =
+    new Date()
+
+  tomorrowDate.setDate(
+    tomorrowDate.getDate() + 1
+  )
+
+  const tomorrow =
+    formatDate(tomorrowDate)
+
   const parseTime =
     (timeString) => {
 
@@ -191,6 +201,12 @@ export default function Appointments({
     filteredAppointments.filter(
       (item) =>
         getDateFromItem(item) === today
+    )
+
+  const tomorrowAppointments =
+    filteredAppointments.filter(
+      (item) =>
+        getDateFromItem(item) === tomorrow
     )
 
   const selectedDateAppointments =
@@ -313,11 +329,12 @@ export default function Appointments({
                   .replace('+', '')
 
               const message =
-`Hello,
+`Hello ${patientName},
 
-Please confirm your therapy session today.
+Reminder for your appointment.
 
 Time: ${item.time}
+Therapist: ${item.therapist || item.therapistName}
 `
 
               window.open(
@@ -401,7 +418,7 @@ Time: ${item.time}
         )}
       </div>
 
-      {/* Search */}
+      {/* Filters */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
 
         <div className="bg-[#171717] border border-[#2f2f2f] rounded-2xl px-4 h-14 flex items-center gap-3">
@@ -449,40 +466,8 @@ Time: ${item.time}
         />
       </div>
 
-      {/* TODAY */}
-      <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6 mb-6">
-
-        <div className="flex items-center gap-3 mb-5">
-
-          <CalendarDays size={22} />
-
-          <div>
-
-            <h2 className="text-2xl font-bold">
-              Today's Appointments
-            </h2>
-
-            <p className="text-zinc-400 text-sm">
-              {todayAppointments.length} appointments
-            </p>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-
-          {todayAppointments
-            .slice(0, 10)
-            .map((item) => (
-              <AppointmentCard
-                key={item.id}
-                item={item}
-              />
-            ))}
-        </div>
-      </div>
-
-      {/* SELECTED DATE */}
-      {selectedDate && (
+      {/* SELECTED DATE MODE */}
+      {selectedDate ? (
 
         <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
 
@@ -497,7 +482,7 @@ Time: ${item.time}
               </h2>
 
               <p className="text-zinc-400 text-sm">
-                {selectedDateAppointments.length} appointments
+                {selectedDate}
               </p>
             </div>
           </div>
@@ -507,7 +492,7 @@ Time: ${item.time}
             {selectedDateAppointments.length === 0 && (
 
               <div className="text-zinc-500 text-center py-10">
-                No appointments found
+                No appointments yet
               </div>
             )}
 
@@ -520,6 +505,88 @@ Time: ${item.time}
             ))}
           </div>
         </div>
+
+      ) : (
+
+        <>
+          {/* TODAY */}
+          <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6 mb-6">
+
+            <div className="flex items-center gap-3 mb-5">
+
+              <CalendarDays size={22} />
+
+              <div>
+
+                <h2 className="text-2xl font-bold">
+                  Today's Appointments
+                </h2>
+
+                <p className="text-zinc-400 text-sm">
+                  {todayAppointments.length} appointments
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+
+              {todayAppointments.length === 0 && (
+
+                <div className="text-zinc-500 text-center py-10">
+                  No appointments today
+                </div>
+              )}
+
+              {todayAppointments
+                .slice(0, 10)
+                .map((item) => (
+
+                  <AppointmentCard
+                    key={item.id}
+                    item={item}
+                  />
+                ))}
+            </div>
+          </div>
+
+          {/* TOMORROW */}
+          <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+
+            <div className="flex items-center gap-3 mb-5">
+
+              <CalendarDays size={22} />
+
+              <div>
+
+                <h2 className="text-2xl font-bold">
+                  Tomorrow's Appointments
+                </h2>
+
+                <p className="text-zinc-400 text-sm">
+                  {tomorrowAppointments.length} appointments
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4 max-h-[650px] overflow-y-auto pr-2">
+
+              {tomorrowAppointments.length === 0 && (
+
+                <div className="text-zinc-500 text-center py-10">
+                  No appointments tomorrow
+                </div>
+              )}
+
+              {tomorrowAppointments.map((item) => (
+
+                <AppointmentCard
+                  key={item.id}
+                  item={item}
+                />
+              ))}
+            </div>
+          </div>
+        </>
       )}
 
       {/* Add Modal */}
