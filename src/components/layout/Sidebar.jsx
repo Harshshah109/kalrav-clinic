@@ -4,7 +4,6 @@ import {
   Users,
   Stethoscope,
   Wallet,
-  MessageSquare,
   LogOut,
   X
 } from 'lucide-react'
@@ -60,11 +59,7 @@ const navSections = [
         path: '/payments',
         icon: Wallet
       },
-      {
-        name: 'Messages',
-        path: '/messages',
-        icon: MessageSquare
-      }
+      
     ]
   }
 ]

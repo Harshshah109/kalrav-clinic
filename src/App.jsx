@@ -42,8 +42,7 @@ import Therapists
 import Payments
   from './pages/Payments'
 
-import Messages
-  from './pages/Messages'
+
 
 import CalendarPage
   from './pages/CalendarPage'
@@ -188,15 +187,7 @@ export default function App() {
             }
           />
 
-          {/* Messages */}
-          <Route
-            path="messages"
-            element={
-              <Messages
-                role={role}
-              />
-            }
-          />
+          
 
           {/* ADMIN ONLY */}
           {role === 'admin' && (
