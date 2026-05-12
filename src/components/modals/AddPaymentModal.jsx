@@ -28,10 +28,6 @@ export default function AddPaymentModal({
     setSelectedPatient] =
       useState(null)
 
-  const [walletUsage,
-    setWalletUsage] =
-      useState(0)
-
   const [form, setForm] =
     useState({
 
@@ -99,23 +95,55 @@ export default function AddPaymentModal({
           selectedPatient.pendingDue || 0
         )
 
-      const usableWallet =
-        Math.min(
-          walletUsage,
-          currentWallet,
-          currentDue
-        )
-
       let updatedWallet =
-        currentWallet -
-        usableWallet
+        currentWallet
 
       let updatedDue =
-        currentDue -
-        usableWallet
+        currentDue
 
-      /* ADVANCE PAYMENT */
+      let updatedPaid =
+        Number(
+          selectedPatient.totalPaid || 0
+        )
+
+      /* =========================
+         FROM WALLET
+      ========================= */
+
       if (
+        form.method ===
+        'From Wallet'
+      ) {
+
+        if (
+          currentWallet <
+          paymentAmount
+        ) {
+
+          alert(
+            'Not enough balance in wallet'
+          )
+
+          return
+        }
+
+        updatedWallet =
+          currentWallet -
+          paymentAmount
+
+        updatedDue =
+          Math.max(
+            currentDue -
+            paymentAmount,
+            0
+          )
+      }
+
+      /* =========================
+         ADVANCE PAYMENT
+      ========================= */
+
+      else if (
         form.paymentType ===
         'Advance Payment'
       ) {
@@ -124,33 +152,27 @@ export default function AddPaymentModal({
           currentWallet +
           paymentAmount
 
-        updatedDue =
-          currentDue
+        updatedPaid =
+          updatedPaid +
+          paymentAmount
       }
+
+      /* =========================
+         NORMAL PAYMENT
+      ========================= */
 
       else {
 
-        /* APPLY NEW PAYMENT */
-        if (
-          paymentAmount >= updatedDue
-        ) {
+        updatedPaid =
+          updatedPaid +
+          paymentAmount
 
-          const extraAmount =
-            paymentAmount -
-            updatedDue
-
-          updatedWallet =
-            updatedWallet +
-            extraAmount
-
-          updatedDue = 0
-
-        } else {
-
-          updatedDue =
-            updatedDue -
-            paymentAmount
-        }
+        updatedDue =
+          Math.max(
+            currentDue -
+            paymentAmount,
+            0
+          )
       }
 
       /* SAVE PAYMENT */
@@ -166,9 +188,6 @@ export default function AddPaymentModal({
 
         previousDue:
           currentDue,
-
-        walletUsed:
-          usableWallet,
 
         remainingWallet:
           updatedWallet,
@@ -192,9 +211,7 @@ export default function AddPaymentModal({
             updatedDue,
 
           totalPaid:
-            Number(
-              selectedPatient.totalPaid || 0
-            ) + paymentAmount
+            updatedPaid
         }
       )
 
@@ -247,8 +264,6 @@ export default function AddPaymentModal({
                   )
 
                 setSelectedPatient(patient)
-
-                setWalletUsage(0)
 
                 setForm({
                   ...form,
@@ -314,7 +329,6 @@ export default function AddPaymentModal({
 
             <div className="grid grid-cols-2 gap-4">
 
-              {/* Wallet */}
               <div className="bg-[#171717] border border-[#2f2f2f] rounded-2xl p-4">
 
                 <p className="text-zinc-400 text-sm mb-2">
@@ -328,7 +342,6 @@ export default function AddPaymentModal({
                 </h2>
               </div>
 
-              {/* Due */}
               <div className="bg-[#171717] border border-[#2f2f2f] rounded-2xl p-4">
 
                 <p className="text-zinc-400 text-sm mb-2">
@@ -344,50 +357,13 @@ export default function AddPaymentModal({
             </div>
           )}
 
-          {/* USE WALLET */}
-          {selectedPatient &&
-            selectedPatient.walletBalance > 0 &&
-            selectedPatient.pendingDue > 0 && (
-
-            <div>
-
-              <label className="text-sm text-zinc-300 mb-2 block">
-                Use Wallet Balance
-              </label>
-
-              <div className="relative">
-
-                <Wallet
-                  size={18}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-400"
-                />
-
-                <input
-                  type="number"
-                  value={walletUsage}
-                  onChange={(e) =>
-                    setWalletUsage(
-                      Number(e.target.value)
-                    )
-                  }
-                  max={
-                    selectedPatient.walletBalance
-                  }
-                  min={0}
-                  placeholder="0"
-                  className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl pl-12 pr-5 outline-none"
-                />
-              </div>
-            </div>
-          )}
-
           {/* AMOUNT + DATE */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
             <div>
 
               <label className="text-sm text-zinc-300 mb-2 block">
-                New Payment Amount
+                Amount
               </label>
 
               <input
@@ -479,6 +455,10 @@ export default function AddPaymentModal({
 
                 <option>
                   Bank Transfer
+                </option>
+
+                <option>
+                  From Wallet
                 </option>
               </select>
             </div>
