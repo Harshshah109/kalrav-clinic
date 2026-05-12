@@ -21,6 +21,8 @@ import {
   getTherapists
 } from '../../services/therapistService'
 
+import Select from 'react-select'
+
 export default function AddAppointmentModal({
   close,
   refresh,
@@ -35,7 +37,7 @@ export default function AddAppointmentModal({
   const [therapists,
     setTherapists] =
       useState([])
-      
+
       const [searchPatient,
   setSearchPatient] =
     useState('')
@@ -208,52 +210,91 @@ export default function AddAppointmentModal({
     Patient
   </label>
 
-  {/* Search */}
-  <input
-    type="text"
-    placeholder="Search patient..."
-    value={searchPatient}
-    onChange={(e) =>
-      setSearchPatient(
-        e.target.value
-      )
+  <Select
+    options={patients.map((patient) => ({
+      value: patient.name,
+      label: patient.name
+    }))}
+
+    value={
+      form.patient
+        ? {
+            value: form.patient,
+            label: form.patient
+          }
+        : null
     }
-    className="w-full h-12 mb-3 bg-[#181818] border border-[#343434] rounded-xl px-4 outline-none"
+
+    onChange={(selected) => {
+
+      const selectedPatient =
+        patients.find(
+          (p) =>
+            p.name === selected.value
+        )
+
+      setForm({
+        ...form,
+
+        patient:
+          selected.value,
+
+        patientPhone:
+          selectedPatient?.phone || ''
+      })
+    }}
+
+    placeholder="Search patient..."
+
+    className="text-black"
+
+    styles={{
+
+      control: (base) => ({
+        ...base,
+        backgroundColor: '#222',
+        borderColor: '#3a3a3a',
+        minHeight: 56,
+        borderRadius: 16,
+        boxShadow: 'none'
+      }),
+
+      menu: (base) => ({
+        ...base,
+        backgroundColor: '#1b1b1b',
+        border: '1px solid #343434'
+      }),
+
+      singleValue: (base) => ({
+        ...base,
+        color: 'white'
+      }),
+
+      input: (base) => ({
+        ...base,
+        color: 'white'
+      }),
+
+      option: (
+        base,
+        state
+      ) => ({
+        ...base,
+        backgroundColor:
+          state.isFocused
+            ? '#2a2a2a'
+            : '#1b1b1b',
+
+        color: 'white',
+        cursor: 'pointer'
+      }),
+
+      placeholder: (base) => ({
+        ...base,
+        color: '#777'
+      })
+    }}
   />
-
-  {/* Patient Select */}
-  <select
-    name="patient"
-    value={form.patient}
-    onChange={handleChange}
-    className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
-    required
-  >
-
-    <option value="">
-      Select Patient
-    </option>
-
-    {patients
-
-      .filter((patient) =>
-        patient.name
-          ?.toLowerCase()
-          .includes(
-            searchPatient.toLowerCase()
-          )
-      )
-
-      .map((patient) => (
-
-        <option
-          key={patient.id}
-          value={patient.name}
-        >
-          {patient.name}
-        </option>
-      ))}
-  </select>
 </div>
 
           {/* Date + Time */}
