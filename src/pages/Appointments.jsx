@@ -454,16 +454,26 @@ Therapist: ${item.therapist || item.therapistName}
           <option>Cancelled</option>
         </select>
 
-        <input
-          type="date"
-          value={selectedDate}
-          onChange={(e) =>
-            setSelectedDate(
-              e.target.value
-            )
-          }
-          className="bg-[#171717] border border-[#2f2f2f] rounded-2xl px-4 h-14 outline-none"
-        />
+        <div className="relative">
+
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) =>
+              setSelectedDate(
+                e.target.value
+              )
+            }
+            className="w-full bg-[#171717] border border-[#2f2f2f] rounded-2xl px-4 h-14 outline-none text-white color-scheme-dark"
+          />
+
+          <style jsx>{`
+            input[type="date"]::-webkit-calendar-picker-indicator {
+              filter: invert(1);
+              cursor: pointer;
+            }
+          `}</style>
+        </div>
       </div>
 
       {/* SELECTED DATE MODE */}
@@ -478,11 +488,20 @@ Therapist: ${item.therapist || item.therapistName}
             <div>
 
               <h2 className="text-2xl font-bold">
-                Selected Date Appointments
+                {new Date(selectedDate)
+                  .toLocaleDateString(
+                    'en-IN',
+                    {
+                      weekday: 'long',
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    }
+                  )}
               </h2>
 
               <p className="text-zinc-400 text-sm">
-                {selectedDate}
+                {selectedDateAppointments.length} appointments
               </p>
             </div>
           </div>
