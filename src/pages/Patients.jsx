@@ -223,9 +223,15 @@ export default function Patients({
                         {patient.name}
                       </h2>
 
-                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 w-fit">
-                        Active
-                      </span>
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold w-fit ${
+  patient.category === 'Finished'
+    ? 'bg-zinc-200 text-zinc-700'
+    : patient.category === 'Assessment'
+    ? 'bg-yellow-100 text-yellow-700'
+    : 'bg-emerald-100 text-emerald-700'
+}`}>
+  {patient.category || 'Assessment'}
+</span>
                     </div>
 
                     <p className="text-zinc-400 mb-3">

@@ -254,7 +254,7 @@ export default function Appointments({
       const message =
 `Hello ,
 
-Please confirm your therapy session Tommrow.
+Please confirm your therapy session Tommorow.
 
 ⏰ Time: ${item.time}
 `

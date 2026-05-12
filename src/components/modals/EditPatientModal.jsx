@@ -60,6 +60,9 @@ export default function EditPatientModal({
           ? ''
           : patient?.condition || '',
 
+      category:
+        patient?.category || 'Assessment',
+
       notes:
         patient?.notes || ''
     })
@@ -107,6 +110,9 @@ export default function EditPatientModal({
                 ? form.otherCondition
                 : form.condition,
 
+            category:
+              form.category,
+
             notes:
               form.notes
           }
@@ -131,7 +137,6 @@ export default function EditPatientModal({
 
       <div className="w-full max-w-3xl max-h-[92vh] overflow-y-auto bg-[#1b1b1b] border border-[#343434] rounded-3xl p-6 md:p-7 relative">
 
-        {/* Close */}
         <button
           onClick={close}
           className="absolute top-5 right-5 w-10 h-10 rounded-xl border border-[#404040] flex items-center justify-center hover:bg-[#252525]"
@@ -139,7 +144,6 @@ export default function EditPatientModal({
           <X size={18} />
         </button>
 
-        {/* Title */}
         <h2 className="text-3xl font-bold mb-8">
           Edit Patient
         </h2>
@@ -149,7 +153,6 @@ export default function EditPatientModal({
           className="space-y-7"
         >
 
-          {/* PERSONAL INFO */}
           <div>
 
             <h3 className="text-xs tracking-widest text-zinc-500 font-bold mb-5">
@@ -158,7 +161,6 @@ export default function EditPatientModal({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-              {/* Name */}
               <div>
 
                 <label className="text-sm text-zinc-300 mb-2 block">
@@ -175,7 +177,6 @@ export default function EditPatientModal({
                 />
               </div>
 
-              {/* Age */}
               <div>
 
                 <label className="text-sm text-zinc-300 mb-2 block">
@@ -192,7 +193,6 @@ export default function EditPatientModal({
                 />
               </div>
 
-              {/* Gender */}
               <div>
 
                 <label className="text-sm text-zinc-300 mb-2 block">
@@ -224,7 +224,6 @@ export default function EditPatientModal({
                 </select>
               </div>
 
-              {/* Phone */}
               <div>
 
                 <label className="text-sm text-zinc-300 mb-2 block">
@@ -240,7 +239,6 @@ export default function EditPatientModal({
                 />
               </div>
 
-              {/* Parent */}
               <div>
 
                 <label className="text-sm text-zinc-300 mb-2 block">
@@ -256,7 +254,6 @@ export default function EditPatientModal({
                 />
               </div>
 
-              {/* Condition */}
               <div>
 
                 <label className="text-sm text-zinc-300 mb-2 block">
@@ -301,7 +298,6 @@ export default function EditPatientModal({
               </div>
             </div>
 
-            {/* Other Condition */}
             {form.condition === 'Other' && (
 
               <div className="mt-4">
@@ -320,7 +316,6 @@ export default function EditPatientModal({
               </div>
             )}
 
-            {/* Address */}
             <div className="mt-4">
 
               <label className="text-sm text-zinc-300 mb-2 block">
@@ -336,7 +331,34 @@ export default function EditPatientModal({
               />
             </div>
 
-            {/* Notes */}
+            {/* CATEGORY */}
+            <div className="mt-4">
+
+              <label className="text-sm text-zinc-300 mb-2 block">
+                Patient Category
+              </label>
+
+              <select
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+              >
+
+                <option>
+                  Active
+                </option>
+
+                <option>
+                  Assessment
+                </option>
+
+                <option>
+                  Finished
+                </option>
+              </select>
+            </div>
+
             <div className="mt-4">
 
               <label className="text-sm text-zinc-300 mb-2 block">
@@ -354,7 +376,6 @@ export default function EditPatientModal({
             </div>
           </div>
 
-          {/* BUTTONS */}
           <div className="flex flex-col md:flex-row gap-3 pt-2">
 
             <button

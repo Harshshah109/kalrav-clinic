@@ -254,22 +254,48 @@ export default function AddAppointmentModal({
               </label>
 
               <select
-                name="time"
-                value={form.time}
-                onChange={handleChange}
-                className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
-              >
+  name="time"
+  value={form.time}
+  onChange={handleChange}
+  className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
+>
 
-                <option>09:00 AM</option>
-                <option>10:00 AM</option>
-                <option>11:00 AM</option>
-                <option>12:00 PM</option>
-                <option>01:00 PM</option>
-                <option>02:00 PM</option>
-                <option>03:00 PM</option>
-                <option>04:00 PM</option>
-                <option>05:00 PM</option>
-              </select>
+  {Array.from({ length: 49 }, (_, index) => {
+
+    const totalMinutes =
+      9 * 60 + index * 15
+
+    const hours =
+      Math.floor(totalMinutes / 60)
+
+    const minutes =
+      totalMinutes % 60
+
+    const formattedHours =
+      hours % 12 === 0
+        ? 12
+        : hours % 12
+
+    const ampm =
+      hours >= 12
+        ? 'PM'
+        : 'AM'
+
+    const time =
+      `${formattedHours}:${String(
+        minutes
+      ).padStart(2, '0')} ${ampm}`
+
+    return (
+      <option
+        key={time}
+        value={time}
+      >
+        {time}
+      </option>
+    )
+  })}
+</select>
             </div>
           </div>
 
