@@ -3,14 +3,15 @@ import { useEffect, useState } from 'react'
 import StatsCards
   from '../components/dashboard/StatsCards'
 
-import TodaySchedule
-  from '../components/dashboard/TodaySchedule'
-
 import TeamOverview
   from '../components/dashboard/TeamOverview'
 
 import QuickActions
   from '../components/dashboard/QuickActions'
+
+import {
+  CalendarDays
+} from 'lucide-react'
 
 import {
   getAppointments
@@ -165,57 +166,57 @@ export default function Dashboard({
     filterPayments()
 
   const totalRevenue =
-  filteredPayments
+    filteredPayments
 
-    .filter((item) => {
+      .filter((item) => {
 
-      return (
-        item.status === 'Paid' &&
-        item.method !== 'From Wallet'
+        return (
+          item.status === 'Paid' &&
+          item.method !== 'From Wallet'
+        )
+      })
+
+      .reduce(
+        (sum, item) =>
+          sum + Number(item.amount || 0),
+        0
       )
-    })
-
-    .reduce(
-      (sum, item) =>
-        sum + Number(item.amount || 0),
-      0
-    )
 
   const cashRevenue =
-  filteredPayments
+    filteredPayments
 
-    .filter((item) => {
+      .filter((item) => {
 
-      return (
-        item.method === 'Cash' &&
-        item.method !== 'From Wallet' &&
-        item.status === 'Paid'
+        return (
+          item.method === 'Cash' &&
+          item.method !== 'From Wallet' &&
+          item.status === 'Paid'
+        )
+      })
+
+      .reduce(
+        (sum, item) =>
+          sum + Number(item.amount || 0),
+        0
       )
-    })
-
-    .reduce(
-      (sum, item) =>
-        sum + Number(item.amount || 0),
-      0
-    )
 
   const digitalRevenue =
-  filteredPayments
+    filteredPayments
 
-    .filter((item) => {
+      .filter((item) => {
 
-      return (
-        item.method !== 'Cash' &&
-        item.method !== 'From Wallet' &&
-        item.status === 'Paid'
+        return (
+          item.method !== 'Cash' &&
+          item.method !== 'From Wallet' &&
+          item.status === 'Paid'
+        )
+      })
+
+      .reduce(
+        (sum, item) =>
+          sum + Number(item.amount || 0),
+        0
       )
-    })
-
-    .reduce(
-      (sum, item) =>
-        sum + Number(item.amount || 0),
-      0
-    )
 
   const pendingRevenue =
     payments
@@ -229,16 +230,197 @@ export default function Dashboard({
         0
       )
 
+  const formatDate =
+    (dateObj) => {
+
+      return `${dateObj.getFullYear()}-${
+        String(
+          dateObj.getMonth() + 1
+        ).padStart(2, '0')
+      }-${
+        String(
+          dateObj.getDate()
+        ).padStart(2, '0')
+      }`
+    }
+
+  const todayDate =
+    new Date()
+
+  const tomorrowDate =
+    new Date()
+
+  tomorrowDate.setDate(
+    tomorrowDate.getDate() + 1
+  )
+
   const today =
-    `${new Date().getFullYear()}-${
-      String(
-        new Date().getMonth() + 1
-      ).padStart(2, '0')
-    }-${
-      String(
-        new Date().getDate()
-      ).padStart(2, '0')
-    }`
+    formatDate(todayDate)
+
+  const tomorrow =
+    formatDate(tomorrowDate)
+
+  const parseTime =
+    (timeString) => {
+
+      if (!timeString)
+        return 0
+
+      const [time, modifier] =
+        timeString.split(' ')
+
+      let [hours, minutes] =
+        time.split(':').map(Number)
+
+      if (
+        modifier === 'PM' &&
+        hours !== 12
+      ) {
+        hours += 12
+      }
+
+      if (
+        modifier === 'AM' &&
+        hours === 12
+      ) {
+        hours = 0
+      }
+
+      return (
+        hours * 60 + minutes
+      )
+    }
+
+  const getAppointmentsByDate =
+    (targetDate) => {
+
+      return (appointments || [])
+
+        .filter(Boolean)
+
+        .filter((item) => {
+
+          const appointmentDate =
+            item.date?.seconds
+              ? (() => {
+
+                  const d =
+                    new Date(
+                      item.date.seconds * 1000
+                    )
+
+                  return formatDate(d)
+                })()
+              : item.date
+
+          return (
+            appointmentDate ===
+            targetDate
+          )
+        })
+
+        .sort((a, b) =>
+          parseTime(a.time) -
+          parseTime(b.time)
+        )
+    }
+
+  const todayAppointments =
+    getAppointmentsByDate(today)
+
+  const tomorrowAppointments =
+    getAppointmentsByDate(tomorrow)
+
+  const ScheduleCard = ({
+    title,
+    appointments
+  }) => (
+
+    <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+
+      <div className="flex items-center gap-3 mb-5">
+
+        <div className="w-12 h-12 rounded-2xl bg-[#222] flex items-center justify-center">
+
+          <CalendarDays size={22} />
+        </div>
+
+        <div>
+
+          <h2 className="text-2xl font-bold">
+            {title}
+          </h2>
+
+          <p className="text-zinc-400 text-sm">
+            {appointments.length} appointments
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-3 max-h-[420px] overflow-y-auto pr-2">
+
+        {appointments.length === 0 && (
+
+          <div className="text-zinc-500 text-sm py-10 text-center">
+            No appointments
+          </div>
+        )}
+
+        {appointments.map((item, index) => (
+
+          <div
+            key={index}
+            className="bg-[#1f1f1f] border border-[#2d2d2d] rounded-2xl p-4 flex items-center gap-4"
+          >
+
+            <div className="min-w-[90px]">
+
+              <h3 className="font-bold text-lg">
+                {item.time}
+              </h3>
+            </div>
+
+            <div className="w-12 h-12 rounded-full bg-[#dffff2] text-black flex items-center justify-center font-bold uppercase">
+              {
+                (
+                  item.patient ||
+                  item.patientName ||
+                  'PT'
+                ).slice(0, 2)
+              }
+            </div>
+
+            <div className="flex-1">
+
+              <h3 className="font-semibold">
+                {
+                  item.patient ||
+                  item.patientName
+                }
+              </h3>
+
+              <p className="text-sm text-zinc-400">
+                {
+                  item.therapist ||
+                  item.therapistName
+                }
+              </p>
+            </div>
+
+            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+              item.status === 'Confirmed'
+                ? 'bg-emerald-100 text-emerald-700'
+                : item.status === 'Pending'
+                ? 'bg-yellow-100 text-yellow-700'
+                : 'bg-red-100 text-red-700'
+            }`}>
+              {item.status}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 
   return (
     <div className="pb-10">
@@ -314,99 +496,34 @@ export default function Dashboard({
         role={role}
       />
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      {/* SCHEDULES */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
 
-        {/* Today Schedule */}
-        <div className="xl:col-span-2">
+        <ScheduleCard
+          title="Today's Schedule"
+          appointments={todayAppointments}
+        />
 
-          <TodaySchedule
-            appointments={
-              (appointments || []).filter(Boolean)
+        <ScheduleCard
+          title="Tomorrow's Schedule"
+          appointments={tomorrowAppointments}
+        />
+      </div>
 
-                /* TODAY ONLY */
-                .filter((item) => {
+      {/* ADMIN SECTION */}
+      {role === 'admin' && (
 
-                  const appointmentDate =
-                    item.date?.seconds
-                      ? (() => {
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-6">
 
-                          const d =
-                            new Date(
-                              item.date.seconds * 1000
-                            )
-
-                          return `${d.getFullYear()}-${
-                            String(
-                              d.getMonth() + 1
-                            ).padStart(2, '0')
-                          }-${
-                            String(
-                              d.getDate()
-                            ).padStart(2, '0')
-                          }`
-                        })()
-                      : item.date
-
-                  return appointmentDate === today
-                })
-
-                /* SORT */
-                .sort((a, b) => {
-
-                  const parseTime =
-                    (timeString) => {
-
-                      if (!timeString)
-                        return 0
-
-                      const [time, modifier] =
-                        timeString.split(' ')
-
-                      let [hours, minutes] =
-                        time.split(':').map(Number)
-
-                      if (
-                        modifier === 'PM' &&
-                        hours !== 12
-                      ) {
-                        hours += 12
-                      }
-
-                      if (
-                        modifier === 'AM' &&
-                        hours === 12
-                      ) {
-                        hours = 0
-                      }
-
-                      return (
-                        hours * 60 + minutes
-                      )
-                    }
-
-                  return (
-                    parseTime(a.time) -
-                    parseTime(b.time)
-                  )
-                })
-            }
-          />
-        </div>
-
-        {/* ADMIN ONLY */}
-        {role === 'admin' && (
-
-          <div className="space-y-6">
-
+          <div className="xl:col-span-2">
             <TeamOverview
               therapists={therapists}
             />
-
-            <QuickActions />
           </div>
-        )}
-      </div>
+
+          <QuickActions />
+        </div>
+      )}
     </div>
   )
 }
