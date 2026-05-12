@@ -18,7 +18,9 @@ export default function AddPatientModal({
     useState({
 
       name: '',
-      age: '',
+
+      birthDate: '',
+
       gender: '',
       phone: '',
       parentName: '',
@@ -47,13 +49,40 @@ export default function AddPatientModal({
 
       try {
 
+        const today =
+          new Date()
+
+        const dob =
+          new Date(form.birthDate)
+
+        let age =
+          today.getFullYear() -
+          dob.getFullYear()
+
+        const monthDiff =
+          today.getMonth() -
+          dob.getMonth()
+
+        if (
+          monthDiff < 0 ||
+          (
+            monthDiff === 0 &&
+            today.getDate() < dob.getDate()
+          )
+        ) {
+          age--
+        }
+
         await addPatient({
 
           name:
             form.name,
 
+          birthDate:
+            form.birthDate,
+
           age:
-            form.age,
+            age,
 
           gender:
             form.gender,
@@ -125,7 +154,9 @@ export default function AddPatientModal({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
+              {/* NAME */}
               <div>
+
                 <label className="text-sm text-zinc-300 mb-2 block">
                   Patient Name *
                 </label>
@@ -140,22 +171,26 @@ export default function AddPatientModal({
                 />
               </div>
 
+              {/* DOB */}
               <div>
+
                 <label className="text-sm text-zinc-300 mb-2 block">
-                  Age *
+                  Birth Date *
                 </label>
 
                 <input
-                  type="number"
-                  name="age"
-                  value={form.age}
+                  type="date"
+                  name="birthDate"
+                  value={form.birthDate}
                   onChange={handleChange}
                   className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
                   required
                 />
               </div>
 
+              {/* GENDER */}
               <div>
+
                 <label className="text-sm text-zinc-300 mb-2 block">
                   Gender
                 </label>
@@ -185,7 +220,9 @@ export default function AddPatientModal({
                 </select>
               </div>
 
+              {/* PHONE */}
               <div>
+
                 <label className="text-sm text-zinc-300 mb-2 block">
                   Phone Number
                 </label>
@@ -199,7 +236,9 @@ export default function AddPatientModal({
                 />
               </div>
 
+              {/* PARENT */}
               <div>
+
                 <label className="text-sm text-zinc-300 mb-2 block">
                   Parent / Guardian Name
                 </label>
@@ -213,7 +252,9 @@ export default function AddPatientModal({
                 />
               </div>
 
+              {/* CONDITION */}
               <div>
+
                 <label className="text-sm text-zinc-300 mb-2 block">
                   Condition
                 </label>
@@ -261,6 +302,7 @@ export default function AddPatientModal({
               </div>
             </div>
 
+            {/* OTHER CONDITION */}
             {form.condition === 'Other' && (
 
               <div className="mt-4">
@@ -281,6 +323,7 @@ export default function AddPatientModal({
               </div>
             )}
 
+            {/* ADDRESS */}
             <div className="mt-4">
 
               <label className="text-sm text-zinc-300 mb-2 block">
@@ -324,6 +367,7 @@ export default function AddPatientModal({
               </select>
             </div>
 
+            {/* NOTES */}
             <div className="mt-4">
 
               <label className="text-sm text-zinc-300 mb-2 block">
@@ -341,6 +385,7 @@ export default function AddPatientModal({
             </div>
           </div>
 
+          {/* BUTTONS */}
           <div className="flex flex-col md:flex-row gap-3 pt-2">
 
             <button
