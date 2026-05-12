@@ -121,16 +121,23 @@ export default function Payments() {
     }, [payments, filter])
 
   const totalRevenue =
-    filteredPayments
-      .filter(
-        (item) =>
-          item.status === 'Paid'
+  filteredPayments
+
+    .filter((item) => {
+
+      /* ONLY REAL PAYMENTS */
+
+      return (
+        item.status === 'Paid' &&
+        item.method !== 'From Wallet'
       )
-      .reduce(
-        (acc, item) =>
-          acc + Number(item.amount || 0),
-        0
-      )
+    })
+
+    .reduce(
+      (acc, item) =>
+        acc + Number(item.amount || 0),
+      0
+    )
 
   const totalWalletBalance =
     patients.reduce(
