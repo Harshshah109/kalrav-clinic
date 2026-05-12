@@ -18,12 +18,19 @@ import {
   updatePayment
 } from '../services/paymentService'
 
+import {
+  getPatients
+} from '../services/patientService'
+
 import AddPaymentModal
   from '../components/modals/AddPaymentModal'
 
 export default function Payments() {
 
   const [payments, setPayments] =
+    useState([])
+
+  const [patients, setPatients] =
     useState([])
 
   const [openModal, setOpenModal] =
@@ -34,19 +41,28 @@ export default function Payments() {
 
   useEffect(() => {
 
-    loadPayments()
+    loadData()
 
   }, [])
 
-  const loadPayments =
+  const loadData =
     async () => {
 
       try {
 
-        const data =
+        const paymentData =
           await getPayments()
 
-        setPayments(data || [])
+        const patientData =
+          await getPatients()
+
+        setPayments(
+          paymentData || []
+        )
+
+        setPatients(
+          patientData || []
+        )
 
       } catch (err) {
 
@@ -104,6 +120,7 @@ export default function Payments() {
 
     }, [payments, filter])
 
+  /* TOTAL REVENUE */
   const totalRevenue =
     filteredPayments
       .filter(
@@ -116,20 +133,22 @@ export default function Payments() {
         0
       )
 
+  /* WALLET TOTAL */
   const totalWalletBalance =
-    filteredPayments.reduce(
-      (acc, item) =>
+    patients.reduce(
+      (acc, patient) =>
         acc + Number(
-          item.remainingWallet || 0
+          patient.walletBalance || 0
         ),
       0
     )
 
+  /* TOTAL DUE */
   const pendingRevenue =
-    filteredPayments.reduce(
-      (acc, item) =>
+    patients.reduce(
+      (acc, patient) =>
         acc + Number(
-          item.remainingDue || 0
+          patient.pendingDue || 0
         ),
       0
     )
@@ -173,7 +192,11 @@ export default function Payments() {
                     : 'text-zinc-400'
                 }`}
               >
-                {item.charAt(0).toUpperCase() + item.slice(1)}
+                {
+                  item.charAt(0)
+                    .toUpperCase() +
+                  item.slice(1)
+                }
               </button>
             ))}
           </div>
@@ -253,153 +276,175 @@ export default function Payments() {
       {/* Payments */}
       <div className="space-y-4">
 
-        {filteredPayments.map((item) => (
+        {filteredPayments
 
-          <div
-            key={item.id}
-            className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-5 flex flex-col gap-5"
-          >
+          /* LATEST FIRST */
+          .sort((a, b) => {
 
-            <div className="flex flex-col xl:flex-row xl:items-center gap-5">
+            const dateA =
+              a.createdAt?.seconds
+                ? new Date(
+                    a.createdAt.seconds * 1000
+                  )
+                : new Date(a.createdAt)
 
-              {/* Icon */}
-              <div className="w-14 h-14 rounded-2xl bg-[#dffff2] text-black flex items-center justify-center">
+            const dateB =
+              b.createdAt?.seconds
+                ? new Date(
+                    b.createdAt.seconds * 1000
+                  )
+                : new Date(b.createdAt)
 
-                <IndianRupee size={24} />
-              </div>
+            return dateB - dateA
+          })
 
-              {/* Info */}
-              <div className="flex-1">
+          .map((item) => (
 
-                <div className="flex flex-wrap items-center gap-3 mb-2">
+            <div
+              key={item.id}
+              className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-5 flex flex-col gap-5"
+            >
 
-                  <h2 className="text-2xl font-bold">
-                    {item.patient}
-                  </h2>
+              <div className="flex flex-col xl:flex-row xl:items-center gap-5">
 
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#222] text-cyan-400">
-                    {
-                      item.paymentType ||
-                      'Payment'
-                    }
-                  </span>
+                {/* Icon */}
+                <div className="w-14 h-14 rounded-2xl bg-[#dffff2] text-black flex items-center justify-center">
+
+                  <IndianRupee size={24} />
                 </div>
 
-                <p className="text-zinc-400">
-                  {item.method} • {
-                    item.date?.seconds
-                      ? new Date(
-                          item.date.seconds * 1000
-                        ).toLocaleDateString()
-                      : item.date
-                  }
-                </p>
-              </div>
+                {/* Info */}
+                <div className="flex-1">
 
-              {/* Amount */}
-              <div>
+                  <div className="flex flex-wrap items-center gap-3 mb-2">
 
-                <h2 className="text-3xl font-bold">
-                  ₹{item.amount}
-                </h2>
-              </div>
+                    <h2 className="text-2xl font-bold">
+                      {item.patient}
+                    </h2>
 
-              {/* Status */}
-              <div>
-
-                {item.status === 'Pending'
-                  ? (
-
-                    <button
-                      onClick={async () => {
-
-                        await updatePayment(
-                          item.id,
-                          {
-                            status: 'Paid'
-                          }
-                        )
-
-                        loadPayments()
-                      }}
-                      className="px-5 h-11 rounded-2xl bg-yellow-100 text-yellow-700 font-semibold hover:opacity-90"
-                    >
-                      Mark Paid
-                    </button>
-
-                  ) : (
-
-                    <span className="px-4 py-2 rounded-full text-sm font-semibold bg-emerald-100 text-emerald-700">
-                      Paid
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#222] text-cyan-400">
+                      {
+                        item.paymentType ||
+                        'Payment'
+                      }
                     </span>
-                  )}
-              </div>
+                  </div>
 
-              {/* Delete */}
-              <button
-                onClick={async () => {
+                  <p className="text-zinc-400">
+                    {item.method} • {
+                      item.date?.seconds
+                        ? new Date(
+                            item.date.seconds * 1000
+                          ).toLocaleDateString()
+                        : item.date
+                    }
+                  </p>
+                </div>
 
-                  const confirmDelete =
-                    window.confirm(
-                      'Delete payment?'
+                {/* Amount */}
+                <div>
+
+                  <h2 className="text-3xl font-bold">
+                    ₹{item.amount}
+                  </h2>
+                </div>
+
+                {/* Status */}
+                <div>
+
+                  {item.status === 'Pending'
+                    ? (
+
+                      <button
+                        onClick={async () => {
+
+                          await updatePayment(
+                            item.id,
+                            {
+                              status: 'Paid'
+                            }
+                          )
+
+                          loadData()
+                        }}
+                        className="px-5 h-11 rounded-2xl bg-yellow-100 text-yellow-700 font-semibold hover:opacity-90"
+                      >
+                        Mark Paid
+                      </button>
+
+                    ) : (
+
+                      <span className="px-4 py-2 rounded-full text-sm font-semibold bg-emerald-100 text-emerald-700">
+                        Paid
+                      </span>
+                    )}
+                </div>
+
+                {/* Delete */}
+                <button
+                  onClick={async () => {
+
+                    const confirmDelete =
+                      window.confirm(
+                        'Delete payment?'
+                      )
+
+                    if (!confirmDelete)
+                      return
+
+                    await deletePayment(
+                      item.id
                     )
 
-                  if (!confirmDelete)
-                    return
+                    loadData()
+                  }}
+                  className="w-12 h-12 rounded-2xl border border-red-500/30 text-red-400 flex items-center justify-center hover:bg-red-500/10 transition-all"
+                >
 
-                  await deletePayment(
-                    item.id
-                  )
-
-                  loadPayments()
-                }}
-                className="w-12 h-12 rounded-2xl border border-red-500/30 text-red-400 flex items-center justify-center hover:bg-red-500/10 transition-all"
-              >
-
-                <Trash2 size={18} />
-              </button>
-            </div>
-
-            {/* Wallet + Due */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-              {/* Wallet */}
-              <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
-
-                <p className="text-zinc-500 text-sm mb-2">
-                  Remaining Wallet
-                </p>
-
-                <h3 className="text-2xl font-bold text-cyan-400">
-                  ₹{
-                    item.remainingWallet || 0
-                  }
-                </h3>
+                  <Trash2 size={18} />
+                </button>
               </div>
 
-              {/* Due */}
-              <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
+              {/* Wallet + Due */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                <p className="text-zinc-500 text-sm mb-2">
-                  Remaining Due
-                </p>
+                {/* Wallet */}
+                <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
 
-                <h3 className={`text-2xl font-bold ${
-                  item.remainingDue > 0
-                    ? 'text-yellow-400'
-                    : 'text-emerald-400'
-                }`}>
+                  <p className="text-zinc-500 text-sm mb-2">
+                    Remaining Wallet
+                  </p>
 
-                  {
+                  <h3 className="text-2xl font-bold text-cyan-400">
+                    ₹{
+                      item.remainingWallet || 0
+                    }
+                  </h3>
+                </div>
+
+                {/* Due */}
+                <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
+
+                  <p className="text-zinc-500 text-sm mb-2">
+                    Remaining Due
+                  </p>
+
+                  <h3 className={`text-2xl font-bold ${
                     item.remainingDue > 0
-                      ? `₹${item.remainingDue}`
-                      : 'No Due'
-                  }
-                </h3>
+                      ? 'text-yellow-400'
+                      : 'text-emerald-400'
+                  }`}>
+
+                    {
+                      item.remainingDue > 0
+                        ? `₹${item.remainingDue}`
+                        : 'No Due'
+                    }
+                  </h3>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       {/* Modal */}
@@ -408,7 +453,7 @@ export default function Payments() {
           close={() =>
             setOpenModal(false)
           }
-          refresh={loadPayments}
+          refresh={loadData}
         />
       )}
     </div>
