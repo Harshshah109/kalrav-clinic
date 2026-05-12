@@ -3,7 +3,8 @@ import {
   MessageSquare,
   Pencil,
   Trash2,
-  Search
+  Search,
+  CalendarDays
 } from 'lucide-react'
 
 import {
@@ -47,6 +48,10 @@ export default function Appointments({
   const [statusFilter, setStatusFilter] =
     useState('All')
 
+  const [selectedDate,
+    setSelectedDate] =
+      useState('')
+
   useEffect(() => {
 
     loadAppointments()
@@ -55,42 +60,314 @@ export default function Appointments({
 
   }, [])
 
- const loadAppointments = async () => {
+  const loadAppointments =
+    async () => {
 
-  try {
+      try {
 
-    const data =
-      await getAppointments()
+        const data =
+          await getAppointments()
 
-    console.log(
-      'APPOINTMENTS DATA:',
-      data
+        setAppointments(
+          Array.isArray(data)
+            ? data
+            : []
+        )
+
+      } catch {
+
+        setAppointments([])
+      }
+    }
+
+  const loadPatients =
+    async () => {
+
+      const data =
+        await getPatients()
+
+      setPatients(data || [])
+    }
+
+  const formatDate =
+    (dateObj) => {
+
+      return `${dateObj.getFullYear()}-${
+        String(
+          dateObj.getMonth() + 1
+        ).padStart(2, '0')
+      }-${
+        String(
+          dateObj.getDate()
+        ).padStart(2, '0')
+      }`
+    }
+
+  const today =
+    formatDate(new Date())
+
+  const parseTime =
+    (timeString) => {
+
+      if (!timeString)
+        return 0
+
+      const [time, modifier] =
+        timeString.split(' ')
+
+      let [hours, minutes] =
+        time.split(':').map(Number)
+
+      if (
+        modifier === 'PM' &&
+        hours !== 12
+      ) {
+        hours += 12
+      }
+
+      if (
+        modifier === 'AM' &&
+        hours === 12
+      ) {
+        hours = 0
+      }
+
+      return (
+        hours * 60 + minutes
+      )
+    }
+
+  const getDateFromItem =
+    (item) => {
+
+      return item.date?.seconds
+        ? (() => {
+
+            const d =
+              new Date(
+                item.date.seconds * 1000
+              )
+
+            return formatDate(d)
+          })()
+        : item.date
+    }
+
+  const filteredAppointments =
+    appointments
+
+      .filter((item) => {
+
+        const matchesSearch =
+          (
+            item.patient ||
+            item.patientName ||
+            ''
+          )
+
+            .toLowerCase()
+
+            .includes(
+              search.toLowerCase()
+            )
+
+        const matchesStatus =
+          statusFilter === 'All'
+            ? true
+            : item.status === statusFilter
+
+        return (
+          matchesSearch &&
+          matchesStatus
+        )
+      })
+
+      .sort((a, b) =>
+        parseTime(a.time) -
+        parseTime(b.time)
+      )
+
+  const todayAppointments =
+    filteredAppointments.filter(
+      (item) =>
+        getDateFromItem(item) === today
     )
 
-    setAppointments(
-      Array.isArray(data)
-        ? data
-        : []
+  const selectedDateAppointments =
+    selectedDate
+      ? filteredAppointments.filter(
+          (item) =>
+            getDateFromItem(item) ===
+            selectedDate
+        )
+      : []
+
+  const AppointmentCard =
+    ({ item }) => (
+
+      <div
+        className={`border rounded-2xl p-5 flex flex-col md:flex-row md:items-center gap-5 ${
+          item.status === 'Cancelled'
+            ? 'border-red-500/30 opacity-50'
+            : 'border-[#313131]'
+        }`}
+      >
+
+        {/* Time */}
+        <div className="min-w-[120px]">
+
+          <h3 className="text-xl font-bold">
+            {item.time}
+          </h3>
+
+          <p className="text-sm text-zinc-500 mt-1">
+            {
+              item.date?.seconds
+                ? new Date(
+                    item.date.seconds * 1000
+                  ).toLocaleDateString()
+                : item.date
+            }
+          </p>
+        </div>
+
+        {/* Avatar */}
+        <div className="w-14 h-14 rounded-full bg-[#dffff2] text-black flex items-center justify-center font-bold uppercase">
+          {
+            (
+              item.patient ||
+              item.patientName ||
+              'PT'
+            ).slice(0, 2)
+          }
+        </div>
+
+        {/* Info */}
+        <div className="flex-1">
+
+          <h3 className="text-xl font-bold mb-1">
+            {
+              item.patient ||
+              item.patientName
+            }
+          </h3>
+
+          <p className="text-zinc-400">
+            {
+              item.therapy ||
+              'Speech Therapy'
+            } • {
+              item.therapist ||
+              item.therapistName
+            }
+          </p>
+        </div>
+
+        {/* Status */}
+        <span
+          className={`px-4 py-2 rounded-full text-sm font-semibold ${
+            item.status === 'Confirmed'
+              ? 'bg-emerald-100 text-emerald-700'
+              : item.status === 'Pending'
+              ? 'bg-yellow-100 text-yellow-700'
+              : 'bg-red-100 text-red-700'
+          }`}
+        >
+          {item.status}
+        </span>
+
+        {/* Actions */}
+        <div className="flex gap-3">
+
+          {/* WhatsApp */}
+          <button
+            onClick={() => {
+
+              const patientName =
+                item.patient ||
+                item.patientName
+
+              const patientData =
+                patients.find(
+                  (p) =>
+                    p.name === patientName
+                )
+
+              const phone =
+                patientData?.phone ||
+                item.patientPhone ||
+                ''
+
+              if (!phone) {
+
+                alert(
+                  'Phone not found'
+                )
+
+                return
+              }
+
+              const cleanPhone =
+                phone
+                  .replace(/\s+/g, '')
+                  .replace('+', '')
+
+              const message =
+`Hello,
+
+Please confirm your therapy session today.
+
+Time: ${item.time}
+`
+
+              window.open(
+`https://web.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`,
+                '_blank'
+              )
+            }}
+            className="w-12 h-12 rounded-2xl border border-emerald-500/30 text-emerald-400 flex items-center justify-center hover:bg-emerald-500/10"
+          >
+            <MessageSquare size={18} />
+          </button>
+
+          {/* ADMIN */}
+          {role === 'admin' && (
+            <>
+              <button
+                onClick={() =>
+                  setSelectedAppointment(item)
+                }
+                className="w-12 h-12 rounded-2xl border border-[#383838] flex items-center justify-center hover:bg-[#222]"
+              >
+                <Pencil size={18} />
+              </button>
+
+              <button
+                onClick={async () => {
+
+                  const confirmDelete =
+                    window.confirm(
+                      'Delete appointment?'
+                    )
+
+                  if (!confirmDelete)
+                    return
+
+                  await deleteAppointment(
+                    item.id
+                  )
+
+                  loadAppointments()
+                }}
+                className="w-12 h-12 rounded-2xl border border-red-500/30 text-red-400 flex items-center justify-center hover:bg-red-500/10"
+              >
+                <Trash2 size={18} />
+              </button>
+            </>
+          )}
+        </div>
+      </div>
     )
-
-  } catch (err) {
-
-    console.log(
-      'APPOINTMENT ERROR:',
-      err
-    )
-
-    setAppointments([])
-  }
-}
-
-  const loadPatients = async () => {
-
-    const data =
-      await getPatients()
-
-    setPatients(data || [])
-  }
 
   return (
     <div className="pb-10">
@@ -99,6 +376,7 @@ export default function Appointments({
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
 
         <div>
+
           <h1 className="text-4xl font-bold mb-2">
             Appointments
           </h1>
@@ -108,27 +386,25 @@ export default function Appointments({
           </p>
         </div>
 
-        {/* ADMIN ONLY */}
         {role === 'admin' && (
 
           <button
-            onClick={() => setOpenModal(true)}
-            className="flex items-center justify-center gap-2 border border-[#3a3a3a] rounded-2xl px-6 py-4 hover:bg-[#1c1c1c] transition-all"
+            onClick={() =>
+              setOpenModal(true)
+            }
+            className="flex items-center gap-2 border border-[#3a3a3a] rounded-2xl px-6 py-4 hover:bg-[#1c1c1c]"
           >
             <Plus size={20} />
 
-            <span className="font-semibold">
-              New Appointment
-            </span>
+            New Appointment
           </button>
         )}
       </div>
 
-      {/* Search + Filter */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
+      {/* Search */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
 
-        {/* Search */}
-        <div className="flex-1 bg-[#171717] border border-[#2f2f2f] rounded-2xl px-4 h-14 flex items-center gap-3">
+        <div className="bg-[#171717] border border-[#2f2f2f] rounded-2xl px-4 h-14 flex items-center gap-3">
 
           <Search
             size={18}
@@ -137,7 +413,7 @@ export default function Appointments({
 
           <input
             type="text"
-            placeholder="Search appointments..."
+            placeholder="Search..."
             value={search}
             onChange={(e) =>
               setSearch(e.target.value)
@@ -146,7 +422,6 @@ export default function Appointments({
           />
         </div>
 
-        {/* Filter */}
         <select
           value={statusFilter}
           onChange={(e) =>
@@ -161,334 +436,98 @@ export default function Appointments({
           <option>Confirmed</option>
           <option>Cancelled</option>
         </select>
+
+        <input
+          type="date"
+          value={selectedDate}
+          onChange={(e) =>
+            setSelectedDate(
+              e.target.value
+            )
+          }
+          className="bg-[#171717] border border-[#2f2f2f] rounded-2xl px-4 h-14 outline-none"
+        />
       </div>
 
-      {/* Appointment List */}
-      <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+      {/* TODAY */}
+      <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6 mb-6">
+
+        <div className="flex items-center gap-3 mb-5">
+
+          <CalendarDays size={22} />
+
+          <div>
+
+            <h2 className="text-2xl font-bold">
+              Today's Appointments
+            </h2>
+
+            <p className="text-zinc-400 text-sm">
+              {todayAppointments.length} appointments
+            </p>
+          </div>
+        </div>
 
         <div className="space-y-4">
 
-          {appointments
-
-            .sort((a, b) => {
-
-  const parseDateTime =
-    (item) => {
-
-      try {
-
-        if (!item)
-          return 0
-
-        const rawDate =
-          item.date?.seconds
-            ? (() => {
-
-                const d =
-                  new Date(
-                    item.date.seconds * 1000
-                  )
-
-                return `${d.getFullYear()}-${
-                  String(
-                    d.getMonth() + 1
-                  ).padStart(2, '0')
-                }-${
-                  String(
-                    d.getDate()
-                  ).padStart(2, '0')
-                }`
-              })()
-            : item.date
-
-        if (!rawDate)
-          return 0
-
-        let hours = 0
-        let minutes = 0
-
-        if (item.time) {
-
-          const [time, modifier] =
-            item.time.split(' ')
-
-          ;[hours, minutes] =
-            time.split(':').map(Number)
-
-          if (
-            modifier === 'PM' &&
-            hours !== 12
-          ) {
-            hours += 12
-          }
-
-          if (
-            modifier === 'AM' &&
-            hours === 12
-          ) {
-            hours = 0
-          }
-        }
-
-        const finalDate =
-          new Date(rawDate)
-
-        finalDate.setHours(
-          hours,
-          minutes
-        )
-
-        return finalDate.getTime()
-
-      } catch {
-
-        return 0
-      }
-    }
-
-  return (
-    parseDateTime(a) -
-    parseDateTime(b)
-  )
-})
-            .filter((item) => {
-
-              const matchesSearch =
-                (
-                  item.patient ||
-                  item.patientName ||
-                  ''
-                )
-
-                  .toLowerCase()
-
-                  .includes(
-                    search.toLowerCase()
-                  )
-
-              const matchesStatus =
-                statusFilter === 'All'
-                  ? true
-                  : item.status === statusFilter
-
-              return (
-                matchesSearch &&
-                matchesStatus
-              )
-            })
-
+          {todayAppointments
+            .slice(0, 10)
             .map((item) => (
-
-            <div
-              key={item.id}
-              className={`border rounded-2xl p-5 flex flex-col md:flex-row md:items-center gap-5 ${
-                item.status === 'Cancelled'
-                  ? 'border-red-500/30 opacity-50'
-                  : 'border-[#313131]'
-              }`}
-            >
-
-              {/* Time */}
-              <div className="min-w-[140px]">
-
-                <h3 className="text-xl font-bold text-white">
-                  {item.time}
-                </h3>
-
-                <p className="text-sm text-zinc-500 mt-1">
-                  {
-                    item.date?.seconds
-                      ? new Date(
-                          item.date.seconds * 1000
-                        ).toLocaleDateString()
-                      : item.date
-                  }
-                </p>
-              </div>
-
-              {/* Avatar */}
-              <div className="w-14 h-14 rounded-full bg-[#dffff2] text-black flex items-center justify-center font-bold text-lg uppercase">
-                {
-                  (
-                    item.patient ||
-                    item.patientName ||
-                    'PT'
-                  ).slice(0, 2)
-                }
-              </div>
-
-              {/* Info */}
-              <div className="flex-1">
-
-                <h3 className="text-xl font-bold mb-1">
-                  {
-                    item.patient ||
-                    item.patientName ||
-                    'Patient'
-                  }
-                </h3>
-
-                <p className="text-zinc-400">
-                  {item.therapy || 'Speech Therapy'} • {item.therapist || item.therapistName || 'Therapist'} • {item.duration || '30 min'}
-                </p>
-              </div>
-
-              {/* Status */}
-              <div>
-
-                {role === 'admin' &&
-                item.status === 'Pending'
-                  ? (
-                    <button
-                      onClick={async () => {
-
-                        await updateAppointment(
-                          item.id,
-                          {
-                            status: 'Confirmed'
-                          }
-                        )
-
-                        loadAppointments()
-                      }}
-                      className="px-6 py-3 rounded-2xl border border-[#3d3d3d] hover:bg-[#222]"
-                    >
-                      Confirm
-                    </button>
-                  )
-                  : (
-                    <span
-                      className={`px-4 py-2 rounded-full text-sm font-semibold ${
-                        item.status === 'Confirmed'
-                          ? 'bg-emerald-100 text-emerald-700'
-                          : item.status === 'Pending'
-                          ? 'bg-yellow-100 text-yellow-700'
-                          : 'bg-red-100 text-red-700'
-                      }`}
-                    >
-                      {item.status}
-                    </span>
-                  )}
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-3">
-
-                {/* WhatsApp */}
-                <button
-                  onClick={() => {
-
-                    const patientName =
-                      item.patient ||
-                      item.patientName
-
-                    const patientData =
-                      patients.find(
-                        (p) =>
-                          p.name === patientName
-                      )
-
-                    const phone =
-                      patientData?.phone ||
-                      item.patientPhone ||
-                      ''
-
-                    if (!phone) {
-
-                      alert(
-                        'Patient phone number not found'
-                      )
-
-                      return
-                    }
-
-                    const cleanPhone =
-  phone
-    .replace(/\s+/g, '')
-    .replace('+', '')
-
-                    const message =
-`Hello,
-
-Please confirm your therapy today.
-
-Time: ${item.time}
-`
-
-                    const whatsappURL =
-`https://web.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`
-
-                    window.open(
-                      whatsappURL,
-                      '_blank'
-                    )
-                  }}
-                  className="w-12 h-12 rounded-2xl border border-emerald-500/30 text-emerald-400 flex items-center justify-center hover:bg-emerald-500/10 transition-all"
-                >
-
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M20.52 3.48A11.77 11.77 0 0012.05 0C5.55 0 .26 5.29.26 11.79c0 2.08.54 4.11 1.58 5.91L0 24l6.49-1.7a11.76 11.76 0 005.56 1.42h.01c6.5 0 11.79-5.29 11.79-11.79 0-3.15-1.23-6.1-3.33-8.45z"/>
-                  </svg>
-                </button>
-
-                {/* ADMIN ONLY */}
-                {role === 'admin' && (
-                  <>
-                    {/* Edit */}
-                    <button
-                      onClick={() =>
-                        setSelectedAppointment(item)
-                      }
-                      className="w-12 h-12 rounded-2xl border border-[#383838] text-white flex items-center justify-center hover:bg-[#222] transition-all"
-                    >
-                      <Pencil size={18} />
-                    </button>
-
-                    {/* Delete */}
-                    <button
-                      onClick={async () => {
-
-                        const confirmDelete =
-                          window.confirm(
-                            'Delete appointment?'
-                          )
-
-                        if (!confirmDelete)
-                          return
-
-                        await deleteAppointment(
-                          item.id
-                        )
-
-                        loadAppointments()
-                      }}
-                      className="w-12 h-12 rounded-2xl border border-red-500/30 text-red-400 flex items-center justify-center hover:bg-red-500/10 transition-all"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </>
-                )}
-
-                {/* Message */}
-                <button className="w-12 h-12 rounded-2xl border border-[#383838] flex items-center justify-center hover:bg-[#222]">
-                  <MessageSquare size={18} />
-                </button>
-              </div>
-            </div>
-          ))}
+              <AppointmentCard
+                key={item.id}
+                item={item}
+              />
+            ))}
         </div>
       </div>
+
+      {/* SELECTED DATE */}
+      {selectedDate && (
+
+        <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+
+          <div className="flex items-center gap-3 mb-5">
+
+            <CalendarDays size={22} />
+
+            <div>
+
+              <h2 className="text-2xl font-bold">
+                Selected Date Appointments
+              </h2>
+
+              <p className="text-zinc-400 text-sm">
+                {selectedDateAppointments.length} appointments
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4 max-h-[700px] overflow-y-auto pr-2">
+
+            {selectedDateAppointments.length === 0 && (
+
+              <div className="text-zinc-500 text-center py-10">
+                No appointments found
+              </div>
+            )}
+
+            {selectedDateAppointments.map((item) => (
+
+              <AppointmentCard
+                key={item.id}
+                item={item}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Add Modal */}
       {openModal && (
         <AddAppointmentModal
-          close={() => setOpenModal(false)}
+          close={() =>
+            setOpenModal(false)
+          }
           refresh={loadAppointments}
         />
       )}
