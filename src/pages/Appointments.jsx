@@ -323,16 +323,10 @@ export default function Appointments({
                     const message =
 `Hello ${item.patient},
 
-This is a reminder for your therapy session tomorrow.
+Please confirm your therapy today.
 
-📅 Date: ${item.date}
-⏰ Time: ${item.time}
-👩‍⚕ Therapist: ${item.therapist}
-
-Please arrive 10 minutes early.
-
-Thank you,
-Kalrav Speech Therapy Clinic`
+Time: ${item.time}
+`
 
                     const whatsappURL =
 `https://web.whatsapp.com/send?phone=91${cleanPhone}&text=${encodeURIComponent(message)}`
