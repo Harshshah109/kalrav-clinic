@@ -35,6 +35,10 @@ export default function AddAppointmentModal({
   const [therapists,
     setTherapists] =
       useState([])
+      
+      const [searchPatient,
+  setSearchPatient] =
+    useState('')
 
   const [form, setForm] =
     useState({
@@ -197,36 +201,60 @@ export default function AddAppointmentModal({
           className="space-y-5"
         >
 
-          {/* Patient */}
-          <div>
+         {/* Patient */}
+<div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
-              Patient
-            </label>
+  <label className="text-sm text-zinc-300 mb-2 block">
+    Patient
+  </label>
 
-            <select
-              name="patient"
-              value={form.patient}
-              onChange={handleChange}
-              className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
-              required
-            >
+  {/* Search */}
+  <input
+    type="text"
+    placeholder="Search patient..."
+    value={searchPatient}
+    onChange={(e) =>
+      setSearchPatient(
+        e.target.value
+      )
+    }
+    className="w-full h-12 mb-3 bg-[#181818] border border-[#343434] rounded-xl px-4 outline-none"
+  />
 
-              <option value="">
-                Select Patient
-              </option>
+  {/* Patient Select */}
+  <select
+    name="patient"
+    value={form.patient}
+    onChange={handleChange}
+    className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
+    required
+  >
 
-              {patients.map((patient) => (
+    <option value="">
+      Select Patient
+    </option>
 
-                <option
-                  key={patient.id}
-                  value={patient.name}
-                >
-                  {patient.name}
-                </option>
-              ))}
-            </select>
-          </div>
+    {patients
+
+      .filter((patient) =>
+        patient.name
+          ?.toLowerCase()
+          .includes(
+            searchPatient.toLowerCase()
+          )
+      )
+
+      .map((patient) => (
+
+        <option
+          key={patient.id}
+          value={patient.name}
+        >
+          {patient.name}
+        </option>
+      ))}
+  </select>
+</div>
 
           {/* Date + Time */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

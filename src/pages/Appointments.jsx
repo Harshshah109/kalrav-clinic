@@ -321,7 +321,7 @@ export default function Appointments({
                       phone.replace(/\D/g, '')
 
                     const message =
-`Hello ${item.patient},
+`Hello,
 
 Please confirm your therapy today.
 
