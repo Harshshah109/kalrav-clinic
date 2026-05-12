@@ -322,9 +322,9 @@ function Appointments({
                   .replace('+', '')
 
               const message =
-`Hello ${patientName},
+`Hello,
 
-Reminder for your appointment.
+Please confirm you therapy session today.
 
 Time: ${item.time}
 `
@@ -445,17 +445,30 @@ Time: ${item.time}
 
         <div className="relative">
 
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) =>
-              setSelectedDate(
-                e.target.value
-              )
-            }
-            className="w-full bg-[#171717] border border-[#2f2f2f] rounded-2xl px-4 h-14 outline-none text-white color-scheme-dark"
-          />
-        </div>
+  <input
+    type="date"
+    value={selectedDate}
+    onChange={(e) =>
+      setSelectedDate(
+        e.target.value
+      )
+    }
+    className="w-full bg-[#171717] border border-[#2f2f2f] rounded-2xl px-4 h-14 outline-none text-white"
+    style={{
+      colorScheme: 'dark'
+    }}
+  />
+
+  <style>
+    {`
+      input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        opacity: 1;
+        cursor: pointer;
+      }
+    `}
+  </style>
+</div>
       </div>
 
       {selectedDate ? (
