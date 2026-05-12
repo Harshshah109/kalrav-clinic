@@ -165,35 +165,57 @@ export default function Dashboard({
     filterPayments()
 
   const totalRevenue =
-    filteredPayments.reduce(
+  filteredPayments
+
+    .filter((item) => {
+
+      return (
+        item.status === 'Paid' &&
+        item.method !== 'From Wallet'
+      )
+    })
+
+    .reduce(
       (sum, item) =>
         sum + Number(item.amount || 0),
       0
     )
 
   const cashRevenue =
-    filteredPayments
-      .filter(
-        (item) =>
-          item.method === 'Cash'
+  filteredPayments
+
+    .filter((item) => {
+
+      return (
+        item.method === 'Cash' &&
+        item.method !== 'From Wallet' &&
+        item.status === 'Paid'
       )
-      .reduce(
-        (sum, item) =>
-          sum + Number(item.amount || 0),
-        0
-      )
+    })
+
+    .reduce(
+      (sum, item) =>
+        sum + Number(item.amount || 0),
+      0
+    )
 
   const digitalRevenue =
-    filteredPayments
-      .filter(
-        (item) =>
-          item.method !== 'Cash'
+  filteredPayments
+
+    .filter((item) => {
+
+      return (
+        item.method !== 'Cash' &&
+        item.method !== 'From Wallet' &&
+        item.status === 'Paid'
       )
-      .reduce(
-        (sum, item) =>
-          sum + Number(item.amount || 0),
-        0
-      )
+    })
+
+    .reduce(
+      (sum, item) =>
+        sum + Number(item.amount || 0),
+      0
+    )
 
   const pendingRevenue =
     payments
