@@ -55,7 +55,7 @@ export default function Appointments({
 
   }, [])
 
-  const loadAppointments = async () => {
+ const loadAppointments = async () => {
 
   try {
 
@@ -403,7 +403,9 @@ export default function Appointments({
                     }
 
                     const cleanPhone =
-                      phone.replace(/\D/g, '')
+  phone
+    .replace(/\s+/g, '')
+    .replace('+', '')
 
                     const message =
 `Hello,
@@ -414,7 +416,7 @@ Time: ${item.time}
 `
 
                     const whatsappURL =
-`https://web.whatsapp.com/send?phone=91${cleanPhone}&text=${encodeURIComponent(message)}`
+`https://web.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`
 
                     window.open(
                       whatsappURL,
