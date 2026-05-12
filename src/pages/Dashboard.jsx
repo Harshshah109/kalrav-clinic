@@ -307,11 +307,23 @@ export default function Dashboard({
 
                   const appointmentDate =
                     item.date?.seconds
-                      ? new Date(
-                          item.date.seconds * 1000
-                        )
-                          .toISOString()
-                          .split('T')[0]
+                      ? (() => {
+
+                          const d =
+                            new Date(
+                              item.date.seconds * 1000
+                            )
+
+                          return `${d.getFullYear()}-${
+                            String(
+                              d.getMonth() + 1
+                            ).padStart(2, '0')
+                          }-${
+                            String(
+                              d.getDate()
+                            ).padStart(2, '0')
+                          }`
+                        })()
                       : item.date
 
                   return appointmentDate === today
