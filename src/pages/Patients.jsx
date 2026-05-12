@@ -202,7 +202,7 @@ export default function Patients({
                   {/* ADMIN ONLY FINANCE */}
                   {role === 'admin' && (
 
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-5">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
 
                       {/* Total Paid */}
                       <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
@@ -258,23 +258,6 @@ export default function Patients({
                             patient.pendingDue > 0
                               ? `₹${patient.pendingDue}`
                               : 'No Due'
-                          }
-                        </h3>
-                      </div>
-
-                      {/* Session Fee */}
-                      <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
-
-                        <div className="flex items-center gap-2 mb-2 text-zinc-500 text-sm">
-
-                          <IndianRupee size={15} />
-
-                          Session Fee
-                        </div>
-
-                        <h3 className="text-2xl font-bold text-white">
-                          ₹{
-                            patient.sessionFee || 500
                           }
                         </h3>
                       </div>
