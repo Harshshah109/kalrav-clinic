@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import Select from 'react-select'
+
 import {
   X,
   IndianRupee
@@ -8,8 +10,10 @@ import {
 import { addPayment }
   from '../../services/paymentService'
 
-import { getPatients }
-  from '../../services/patientService'
+import {
+  getPatients,
+  updatePatient
+} from '../../services/patientService'
 
 export default function AddPaymentModal({
   close,
@@ -19,48 +23,184 @@ export default function AddPaymentModal({
   const [patients, setPatients] =
     useState([])
 
+  const [selectedPatient,
+    setSelectedPatient] =
+      useState(null)
+
   const [form, setForm] = useState({
+
     patient: '',
+
     amount: '',
+
     method: 'Cash',
+
     status: 'Paid',
+
+    paymentType:
+      'Monthly Settlement',
+
     date: '',
+
     notes: ''
   })
 
   useEffect(() => {
+
     loadPatients()
+
   }, [])
 
-  const loadPatients = async () => {
+  const loadPatients =
+    async () => {
 
-    const data =
-      await getPatients()
+      const data =
+        await getPatients()
 
-    setPatients(data)
-  }
+      setPatients(data || [])
+    }
 
-  const handleChange = (e) => {
+  const handleChange =
+    (e) => {
 
-    setForm({
-      ...form,
-      [e.target.name]:
-        e.target.value
-    })
-  }
+      setForm({
 
-  const handleSubmit = async (e) => {
+        ...form,
 
-    e.preventDefault()
+        [e.target.name]:
+          e.target.value
+      })
+    }
 
-    await addPayment({
-      ...form,
-      createdAt: new Date()
-    })
+  const handleSubmit =
+    async (e) => {
 
-    refresh()
-    close()
-  }
+      e.preventDefault()
+
+      if (!selectedPatient)
+        return
+
+      const paymentAmount =
+        Number(form.amount || 0)
+
+      const currentWallet =
+        Number(
+          selectedPatient.walletBalance || 0
+        )
+
+      const currentDue =
+        Number(
+          selectedPatient.pendingDue || 0
+        )
+
+      let updatedWallet =
+        currentWallet
+
+      let updatedDue =
+        currentDue
+
+      /* ADVANCE PAYMENT */
+      if (
+        form.paymentType ===
+        'Advance Payment'
+      ) {
+
+        updatedWallet =
+          currentWallet +
+          paymentAmount
+      }
+
+      /* DUE CLEARANCE */
+      else if (
+        form.paymentType ===
+        'Due Clearance'
+      ) {
+
+        if (
+          paymentAmount >= currentDue
+        ) {
+
+          updatedWallet =
+            paymentAmount -
+            currentDue
+
+          updatedDue = 0
+
+        } else {
+
+          updatedDue =
+            currentDue -
+            paymentAmount
+        }
+      }
+
+      /* MONTHLY SETTLEMENT */
+      else {
+
+        if (
+          paymentAmount >= currentDue
+        ) {
+
+          updatedWallet =
+            paymentAmount -
+            currentDue
+
+          updatedDue = 0
+
+        } else {
+
+          updatedDue =
+            currentDue -
+            paymentAmount
+        }
+      }
+
+      /* SAVE PAYMENT */
+      await addPayment({
+
+        ...form,
+
+        patient:
+          selectedPatient.name,
+
+        previousWallet:
+          currentWallet,
+
+        previousDue:
+          currentDue,
+
+        remainingWallet:
+          updatedWallet,
+
+        remainingDue:
+          updatedDue,
+
+        createdAt:
+          new Date()
+      })
+
+      /* UPDATE PATIENT */
+      await updatePatient(
+        selectedPatient.id,
+        {
+
+          walletBalance:
+            updatedWallet,
+
+          pendingDue:
+            updatedDue,
+
+          totalPaid:
+            Number(
+              selectedPatient.totalPaid || 0
+            ) + paymentAmount
+        }
+      )
+
+      refresh()
+
+      close()
+    }
 
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3">
@@ -83,34 +223,122 @@ export default function AddPaymentModal({
           className="space-y-5"
         >
 
+          {/* PATIENT */}
           <div>
 
             <label className="text-sm text-zinc-300 mb-2 block">
               Patient
             </label>
 
-            <select
-              name="patient"
-              value={form.patient}
-              onChange={handleChange}
-              className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none"
-              required
-            >
-              <option value="">
-                Select Patient
-              </option>
+            <Select
+              options={patients.map((patient) => ({
+                value: patient.id,
+                label: patient.name
+              }))}
 
-              {patients.map((patient) => (
-                <option
-                  key={patient.id}
-                  value={patient.name}
-                >
-                  {patient.name}
-                </option>
-              ))}
-            </select>
+              onChange={(selected) => {
+
+                const patient =
+                  patients.find(
+                    (p) =>
+                      p.id === selected.value
+                  )
+
+                setSelectedPatient(patient)
+
+                setForm({
+                  ...form,
+                  patient:
+                    patient.name
+                })
+              }}
+
+              placeholder="Search patient..."
+
+              className="text-black"
+
+              styles={{
+
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: '#222',
+                  borderColor: '#3a3a3a',
+                  minHeight: 56,
+                  borderRadius: 16,
+                  boxShadow: 'none'
+                }),
+
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: '#1b1b1b',
+                  border: '1px solid #343434'
+                }),
+
+                singleValue: (base) => ({
+                  ...base,
+                  color: 'white'
+                }),
+
+                input: (base) => ({
+                  ...base,
+                  color: 'white'
+                }),
+
+                option: (
+                  base,
+                  state
+                ) => ({
+                  ...base,
+                  backgroundColor:
+                    state.isFocused
+                      ? '#2a2a2a'
+                      : '#1b1b1b',
+
+                  color: 'white'
+                }),
+
+                placeholder: (base) => ({
+                  ...base,
+                  color: '#777'
+                })
+              }}
+            />
           </div>
 
+          {/* BALANCE INFO */}
+          {selectedPatient && (
+
+            <div className="grid grid-cols-2 gap-4">
+
+              <div className="bg-[#171717] border border-[#2f2f2f] rounded-2xl p-4">
+
+                <p className="text-zinc-400 text-sm mb-2">
+                  Wallet Balance
+                </p>
+
+                <h2 className="text-3xl font-bold text-emerald-400">
+                  ₹{
+                    selectedPatient.walletBalance || 0
+                  }
+                </h2>
+              </div>
+
+              <div className="bg-[#171717] border border-[#2f2f2f] rounded-2xl p-4">
+
+                <p className="text-zinc-400 text-sm mb-2">
+                  Pending Due
+                </p>
+
+                <h2 className="text-3xl font-bold text-yellow-400">
+                  ₹{
+                    selectedPatient.pendingDue || 0
+                  }
+                </h2>
+              </div>
+            </div>
+          )}
+
+          {/* AMOUNT + DATE */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
             <div>
@@ -147,7 +375,39 @@ export default function AddPaymentModal({
             </div>
           </div>
 
+          {/* TYPE + METHOD */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div>
+
+              <label className="text-sm text-zinc-300 mb-2 block">
+                Payment Type
+              </label>
+
+              <select
+                name="paymentType"
+                value={form.paymentType}
+                onChange={handleChange}
+                className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none"
+              >
+
+                <option>
+                  Monthly Settlement
+                </option>
+
+                <option>
+                  Advance Payment
+                </option>
+
+                <option>
+                  Due Clearance
+                </option>
+
+                <option>
+                  Session Payment
+                </option>
+              </select>
+            </div>
 
             <div>
 
@@ -161,31 +421,27 @@ export default function AddPaymentModal({
                 onChange={handleChange}
                 className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none"
               >
-                <option>Cash</option>
-                <option>UPI</option>
-                <option>Card</option>
-                <option>Bank Transfer</option>
-              </select>
-            </div>
 
-            <div>
+                <option>
+                  Cash
+                </option>
 
-              <label className="text-sm text-zinc-300 mb-2 block">
-                Status
-              </label>
+                <option>
+                  UPI
+                </option>
 
-              <select
-                name="status"
-                value={form.status}
-                onChange={handleChange}
-                className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none"
-              >
-                <option>Paid</option>
-                <option>Pending</option>
+                <option>
+                  Card
+                </option>
+
+                <option>
+                  Bank Transfer
+                </option>
               </select>
             </div>
           </div>
 
+          {/* NOTES */}
           <div>
 
             <label className="text-sm text-zinc-300 mb-2 block">
@@ -202,6 +458,7 @@ export default function AddPaymentModal({
             />
           </div>
 
+          {/* BUTTONS */}
           <div className="flex gap-3 pt-2">
 
             <button

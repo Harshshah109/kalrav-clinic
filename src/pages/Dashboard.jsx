@@ -234,7 +234,7 @@ export default function Dashboard({
         </p>
       </div>
 
-      {/* ADMIN ONLY FILTER */}
+      {/* ADMIN FILTER */}
       {role === 'admin' && (
 
         <div className="flex flex-wrap gap-3 mb-6">
@@ -295,15 +295,55 @@ export default function Dashboard({
       {/* Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
-        {/* Schedule */}
+        {/* Today Schedule */}
         <div className="xl:col-span-2">
 
           <TodaySchedule
             appointments={
-              (appointments || []).filter(
-                (item) =>
-                  item.date === today
-              )
+              (appointments || [])
+
+                /* ONLY TODAY */
+                .filter(
+                  (item) =>
+                    item.date === today
+                )
+
+                /* SORT BY TIME */
+                .sort((a, b) => {
+
+                  const parseTime =
+                    (timeString) => {
+
+                      const [time, modifier] =
+                        timeString.split(' ')
+
+                      let [hours, minutes] =
+                        time.split(':').map(Number)
+
+                      if (
+                        modifier === 'PM' &&
+                        hours !== 12
+                      ) {
+                        hours += 12
+                      }
+
+                      if (
+                        modifier === 'AM' &&
+                        hours === 12
+                      ) {
+                        hours = 0
+                      }
+
+                      return (
+                        hours * 60 + minutes
+                      )
+                    }
+
+                  return (
+                    parseTime(a.time) -
+                    parseTime(b.time)
+                  )
+                })
             }
           />
         </div>
