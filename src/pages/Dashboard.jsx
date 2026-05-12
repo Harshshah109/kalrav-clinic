@@ -469,7 +469,8 @@ export default function Dashboard({
 
       {/* Stats */}
       <StatsCards
-        appointments={appointments}
+       
+  appointments={todayAppointments}
         patients={patients}
         therapists={therapists}
         revenue={
