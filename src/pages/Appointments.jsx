@@ -57,11 +57,32 @@ export default function Appointments({
 
   const loadAppointments = async () => {
 
+  try {
+
     const data =
       await getAppointments()
 
-    setAppointments(data)
+    console.log(
+      'APPOINTMENTS DATA:',
+      data
+    )
+
+    setAppointments(
+      Array.isArray(data)
+        ? data
+        : []
+    )
+
+  } catch (err) {
+
+    console.log(
+      'APPOINTMENT ERROR:',
+      err
+    )
+
+    setAppointments([])
   }
+}
 
   const loadPatients = async () => {
 
