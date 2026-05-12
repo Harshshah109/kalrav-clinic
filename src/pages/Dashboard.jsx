@@ -300,7 +300,7 @@ export default function Dashboard({
 
           <TodaySchedule
             appointments={
-              (appointments || [])
+              (appointments || []).filter(Boolean)
 
                 /* TODAY ONLY */
                 .filter((item) => {

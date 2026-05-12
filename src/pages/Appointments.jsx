@@ -149,56 +149,87 @@ export default function Appointments({
 
           {appointments
 
-            /* SORT BY DATE + TIME */
             .sort((a, b) => {
 
-              const parseDateTime =
-                (item) => {
+  const parseDateTime =
+    (item) => {
 
-                  if (!item.time)
-                    return new Date(0)
+      try {
 
-                  const [time, modifier] =
-                    item.time.split(' ')
+        if (!item)
+          return 0
 
-                  let [hours, minutes] =
-                    time.split(':').map(Number)
+        const rawDate =
+          item.date?.seconds
+            ? (() => {
 
-                  if (
-                    modifier === 'PM' &&
-                    hours !== 12
-                  ) {
-                    hours += 12
-                  }
-
-                  if (
-                    modifier === 'AM' &&
-                    hours === 12
-                  ) {
-                    hours = 0
-                  }
-
-                  const date =
-                    item.date?.seconds
-                      ? new Date(
-                          item.date.seconds * 1000
-                        )
-                      : new Date(item.date)
-
-                  date.setHours(
-                    hours,
-                    minutes
+                const d =
+                  new Date(
+                    item.date.seconds * 1000
                   )
 
-                  return date
-                }
+                return `${d.getFullYear()}-${
+                  String(
+                    d.getMonth() + 1
+                  ).padStart(2, '0')
+                }-${
+                  String(
+                    d.getDate()
+                  ).padStart(2, '0')
+                }`
+              })()
+            : item.date
 
-              return (
-                parseDateTime(a) -
-                parseDateTime(b)
-              )
-            })
+        if (!rawDate)
+          return 0
 
+        let hours = 0
+        let minutes = 0
+
+        if (item.time) {
+
+          const [time, modifier] =
+            item.time.split(' ')
+
+          ;[hours, minutes] =
+            time.split(':').map(Number)
+
+          if (
+            modifier === 'PM' &&
+            hours !== 12
+          ) {
+            hours += 12
+          }
+
+          if (
+            modifier === 'AM' &&
+            hours === 12
+          ) {
+            hours = 0
+          }
+        }
+
+        const finalDate =
+          new Date(rawDate)
+
+        finalDate.setHours(
+          hours,
+          minutes
+        )
+
+        return finalDate.getTime()
+
+      } catch {
+
+        return 0
+      }
+    }
+
+  return (
+    parseDateTime(a) -
+    parseDateTime(b)
+  )
+})
             .filter((item) => {
 
               const matchesSearch =
