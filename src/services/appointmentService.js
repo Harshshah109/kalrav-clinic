@@ -9,8 +9,9 @@ import {
 
 import { db } from './firebase'
 
+/* CORRECT COLLECTION */
 const appointmentRef =
-  collection(db, 'appointments')
+  collection(db, 'sessions')
 
 /* ADD */
 export const addAppointment =
@@ -65,7 +66,7 @@ export const updateAppointment =
     const appointmentDoc =
       doc(
         db,
-        'appointments',
+        'sessions',
         id
       )
 
@@ -82,7 +83,7 @@ export const deleteAppointment =
     const appointmentDoc =
       doc(
         db,
-        'appointments',
+        'sessions',
         id
       )
 
@@ -121,7 +122,7 @@ export const deleteAppointmentsByPatient =
         const appointmentDoc =
           doc(
             db,
-            'appointments',
+            'sessions',
             appointment.id
           )
 
