@@ -7,7 +7,9 @@ import {
   Trash2,
   ClipboardPen,
   IndianRupee,
-  AlertCircle
+  AlertCircle,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react'
 
 import { useEffect, useState } from 'react'
@@ -52,6 +54,9 @@ export default function Patients({
   const [patients, setPatients] =
     useState([])
 
+  const [payments, setPayments] =
+    useState([])
+
   const [openModal, setOpenModal] =
     useState(false)
 
@@ -65,6 +70,10 @@ export default function Patients({
 
   const [expandedPatient,
     setExpandedPatient] =
+      useState(null)
+
+  const [expandedPayments,
+    setExpandedPayments] =
       useState(null)
 
   const [search, setSearch] =
@@ -82,7 +91,12 @@ export default function Patients({
       const data =
         await getPatients()
 
-      setPatients(data)
+      const paymentData =
+        await getPayments()
+
+      setPatients(data || [])
+
+      setPayments(paymentData || [])
     }
 
   return (
@@ -102,7 +116,6 @@ export default function Patients({
           </p>
         </div>
 
-        {/* ADMIN ONLY */}
         {role === 'admin' && (
 
           <button
@@ -317,14 +330,9 @@ export default function Patients({
 
                           try {
 
-                            /* DELETE APPOINTMENTS */
                             await deleteAppointmentsByPatient(
                               patient.name
                             )
-
-                            /* DELETE PAYMENTS */
-                            const payments =
-                              await getPayments()
 
                             const patientPayments =
                               payments.filter(
@@ -346,12 +354,10 @@ export default function Patients({
                               )
                             }
 
-                            /* DELETE PATIENT */
                             await deletePatient(
                               patient.id
                             )
 
-                            /* REFRESH */
                             loadPatients()
 
                           } catch (err) {
@@ -391,6 +397,162 @@ export default function Patients({
                 <SessionHistory
                   patient={patient}
                 />
+              )}
+
+              {/* PAYMENT HISTORY TOGGLE */}
+              <button
+                onClick={() =>
+
+                  setExpandedPayments(
+
+                    expandedPayments === patient.id
+                      ? null
+                      : patient.id
+                  )
+                }
+                className="mt-4 flex items-center gap-2 text-sm text-cyan-400"
+              >
+                {expandedPayments === patient.id
+                  ? (
+                    <>
+                      <ChevronUp size={16} />
+                      Hide Payments
+                    </>
+                  )
+                  : (
+                    <>
+                      <ChevronDown size={16} />
+                      View Payments
+                    </>
+                  )}
+              </button>
+
+              {/* PAYMENT HISTORY */}
+              {expandedPayments === patient.id && (
+
+                <div className="mt-5 bg-[#1b1b1b] border border-[#2d2d2d] rounded-3xl p-5">
+
+                  <div className="flex items-center justify-between mb-5">
+
+                    <h3 className="text-xl font-bold">
+                      Payment History
+                    </h3>
+
+                    <span className="text-sm text-zinc-500">
+                      {
+                        payments.filter(
+                          (payment) =>
+                            payment.patient ===
+                            patient.name
+                        ).length
+                      } payments
+                    </span>
+                  </div>
+
+                  <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+
+                    {payments
+
+                      .filter(
+                        (payment) =>
+                          payment.patient ===
+                          patient.name
+                      )
+
+                      .sort((a, b) => {
+
+                        const dateA =
+                          a.createdAt?.seconds
+                            ? new Date(
+                                a.createdAt.seconds * 1000
+                              )
+                            : new Date(a.createdAt)
+
+                        const dateB =
+                          b.createdAt?.seconds
+                            ? new Date(
+                                b.createdAt.seconds * 1000
+                              )
+                            : new Date(b.createdAt)
+
+                        return dateB - dateA
+                      })
+
+                      .map((payment) => (
+
+                        <div
+                          key={payment.id}
+                          className="bg-[#171717] border border-[#2f2f2f] rounded-2xl p-4"
+                        >
+
+                          <div className="flex flex-col md:flex-row md:items-center gap-4">
+
+                            <div className="w-12 h-12 rounded-2xl bg-[#dffff2] text-black flex items-center justify-center">
+
+                              <IndianRupee size={20} />
+                            </div>
+
+                            <div className="flex-1">
+
+                              <div className="flex flex-wrap items-center gap-3 mb-2">
+
+                                <h3 className="text-xl font-bold">
+                                  ₹{payment.amount}
+                                </h3>
+
+                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#222] text-cyan-400">
+                                  {
+                                    payment.paymentType ||
+                                    'Payment'
+                                  }
+                                </span>
+
+                                {payment.status === 'Pending'
+                                  ? (
+                                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
+                                      Pending
+                                    </span>
+                                  )
+                                  : (
+                                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
+                                      Paid
+                                    </span>
+                                  )}
+                              </div>
+
+                              <p className="text-zinc-400 text-sm">
+                                {payment.method} • {
+                                  payment.date?.seconds
+                                    ? new Date(
+                                        payment.date.seconds * 1000
+                                      ).toLocaleDateString()
+                                    : payment.date
+                                }
+                              </p>
+
+                              {payment.notes && (
+
+                                <p className="text-zinc-500 text-sm mt-2">
+                                  {payment.notes}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+
+                    {payments.filter(
+                      (payment) =>
+                        payment.patient ===
+                        patient.name
+                    ).length === 0 && (
+
+                      <div className="text-zinc-500 text-center py-10">
+                        No payments found
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
           ))}
