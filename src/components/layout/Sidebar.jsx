@@ -20,6 +20,9 @@ import {
   useState
 } from 'react'
 
+import kalravLogo
+  from '../../assets/kalrav-logo.png'
+
 const navSections = [
   {
     title: 'MAIN',
@@ -58,8 +61,7 @@ const navSections = [
         name: 'Payments',
         path: '/payments',
         icon: Wallet
-      },
-      
+      }
     ]
   }
 ]
@@ -83,9 +85,11 @@ export default function Sidebar({
       {/* MOBILE TOP BAR */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-16 bg-[#151515]/95 backdrop-blur-xl border-b border-[#2b2b2b] flex items-center justify-between px-5">
 
-        <h1 className="text-2xl font-bold">
-          Kalrav
-        </h1>
+        <img
+          src={kalravLogo}
+          alt="Kalrav"
+          className="h-10 object-contain"
+        />
 
         <button
           onClick={() =>
@@ -117,16 +121,11 @@ export default function Sidebar({
               {/* Header */}
               <div className="p-5 border-b border-[#2a2a2a] flex items-center justify-between">
 
-                <div>
-
-                  <h1 className="text-3xl font-bold">
-                    Kalrav
-                  </h1>
-
-                  <p className="text-zinc-500 text-sm mt-1">
-                    Speech Therapy Clinic
-                  </p>
-                </div>
+                <img
+                  src={kalravLogo}
+                  alt="Kalrav"
+                  className="h-16 object-contain"
+                />
 
                 <button
                   onClick={() =>
@@ -228,18 +227,11 @@ export default function Sidebar({
           {/* Logo */}
           <div className="p-6 border-b border-[#2a2a2a]">
 
-            <div className="flex items-center gap-2">
-
-              <div className="w-3 h-3 rounded-full bg-emerald-300"></div>
-
-              <h1 className="text-3xl font-bold tracking-tight">
-                Kalrav
-              </h1>
-            </div>
-
-            <p className="text-zinc-400 text-sm mt-2">
-              Speech Therapy Clinic
-            </p>
+            <img
+              src={kalravLogo}
+              alt="Kalrav"
+              className="w-full max-w-[210px] object-contain"
+            />
           </div>
 
           {/* Desktop Nav */}
