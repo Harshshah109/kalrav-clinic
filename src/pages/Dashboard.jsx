@@ -219,16 +219,14 @@ export default function Dashboard({
       )
 
   const pendingRevenue =
-    payments
-      .filter(
-        (item) =>
-          item.status === 'Pending'
-      )
-      .reduce(
-        (sum, item) =>
-          sum + Number(item.amount || 0),
-        0
-      )
+  patients.reduce(
+    (sum, patient) =>
+      sum +
+      Number(
+        patient.pendingDue || 0
+      ),
+    0
+  )
 
   const formatDate =
     (dateObj) => {

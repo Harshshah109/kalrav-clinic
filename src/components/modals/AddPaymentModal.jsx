@@ -4,8 +4,7 @@ import Select from 'react-select'
 
 import {
   X,
-  IndianRupee,
-  Wallet
+  IndianRupee
 } from 'lucide-react'
 
 import { addPayment }
@@ -158,6 +157,20 @@ export default function AddPaymentModal({
       }
 
       /* =========================
+         PENDING PAYMENT
+      ========================= */
+
+      else if (
+        form.paymentType ===
+        'Pending Payment'
+      ) {
+
+        updatedDue =
+          currentDue +
+          paymentAmount
+      }
+
+      /* =========================
          NORMAL PAYMENT
       ========================= */
 
@@ -175,10 +188,19 @@ export default function AddPaymentModal({
           )
       }
 
+      const paymentStatus =
+        form.paymentType ===
+        'Pending Payment'
+          ? 'Pending'
+          : 'Paid'
+
       /* SAVE PAYMENT */
       await addPayment({
 
         ...form,
+
+        status:
+          paymentStatus,
 
         patient:
           selectedPatient.name,
@@ -225,7 +247,6 @@ export default function AddPaymentModal({
 
       <div className="w-full max-w-2xl bg-[#1b1b1b] border border-[#343434] rounded-3xl p-6 relative max-h-[90vh] overflow-y-auto">
 
-        {/* CLOSE */}
         <button
           onClick={close}
           className="absolute top-5 right-5 w-10 h-10 rounded-xl border border-[#404040] flex items-center justify-center hover:bg-[#252525]"
@@ -424,6 +445,10 @@ export default function AddPaymentModal({
 
                 <option>
                   Session Payment
+                </option>
+
+                <option>
+                  Pending Payment
                 </option>
               </select>
             </div>

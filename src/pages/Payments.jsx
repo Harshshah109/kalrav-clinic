@@ -352,31 +352,75 @@ export default function Payments() {
                 <div>
 
                   {item.status === 'Pending'
-                    ? (
+  ? (
 
-                      <button
-                        onClick={async () => {
+    <button
+      onClick={async () => {
 
-                          await updatePayment(
-                            item.id,
-                            {
-                              status: 'Paid'
-                            }
-                          )
+        const patient =
+          patients.find(
+            (p) =>
+              p.name === item.patient
+          )
 
-                          loadData()
-                        }}
-                        className="px-5 h-11 rounded-2xl bg-yellow-100 text-yellow-700 font-semibold hover:opacity-90"
-                      >
-                        Mark Paid
-                      </button>
+        if (patient) {
 
-                    ) : (
+          const updatedDue =
+            Math.max(
+              Number(
+                patient.pendingDue || 0
+              ) -
+              Number(
+                item.amount || 0
+              ),
+              0
+            )
 
-                      <span className="px-4 py-2 rounded-full text-sm font-semibold bg-emerald-100 text-emerald-700">
-                        Paid
-                      </span>
-                    )}
+          await updatePayment(
+            item.id,
+            {
+              status: 'Paid',
+              paymentType:
+                'Due Clearance'
+            }
+          )
+
+          const {
+            updatePatient
+          } = await import(
+            '../services/patientService'
+          )
+
+          await updatePatient(
+            patient.id,
+            {
+              pendingDue:
+                updatedDue,
+
+              totalPaid:
+                Number(
+                  patient.totalPaid || 0
+                ) +
+                Number(
+                  item.amount || 0
+                )
+            }
+          )
+        }
+
+        loadData()
+      }}
+      className="px-5 h-11 rounded-2xl bg-yellow-100 text-yellow-700 font-semibold hover:opacity-90"
+    >
+      Mark Paid
+    </button>
+
+  ) : (
+
+    <span className="px-4 py-2 rounded-full text-sm font-semibold bg-emerald-100 text-emerald-700">
+      Paid
+    </span>
+  )}
                 </div>
 
                 {/* DELETE */}
