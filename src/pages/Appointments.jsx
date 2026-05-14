@@ -163,39 +163,49 @@ function Appointments({
     }
 
   const filteredAppointments =
-    appointments
+  appointments
 
-      .filter((item) => {
+    .filter((item) => {
 
-        const matchesSearch =
-          (
-            item.patient ||
-            item.patientName ||
-            ''
+      const matchesSearch =
+        (
+          item.patient ||
+          item.patientName ||
+          ''
+        )
+
+          .toLowerCase()
+
+          .includes(
+            search.toLowerCase()
           )
 
-            .toLowerCase()
+      const matchesStatus =
+        statusFilter === 'All'
+          ? true
+          : item.status === statusFilter
 
-            .includes(
-              search.toLowerCase()
+      /* ROLE FILTER */
+      const matchesRole =
+        role === 'admin'
+          ? true
+          : (
+              item.therapist === role ||
+              item.therapistName === role ||
+              true
             )
 
-        const matchesStatus =
-          statusFilter === 'All'
-            ? true
-            : item.status === statusFilter
-
-        return (
-          matchesSearch &&
-          matchesStatus
-        )
-      })
-
-      .sort((a, b) =>
-        parseTime(a.time) -
-        parseTime(b.time)
+      return (
+        matchesSearch &&
+        matchesStatus &&
+        matchesRole
       )
+    })
 
+    .sort((a, b) =>
+      parseTime(a.time) -
+      parseTime(b.time)
+    )
   const todayAppointments =
     filteredAppointments.filter(
       (item) =>
