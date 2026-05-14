@@ -124,20 +124,19 @@ export default function AddPatientModal({
   return (
 
     <div
-  className="
-    modal-overlay
-    p-4
-  
+      className="
+        fixed
         inset-0
         z-[9999]
-        flex
-       items-start
-justify-center
-overflow-y-auto
-        p-4
+        overflow-y-auto
+        px-4
         py-10
+        flex
+        justify-center
       "
       style={{
+        alignItems: 'flex-start',
+
         background:
           'rgba(15,15,25,0.35)',
 
@@ -148,14 +147,13 @@ overflow-y-auto
 
       {/* MODAL */}
       <div
-  className="
-    modal-content
-    w-full
-    max-w-3xl
+        className="
+          relative
           w-full
           max-w-3xl
-          max-h-[92vh]
+          max-h-[85vh]
           overflow-y-auto
+          custom-scrollbar
           rounded-[32px]
           border
           border-[#ece7ff]
@@ -163,11 +161,8 @@ overflow-y-auto
           p-6
           md:p-7
           shadow-2xl
+          mt-2
         "
-        style={{
-          opacity: 1,
-          filter: 'none'
-        }}
       >
 
         {/* CLOSE */}
