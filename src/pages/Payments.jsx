@@ -239,12 +239,34 @@ export default function Payments() {
     ({ item }) => (
 
       <div
-        className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-5 flex flex-col gap-5"
+        className="
+          bg-white/75
+          border
+          border-[#ece7ff]
+          rounded-3xl
+          p-5
+          flex
+          flex-col
+          gap-5
+          backdrop-blur-xl
+          shadow-[0_10px_30px_rgba(124,58,237,0.08)]
+        "
       >
 
         <div className="flex flex-col xl:flex-row xl:items-center gap-5">
 
-          <div className="w-14 h-14 rounded-2xl bg-[#dffff2] text-black flex items-center justify-center">
+          <div className="
+            w-14
+            h-14
+            rounded-2xl
+            bg-gradient-to-br
+            from-violet-500
+            to-fuchsia-500
+            text-white
+            flex
+            items-center
+            justify-center
+          ">
 
             <IndianRupee size={24} />
           </div>
@@ -253,11 +275,19 @@ export default function Payments() {
 
             <div className="flex flex-wrap items-center gap-3 mb-2">
 
-              <h2 className="text-2xl font-bold">
+              <h2 className="text-2xl font-bold text-[#1f1147]">
                 {item.patient}
               </h2>
 
-              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#222] text-cyan-400">
+              <span className="
+                px-3
+                py-1
+                rounded-full
+                text-xs
+                font-semibold
+                bg-cyan-100
+                text-cyan-700
+              ">
                 {
                   item.paymentType ||
                   'Payment'
@@ -265,7 +295,7 @@ export default function Payments() {
               </span>
             </div>
 
-            <p className="text-zinc-400">
+            <p className="text-[#7c6ca8]">
               {item.method} • {
                 item.date?.seconds
                   ? new Date(
@@ -278,7 +308,7 @@ export default function Payments() {
 
           <div>
 
-            <h2 className="text-3xl font-bold">
+            <h2 className="text-3xl font-bold text-[#1f1147]">
               ₹{item.amount}
             </h2>
           </div>
@@ -344,14 +374,29 @@ export default function Payments() {
 
                     loadData()
                   }}
-                  className="px-5 h-11 rounded-2xl bg-yellow-100 text-yellow-700 font-semibold hover:opacity-90"
+                  className="
+                    px-5
+                    h-11
+                    rounded-2xl
+                    bg-amber-100
+                    text-amber-700
+                    font-semibold
+                  "
                 >
                   Mark Paid
                 </button>
 
               ) : (
 
-                <span className="px-4 py-2 rounded-full text-sm font-semibold bg-emerald-100 text-emerald-700">
+                <span className="
+                  px-4
+                  py-2
+                  rounded-full
+                  text-sm
+                  font-semibold
+                  bg-emerald-100
+                  text-emerald-700
+                ">
                   Paid
                 </span>
               )}
@@ -374,7 +419,19 @@ export default function Payments() {
 
               loadData()
             }}
-            className="w-12 h-12 rounded-2xl border border-red-500/30 text-red-400 flex items-center justify-center hover:bg-red-500/10 transition-all"
+            className="
+              w-12
+              h-12
+              rounded-2xl
+              border
+              border-red-200
+              text-red-500
+              flex
+              items-center
+              justify-center
+              hover:bg-red-50
+              transition-all
+            "
           >
 
             <Trash2 size={18} />
@@ -383,29 +440,41 @@ export default function Payments() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
+          <div className="
+            bg-[#faf8ff]
+            rounded-2xl
+            p-4
+            border
+            border-[#ece7ff]
+          ">
 
-            <p className="text-zinc-500 text-sm mb-2">
+            <p className="text-[#8c84b3] text-sm mb-2">
               Remaining Wallet
             </p>
 
-            <h3 className="text-2xl font-bold text-cyan-400">
+            <h3 className="text-2xl font-bold text-cyan-500">
               ₹{
                 item.remainingWallet || 0
               }
             </h3>
           </div>
 
-          <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
+          <div className="
+            bg-[#faf8ff]
+            rounded-2xl
+            p-4
+            border
+            border-[#ece7ff]
+          ">
 
-            <p className="text-zinc-500 text-sm mb-2">
+            <p className="text-[#8c84b3] text-sm mb-2">
               Remaining Due
             </p>
 
             <h3 className={`text-2xl font-bold ${
               item.remainingDue > 0
-                ? 'text-yellow-400'
-                : 'text-emerald-400'
+                ? 'text-amber-500'
+                : 'text-emerald-500'
             }`}>
 
               {
@@ -420,25 +489,32 @@ export default function Payments() {
     )
 
   return (
-    <div className="pb-10">
+    <div className="pb-10 text-[#1f1147]">
 
-      {/* Header */}
+      {/* HEADER */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
 
         <div>
 
-          <h1 className="text-4xl font-bold mb-2">
+          <h1 className="text-5xl font-bold mb-2">
             Payments
           </h1>
 
-          <p className="text-zinc-400">
+          <p className="text-[#7c6ca8] text-lg">
             Advanced clinic billing and settlements
           </p>
         </div>
 
         <div className="flex flex-col md:flex-row gap-3">
 
-          <div className="flex bg-[#171717] border border-[#2f2f2f] rounded-2xl p-1">
+          <div className="
+            flex
+            bg-white/75
+            border
+            border-[#ece7ff]
+            rounded-2xl
+            p-1
+          ">
 
             {[
               'weekly',
@@ -453,8 +529,8 @@ export default function Payments() {
                 }
                 className={`px-4 h-11 rounded-xl text-sm font-semibold transition-all ${
                   filter === item
-                    ? 'bg-[#dffff2] text-black'
-                    : 'text-zinc-400'
+                    ? 'bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white'
+                    : 'text-[#7c6ca8]'
                 }`}
               >
                 {
@@ -470,29 +546,58 @@ export default function Payments() {
             onClick={() =>
               setOpenModal(true)
             }
-            className="flex items-center justify-center gap-2 border border-[#3a3a3a] rounded-2xl px-6 py-4 hover:bg-[#1c1c1c] transition-all"
+            className="
+              flex
+              items-center
+              justify-center
+              gap-2
+              border
+              border-[#ece7ff]
+              bg-white/75
+              rounded-2xl
+              px-6
+              py-4
+              hover:bg-[#f5f3ff]
+              transition-all
+              font-semibold
+            "
           >
 
             <Plus size={20} />
 
-            <span className="font-semibold">
+            <span>
               Add Payment
             </span>
           </button>
         </div>
       </div>
 
-      {/* Stats */}
+      {/* STATS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
 
-        <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+        <div className="
+          bg-white/75
+          border
+          border-[#ece7ff]
+          rounded-3xl
+          p-6
+        ">
 
-          <div className="w-12 h-12 rounded-2xl bg-[#222] flex items-center justify-center mb-5">
+          <div className="
+            w-12
+            h-12
+            rounded-2xl
+            bg-violet-100
+            flex
+            items-center
+            justify-center
+            mb-5
+          ">
 
             <IndianRupee size={22} />
           </div>
 
-          <h3 className="text-zinc-400 mb-2">
+          <h3 className="text-[#7c6ca8] mb-2">
             Total Revenue
           </h3>
 
@@ -501,34 +606,64 @@ export default function Payments() {
           </h2>
         </div>
 
-        <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+        <div className="
+          bg-white/75
+          border
+          border-[#ece7ff]
+          rounded-3xl
+          p-6
+        ">
 
-          <div className="w-12 h-12 rounded-2xl bg-[#222] flex items-center justify-center mb-5">
+          <div className="
+            w-12
+            h-12
+            rounded-2xl
+            bg-cyan-100
+            flex
+            items-center
+            justify-center
+            mb-5
+          ">
 
             <Wallet size={22} />
           </div>
 
-          <h3 className="text-zinc-400 mb-2">
+          <h3 className="text-[#7c6ca8] mb-2">
             Wallet Balance
           </h3>
 
-          <h2 className="text-4xl font-bold text-cyan-400">
+          <h2 className="text-4xl font-bold text-cyan-500">
             ₹{totalWalletBalance}
           </h2>
         </div>
 
-        <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+        <div className="
+          bg-white/75
+          border
+          border-[#ece7ff]
+          rounded-3xl
+          p-6
+        ">
 
-          <div className="w-12 h-12 rounded-2xl bg-[#222] flex items-center justify-center mb-5">
+          <div className="
+            w-12
+            h-12
+            rounded-2xl
+            bg-amber-100
+            flex
+            items-center
+            justify-center
+            mb-5
+          ">
 
             <AlertCircle size={22} />
           </div>
 
-          <h3 className="text-zinc-400 mb-2">
+          <h3 className="text-[#7c6ca8] mb-2">
             Pending Due
           </h3>
 
-          <h2 className="text-4xl font-bold text-yellow-400">
+          <h2 className="text-4xl font-bold text-amber-500">
             ₹{pendingRevenue}
           </h2>
         </div>
@@ -545,9 +680,18 @@ export default function Payments() {
               e.target.value
             )
           }
-          className="bg-[#171717] border border-[#2f2f2f] rounded-2xl px-5 h-14 outline-none text-white"
+          className="
+            bg-white/80
+            border
+            border-[#ece7ff]
+            rounded-2xl
+            px-5
+            h-14
+            outline-none
+            text-[#1f1147]
+          "
           style={{
-            colorScheme: 'dark'
+            colorScheme: 'light'
           }}
         />
       </div>
@@ -574,7 +718,7 @@ export default function Payments() {
                   )}
               </h2>
 
-              <p className="text-zinc-400 mt-1">
+              <p className="text-[#7c6ca8] mt-1">
                 {selectedDatePayments.length} payments
               </p>
             </div>
@@ -583,7 +727,15 @@ export default function Payments() {
 
               {selectedDatePayments.length === 0 && (
 
-                <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-10 text-center text-zinc-500">
+                <div className="
+                  bg-white/75
+                  border
+                  border-[#ece7ff]
+                  rounded-3xl
+                  p-10
+                  text-center
+                  text-[#8c84b3]
+                ">
                   No payments found
                 </div>
               )}
@@ -601,7 +753,6 @@ export default function Payments() {
         ) : (
 
           <>
-            {/* TODAY */}
             <div>
 
               <div className="mb-5">
@@ -610,19 +761,12 @@ export default function Payments() {
                   Today's Payments
                 </h2>
 
-                <p className="text-zinc-400 mt-1">
+                <p className="text-[#7c6ca8] mt-1">
                   {todayPayments.length} payments
                 </p>
               </div>
 
               <div className="space-y-4 max-h-[700px] overflow-y-auto pr-2">
-
-                {todayPayments.length === 0 && (
-
-                  <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-10 text-center text-zinc-500">
-                    No payments today
-                  </div>
-                )}
 
                 {todayPayments.map((item) => (
 
@@ -634,7 +778,6 @@ export default function Payments() {
               </div>
             </div>
 
-            {/* PREVIOUS */}
             <div>
 
               <div className="mb-5">
@@ -643,7 +786,7 @@ export default function Payments() {
                   Previous Payments
                 </h2>
 
-                <p className="text-zinc-400 mt-1">
+                <p className="text-[#7c6ca8] mt-1">
                   {previousPayments.length} payments
                 </p>
               </div>
@@ -663,7 +806,6 @@ export default function Payments() {
         )}
       </div>
 
-      {/* MODAL */}
       {openModal && (
         <AddPaymentModal
           close={() =>
