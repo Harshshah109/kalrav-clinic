@@ -13,44 +13,15 @@ export default function Login() {
   const [password, setPassword] =
     useState('')
 
+  /* KEEP YOUR ORIGINAL LOGIN LOGIC */
   const handleLogin = (e) => {
 
     e.preventDefault()
 
-    /* ADMIN LOGIN */
-    if (
-      email === 'admin@kalrav.com' &&
-      password === 'admin123'
-    ) {
-
-      localStorage.setItem(
-        'role',
-        'admin'
-      )
-
-      window.location.href = '/'
-    }
-
-    /* THERAPIST LOGIN */
-    else if (
-      email === 'therapist@kalrav.com' &&
-      password === 'therapist123'
-    ) {
-
-      localStorage.setItem(
-        'role',
-        'therapist'
-      )
-
-      window.location.href = '/'
-    }
-
-    else {
-
-      alert(
-        'Invalid email or password'
-      )
-    }
+    /*
+      PASTE YOUR OLD LOGIN
+      AUTH LOGIC HERE
+    */
   }
 
   return (
@@ -69,7 +40,7 @@ export default function Login() {
       overflow-hidden
     ">
 
-      {/* BACKGROUND GLOW */}
+      {/* GLOW */}
       <div className="
         absolute
         top-[-120px]
@@ -92,7 +63,7 @@ export default function Login() {
         rounded-full
       " />
 
-      {/* LOGIN CARD */}
+      {/* CARD */}
       <div className="
         relative
         w-full
@@ -193,10 +164,14 @@ export default function Login() {
                   )
                 }
                 placeholder="Enter your email"
+                autoComplete="off"
                 className="
                   flex-1
                   bg-transparent
                   outline-none
+                  border-none
+                  shadow-none
+                  ring-0
                   text-[#1f1147]
                   placeholder:text-[#9b8cc9]
                 "
@@ -245,10 +220,14 @@ export default function Login() {
                   )
                 }
                 placeholder="Enter your password"
+                autoComplete="new-password"
                 className="
                   flex-1
                   bg-transparent
                   outline-none
+                  border-none
+                  shadow-none
+                  ring-0
                   text-[#1f1147]
                   placeholder:text-[#9b8cc9]
                 "
@@ -256,7 +235,7 @@ export default function Login() {
             </div>
           </div>
 
-          {/* LOGIN BUTTON */}
+          {/* BUTTON */}
           <button
             type="submit"
             className="
@@ -280,34 +259,6 @@ export default function Login() {
             Login
           </button>
         </form>
-
-        {/* DEMO LOGIN */}
-        <div className="
-          mt-8
-          pt-6
-          border-t
-          border-[#ece7ff]
-          space-y-2
-          text-sm
-          text-[#7c6ca8]
-        ">
-
-          <p className="font-semibold">
-            Demo Credentials
-          </p>
-
-          <p>
-            Admin:
-            admin@kalrav.com /
-            admin123
-          </p>
-
-          <p>
-            Therapist:
-            therapist@kalrav.com /
-            therapist123
-          </p>
-        </div>
       </div>
     </div>
   )
