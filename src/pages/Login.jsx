@@ -13,15 +13,11 @@ export default function Login() {
   const [password, setPassword] =
     useState('')
 
-  /* KEEP YOUR ORIGINAL LOGIN LOGIC */
   const handleLogin = (e) => {
 
     e.preventDefault()
 
-    /*
-      PASTE YOUR OLD LOGIN
-      AUTH LOGIC HERE
-    */
+    // login logic
   }
 
   return (
@@ -40,7 +36,7 @@ export default function Login() {
       overflow-hidden
     ">
 
-      {/* GLOW */}
+      {/* BACKGROUND GLOW */}
       <div className="
         absolute
         top-[-120px]
@@ -78,27 +74,17 @@ export default function Login() {
       ">
 
         {/* LOGO */}
-        <div className="
-          flex
-          justify-center
-          mb-6
-        ">
+        <div className="flex justify-center mb-6">
 
           <img
             src="/logo.png"
             alt="Kalrav"
-            className="
-              h-24
-              object-contain
-            "
+            className="h-24 object-contain"
           />
         </div>
 
         {/* TITLE */}
-        <div className="
-          text-center
-          mb-8
-        ">
+        <div className="text-center mb-8">
 
           <h1 className="
             text-4xl
@@ -150,28 +136,20 @@ export default function Login() {
 
               <Mail
                 size={18}
-                className="
-                  text-violet-500
-                "
+                className="text-violet-500"
               />
 
               <input
                 type="email"
                 value={email}
                 onChange={(e) =>
-                  setEmail(
-                    e.target.value
-                  )
+                  setEmail(e.target.value)
                 }
                 placeholder="Enter your email"
-                autoComplete="off"
                 className="
                   flex-1
                   bg-transparent
                   outline-none
-                  border-none
-                  shadow-none
-                  ring-0
                   text-[#1f1147]
                   placeholder:text-[#9b8cc9]
                 "
@@ -206,9 +184,7 @@ export default function Login() {
 
               <LockKeyhole
                 size={18}
-                className="
-                  text-violet-500
-                "
+                className="text-violet-500"
               />
 
               <input
@@ -220,14 +196,10 @@ export default function Login() {
                   )
                 }
                 placeholder="Enter your password"
-                autoComplete="new-password"
                 className="
                   flex-1
                   bg-transparent
                   outline-none
-                  border-none
-                  shadow-none
-                  ring-0
                   text-[#1f1147]
                   placeholder:text-[#9b8cc9]
                 "
@@ -235,7 +207,7 @@ export default function Login() {
             </div>
           </div>
 
-          {/* BUTTON */}
+          {/* LOGIN BUTTON */}
           <button
             type="submit"
             className="
@@ -259,6 +231,16 @@ export default function Login() {
             Login
           </button>
         </form>
+
+        {/* FOOTER */}
+        <div className="
+          text-center
+          mt-8
+          text-sm
+          text-[#8c84b3]
+        ">
+          Secure Clinic Management System
+        </div>
       </div>
     </div>
   )
