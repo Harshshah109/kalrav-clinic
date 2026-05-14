@@ -1,246 +1,144 @@
 import { useState } from 'react'
 
 import {
-  Mail,
-  LockKeyhole
+  Lock,
+  Mail
 } from 'lucide-react'
 
-export default function Login() {
+import { loginUser } from '../services/authService'
 
-  const [email, setEmail] =
-    useState('')
+export default function Login({
+  onLogin
+}) {
 
+  const [email, setEmail] = useState('')
   const [password, setPassword] =
     useState('')
 
-  const handleLogin = (e) => {
+  const [loading, setLoading] =
+    useState(false)
+
+  const [error, setError] =
+    useState('')
+
+  const handleSubmit = async (e) => {
 
     e.preventDefault()
 
-    // login logic
+    try {
+
+      setLoading(true)
+      setError('')
+
+      await loginUser(email, password)
+
+      onLogin()
+
+    } catch (err) {
+
+  console.log(err)
+
+  setError(err.message)
+}
+
+    setLoading(false)
   }
 
   return (
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
 
-    <div className="
-      min-h-screen
-      flex
-      items-center
-      justify-center
-      bg-gradient-to-br
-      from-[#faf7ff]
-      via-[#f5f3ff]
-      to-[#eef2ff]
-      px-4
-      relative
-      overflow-hidden
-    ">
+      <div className="w-full max-w-md bg-[#171717] border border-[#2f2f2f] rounded-3xl p-8">
 
-      {/* BACKGROUND GLOW */}
-      <div className="
-        absolute
-        top-[-120px]
-        right-[-120px]
-        w-[350px]
-        h-[350px]
-        bg-fuchsia-300/30
-        blur-3xl
-        rounded-full
-      " />
+        {/* Logo */}
+        <div className="mb-10 text-center">
 
-      <div className="
-        absolute
-        bottom-[-120px]
-        left-[-120px]
-        w-[350px]
-        h-[350px]
-        bg-violet-300/30
-        blur-3xl
-        rounded-full
-      " />
-
-      {/* CARD */}
-      <div className="
-        relative
-        w-full
-        max-w-md
-        rounded-[36px]
-        border
-        border-white/60
-        bg-white/80
-        backdrop-blur-xl
-        p-8
-        shadow-[0_20px_60px_rgba(124,58,237,0.18)]
-      ">
-
-        {/* LOGO */}
-        <div className="flex justify-center mb-6">
-
-          <img
-            src="/logo.png"
-            alt="Kalrav"
-            className="h-24 object-contain"
-          />
-        </div>
-
-        {/* TITLE */}
-        <div className="text-center mb-8">
-
-          <h1 className="
-            text-4xl
-            font-black
-            text-[#1f1147]
-            mb-2
-          ">
-            Welcome Back
+          <h1 className="text-4xl font-bold mb-2">
+            Kalrav
           </h1>
 
-          <p className="
-            text-[#7c6ca8]
-            text-base
-          ">
-            Kalrav Speech Therapy Clinic
+          <p className="text-zinc-400">
+            Speech Therapy Clinic Admin
           </p>
         </div>
 
-        {/* FORM */}
+        {/* Error */}
+        {error && (
+          <div className="mb-5 bg-red-500/10 border border-red-500/30 text-red-300 rounded-2xl p-4">
+            {error}
+          </div>
+        )}
+
+        {/* Form */}
         <form
-          onSubmit={handleLogin}
+          onSubmit={handleSubmit}
           className="space-y-5"
         >
 
-          {/* EMAIL */}
+          {/* Email */}
           <div>
 
-            <label className="
-              text-sm
-              font-semibold
-              text-[#6d5ca5]
-              mb-2
-              block
-            ">
-              Email Address
+            <label className="text-sm text-zinc-300 mb-2 block">
+              Email
             </label>
 
-            <div className="
-              flex
-              items-center
-              gap-3
-              h-14
-              rounded-2xl
-              border
-              border-[#e9ddff]
-              bg-[#faf8ff]
-              px-4
-            ">
+            <div className="relative">
 
               <Mail
                 size={18}
-                className="text-violet-500"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"
               />
 
               <input
                 type="email"
+                placeholder="admin@kalrav.com"
                 value={email}
                 onChange={(e) =>
                   setEmail(e.target.value)
                 }
-                placeholder="Enter your email"
-                className="
-                  flex-1
-                  bg-transparent
-                  outline-none
-                  text-[#1f1147]
-                  placeholder:text-[#9b8cc9]
-                "
+                className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl pl-12 pr-4 outline-none"
+                required
               />
             </div>
           </div>
 
-          {/* PASSWORD */}
+          {/* Password */}
           <div>
 
-            <label className="
-              text-sm
-              font-semibold
-              text-[#6d5ca5]
-              mb-2
-              block
-            ">
+            <label className="text-sm text-zinc-300 mb-2 block">
               Password
             </label>
 
-            <div className="
-              flex
-              items-center
-              gap-3
-              h-14
-              rounded-2xl
-              border
-              border-[#e9ddff]
-              bg-[#faf8ff]
-              px-4
-            ">
+            <div className="relative">
 
-              <LockKeyhole
+              <Lock
                 size={18}
-                className="text-violet-500"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"
               />
 
               <input
                 type="password"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) =>
-                  setPassword(
-                    e.target.value
-                  )
+                  setPassword(e.target.value)
                 }
-                placeholder="Enter your password"
-                className="
-                  flex-1
-                  bg-transparent
-                  outline-none
-                  text-[#1f1147]
-                  placeholder:text-[#9b8cc9]
-                "
+                className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl pl-12 pr-4 outline-none"
+                required
               />
             </div>
           </div>
 
-          {/* LOGIN BUTTON */}
+          {/* Button */}
           <button
             type="submit"
-            className="
-              w-full
-              h-14
-              rounded-2xl
-              bg-gradient-to-r
-              from-violet-600
-              via-fuchsia-500
-              to-purple-500
-              text-white
-              font-bold
-              text-lg
-              shadow-lg
-              shadow-violet-500/25
-              hover:scale-[1.01]
-              transition-all
-              mt-2
-            "
+            disabled={loading}
+            className="w-full h-14 rounded-2xl bg-[#dffff2] text-black font-bold hover:opacity-90 transition-all"
           >
-            Login
+            {loading
+              ? 'Signing In...'
+              : 'Login'}
           </button>
         </form>
-
-        {/* FOOTER */}
-        <div className="
-          text-center
-          mt-8
-          text-sm
-          text-[#8c84b3]
-        ">
-          Secure Clinic Management System
-        </div>
       </div>
     </div>
   )
