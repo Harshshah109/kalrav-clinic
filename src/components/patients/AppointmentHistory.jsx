@@ -57,11 +57,29 @@ export default function AppointmentHistory({
       return appointments.filter(
         (appointment) => {
 
-          if (!appointment.date)
-            return false
+          const appointmentDateValue =
+  appointment.date ||
+  appointment.sessionDate
+
+if (!appointmentDateValue)
+  return false
 
           const appointmentDate =
-            appointment.date?.seconds
+  appointment.date?.seconds
+  ? new Date(
+      appointment.date.seconds * 1000
+    ).toLocaleDateString()
+  : (
+      appointment.date ||
+      appointment.sessionDate
+    )
+    ? new Date(
+        appointment.date.seconds * 1000
+      )
+    : new Date(
+        appointment.date ||
+        appointment.sessionDate
+      )
               ? new Date(
                   appointment.date.seconds * 1000
                 )
