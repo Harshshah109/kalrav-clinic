@@ -90,3 +90,47 @@ export const deleteAppointment =
       appointmentDoc
     )
   }
+  /* DELETE ALL BY PATIENT */
+export const deleteAppointmentsByPatient =
+  async (patientName) => {
+
+    try {
+
+      const snapshot =
+        await getDocs(
+          appointmentRef
+        )
+
+      const patientAppointments =
+        snapshot.docs.filter(
+          (docItem) => {
+
+            const data =
+              docItem.data()
+
+            return (
+              data.patient === patientName ||
+              data.patientName === patientName
+            )
+          }
+        )
+
+      for (const appointment of patientAppointments) {
+
+        const appointmentDoc =
+          doc(
+            db,
+            'sessions',
+            appointment.id
+          )
+
+        await deleteDoc(
+          appointmentDoc
+        )
+      }
+
+    } catch (err) {
+
+      console.log(err)
+    }
+  }
