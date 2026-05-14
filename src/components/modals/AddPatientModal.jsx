@@ -135,8 +135,8 @@ export default function AddPatientModal({
       fixed
       inset-0
       z-50
-      bg-black/40
-      backdrop-blur-md
+      bg-black/20
+      backdrop-blur-sm
       flex
       items-center
       justify-center
@@ -148,14 +148,13 @@ export default function AddPatientModal({
         max-w-3xl
         max-h-[92vh]
         overflow-y-auto
-        bg-white/90
+        bg-white
         border
         border-[#ece7ff]
         rounded-[32px]
         p-6
         md:p-7
         relative
-        backdrop-blur-xl
         shadow-[0_10px_40px_rgba(124,58,237,0.12)]
       ">
 
@@ -197,6 +196,7 @@ export default function AddPatientModal({
           className="space-y-7"
         >
 
+          {/* PERSONAL INFO */}
           <div>
 
             <h3 className="
@@ -209,7 +209,12 @@ export default function AddPatientModal({
               PERSONAL INFO
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="
+              grid
+              grid-cols-1
+              md:grid-cols-2
+              gap-4
+            ">
 
               {/* NAME */}
               <div>
@@ -229,16 +234,18 @@ export default function AddPatientModal({
                   name="name"
                   value={form.name}
                   onChange={handleChange}
+                  placeholder="Enter patient name"
                   className="
                     w-full
                     h-14
-                    bg-white/80
+                    bg-[#faf8ff]
                     border
                     border-[#ece7ff]
                     rounded-2xl
                     px-5
                     outline-none
                     text-[#1f1147]
+                    placeholder:text-[#8c84b3]
                   "
                   required
                 />
@@ -262,10 +269,13 @@ export default function AddPatientModal({
                   name="birthDate"
                   value={form.birthDate}
                   onChange={handleChange}
+                  style={{
+                    colorScheme: 'light'
+                  }}
                   className="
                     w-full
                     h-14
-                    bg-white/80
+                    bg-[#faf8ff]
                     border
                     border-[#ece7ff]
                     rounded-2xl
@@ -273,9 +283,6 @@ export default function AddPatientModal({
                     outline-none
                     text-[#1f1147]
                   "
-                  style={{
-                    colorScheme: 'light'
-                  }}
                   required
                 />
               </div>
@@ -297,10 +304,13 @@ export default function AddPatientModal({
                   name="gender"
                   value={form.gender}
                   onChange={handleChange}
+                  style={{
+                    colorScheme: 'light'
+                  }}
                   className="
                     w-full
                     h-14
-                    bg-white/80
+                    bg-[#faf8ff]
                     border
                     border-[#ece7ff]
                     rounded-2xl
@@ -346,16 +356,18 @@ export default function AddPatientModal({
                   name="phone"
                   value={form.phone}
                   onChange={handleChange}
+                  placeholder="Enter phone number"
                   className="
                     w-full
                     h-14
-                    bg-white/80
+                    bg-[#faf8ff]
                     border
                     border-[#ece7ff]
                     rounded-2xl
                     px-5
                     outline-none
                     text-[#1f1147]
+                    placeholder:text-[#8c84b3]
                   "
                 />
               </div>
@@ -378,16 +390,18 @@ export default function AddPatientModal({
                   name="parentName"
                   value={form.parentName}
                   onChange={handleChange}
+                  placeholder="Enter parent name"
                   className="
                     w-full
                     h-14
-                    bg-white/80
+                    bg-[#faf8ff]
                     border
                     border-[#ece7ff]
                     rounded-2xl
                     px-5
                     outline-none
                     text-[#1f1147]
+                    placeholder:text-[#8c84b3]
                   "
                 />
               </div>
@@ -409,10 +423,13 @@ export default function AddPatientModal({
                   name="condition"
                   value={form.condition}
                   onChange={handleChange}
+                  style={{
+                    colorScheme: 'light'
+                  }}
                   className="
                     w-full
                     h-14
-                    bg-white/80
+                    bg-[#faf8ff]
                     border
                     border-[#ece7ff]
                     rounded-2xl
@@ -420,7 +437,6 @@ export default function AddPatientModal({
                     outline-none
                     text-[#1f1147]
                   "
-                  required
                 >
 
                   <option value="">
@@ -482,7 +498,7 @@ export default function AddPatientModal({
                   className="
                     w-full
                     h-14
-                    bg-white/80
+                    bg-[#faf8ff]
                     border
                     border-[#ece7ff]
                     rounded-2xl
@@ -514,9 +530,10 @@ export default function AddPatientModal({
                 value={form.address}
                 onChange={handleChange}
                 rows={3}
+                placeholder="Enter address"
                 className="
                   w-full
-                  bg-white/80
+                  bg-[#faf8ff]
                   border
                   border-[#ece7ff]
                   rounded-2xl
@@ -525,6 +542,7 @@ export default function AddPatientModal({
                   outline-none
                   resize-none
                   text-[#1f1147]
+                  placeholder:text-[#8c84b3]
                 "
               />
             </div>
@@ -546,10 +564,13 @@ export default function AddPatientModal({
                 name="category"
                 value={form.category}
                 onChange={handleChange}
+                style={{
+                  colorScheme: 'light'
+                }}
                 className="
                   w-full
                   h-14
-                  bg-white/80
+                  bg-[#faf8ff]
                   border
                   border-[#ece7ff]
                   rounded-2xl
@@ -594,7 +615,7 @@ export default function AddPatientModal({
                 placeholder="Additional patient information..."
                 className="
                   w-full
-                  bg-white/80
+                  bg-[#faf8ff]
                   border
                   border-[#ece7ff]
                   rounded-2xl
@@ -610,7 +631,13 @@ export default function AddPatientModal({
           </div>
 
           {/* BUTTONS */}
-          <div className="flex flex-col md:flex-row gap-3 pt-2">
+          <div className="
+            flex
+            flex-col
+            md:flex-row
+            gap-3
+            pt-2
+          ">
 
             <button
               type="submit"
@@ -648,7 +675,7 @@ export default function AddPatientModal({
                 rounded-2xl
                 border
                 border-[#ece7ff]
-                bg-white/80
+                bg-white
                 hover:bg-[#f5f3ff]
                 transition-all
                 text-[#1f1147]

@@ -195,20 +195,64 @@ export default function AddTherapistModal({
     }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3">
+    <div className="
+      fixed
+      inset-0
+      z-50
+      bg-black/40
+      backdrop-blur-md
+      flex
+      items-center
+      justify-center
+      p-3
+    ">
 
-      <div className="w-full max-w-3xl max-h-[92vh] overflow-y-auto bg-[#1b1b1b] border border-[#343434] rounded-3xl p-6 md:p-7 relative">
+      <div className="
+        w-full
+        max-w-3xl
+        max-h-[92vh]
+        overflow-y-auto
+        bg-white/90
+        border
+        border-[#ece7ff]
+        rounded-[32px]
+        p-6
+        md:p-7
+        relative
+        backdrop-blur-xl
+        shadow-[0_10px_40px_rgba(124,58,237,0.12)]
+      ">
 
-        {/* Close */}
+        {/* CLOSE */}
         <button
           onClick={close}
-          className="absolute top-5 right-5 w-10 h-10 rounded-xl border border-[#404040] flex items-center justify-center hover:bg-[#252525]"
+          className="
+            absolute
+            top-5
+            right-5
+            w-11
+            h-11
+            rounded-2xl
+            border
+            border-[#ece7ff]
+            flex
+            items-center
+            justify-center
+            hover:bg-[#f5f3ff]
+            transition-all
+            text-[#1f1147]
+          "
         >
           <X size={18} />
         </button>
 
-        {/* Title */}
-        <h2 className="text-3xl font-bold mb-8">
+        {/* TITLE */}
+        <h2 className="
+          text-4xl
+          font-bold
+          mb-8
+          text-[#1f1147]
+        ">
 
           {isEdit
             ? 'Edit Therapist'
@@ -223,15 +267,28 @@ export default function AddTherapistModal({
           {/* PERSONAL INFO */}
           <div>
 
-            <h3 className="text-xs tracking-widest text-zinc-500 font-bold mb-5">
+            <h3 className="
+              text-xs
+              tracking-[0.2em]
+              text-violet-500
+              font-bold
+              mb-5
+            ">
               PERSONAL INFO
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
+              {/* FIRST NAME */}
               <div>
 
-                <label className="text-sm text-zinc-300 mb-2 block">
+                <label className="
+                  text-sm
+                  text-[#7c6ca8]
+                  font-medium
+                  mb-2
+                  block
+                ">
                   First Name *
                 </label>
 
@@ -240,14 +297,31 @@ export default function AddTherapistModal({
                   name="firstName"
                   value={form.firstName}
                   onChange={handleChange}
-                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                  className="
+                    w-full
+                    h-14
+                    bg-white/80
+                    border
+                    border-[#ece7ff]
+                    rounded-2xl
+                    px-5
+                    outline-none
+                    text-[#1f1147]
+                  "
                   required
                 />
               </div>
 
+              {/* LAST NAME */}
               <div>
 
-                <label className="text-sm text-zinc-300 mb-2 block">
+                <label className="
+                  text-sm
+                  text-[#7c6ca8]
+                  font-medium
+                  mb-2
+                  block
+                ">
                   Last Name *
                 </label>
 
@@ -256,14 +330,31 @@ export default function AddTherapistModal({
                   name="lastName"
                   value={form.lastName}
                   onChange={handleChange}
-                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                  className="
+                    w-full
+                    h-14
+                    bg-white/80
+                    border
+                    border-[#ece7ff]
+                    rounded-2xl
+                    px-5
+                    outline-none
+                    text-[#1f1147]
+                  "
                   required
                 />
               </div>
 
+              {/* PHONE */}
               <div>
 
-                <label className="text-sm text-zinc-300 mb-2 block">
+                <label className="
+                  text-sm
+                  text-[#7c6ca8]
+                  font-medium
+                  mb-2
+                  block
+                ">
                   Phone
                 </label>
 
@@ -272,14 +363,31 @@ export default function AddTherapistModal({
                   name="phone"
                   value={form.phone}
                   onChange={handleChange}
-                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                  className="
+                    w-full
+                    h-14
+                    bg-white/80
+                    border
+                    border-[#ece7ff]
+                    rounded-2xl
+                    px-5
+                    outline-none
+                    text-[#1f1147]
+                  "
                 />
               </div>
 
+              {/* EMAIL */}
               <div>
 
-                <label className="text-sm text-zinc-300 mb-2 block">
-                  Email (Optional)
+                <label className="
+                  text-sm
+                  text-[#7c6ca8]
+                  font-medium
+                  mb-2
+                  block
+                ">
+                  Email
                 </label>
 
                 <input
@@ -287,13 +395,30 @@ export default function AddTherapistModal({
                   name="email"
                   value={form.email}
                   onChange={handleChange}
-                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                  className="
+                    w-full
+                    h-14
+                    bg-white/80
+                    border
+                    border-[#ece7ff]
+                    rounded-2xl
+                    px-5
+                    outline-none
+                    text-[#1f1147]
+                  "
                 />
               </div>
 
+              {/* ROLE */}
               <div>
 
-                <label className="text-sm text-zinc-300 mb-2 block">
+                <label className="
+                  text-sm
+                  text-[#7c6ca8]
+                  font-medium
+                  mb-2
+                  block
+                ">
                   Role / Title
                 </label>
 
@@ -302,14 +427,31 @@ export default function AddTherapistModal({
                   name="role"
                   value={form.role}
                   onChange={handleChange}
-                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                  className="
+                    w-full
+                    h-14
+                    bg-white/80
+                    border
+                    border-[#ece7ff]
+                    rounded-2xl
+                    px-5
+                    outline-none
+                    text-[#1f1147]
+                  "
                 />
               </div>
 
+              {/* EXPERIENCE */}
               <div>
 
-                <label className="text-sm text-zinc-300 mb-2 block">
-                  Experience
+                <label className="
+                  text-sm
+                  text-[#7c6ca8]
+                  font-medium
+                  mb-2
+                  block
+                ">
+                  Experience (Years)
                 </label>
 
                 <input
@@ -317,14 +459,31 @@ export default function AddTherapistModal({
                   name="experience"
                   value={form.experience}
                   onChange={handleChange}
-                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                  className="
+                    w-full
+                    h-14
+                    bg-white/80
+                    border
+                    border-[#ece7ff]
+                    rounded-2xl
+                    px-5
+                    outline-none
+                    text-[#1f1147]
+                  "
                 />
               </div>
             </div>
 
+            {/* QUALIFICATION */}
             <div className="mt-4">
 
-              <label className="text-sm text-zinc-300 mb-2 block">
+              <label className="
+                text-sm
+                text-[#7c6ca8]
+                font-medium
+                mb-2
+                block
+              ">
                 Qualification
               </label>
 
@@ -333,15 +492,31 @@ export default function AddTherapistModal({
                 name="qualification"
                 value={form.qualification}
                 onChange={handleChange}
-                className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                className="
+                  w-full
+                  h-14
+                  bg-white/80
+                  border
+                  border-[#ece7ff]
+                  rounded-2xl
+                  px-5
+                  outline-none
+                  text-[#1f1147]
+                "
               />
             </div>
           </div>
 
-          {/* SPECIALIZATION */}
+          {/* SPECIALIZATIONS */}
           <div>
 
-            <h3 className="text-xs tracking-widest text-zinc-500 font-bold mb-5">
+            <h3 className="
+              text-xs
+              tracking-[0.2em]
+              text-violet-500
+              font-bold
+              mb-5
+            ">
               SPECIALIZATIONS
             </h3>
 
@@ -351,7 +526,17 @@ export default function AddTherapistModal({
                 name="specialization"
                 value={form.specialization}
                 onChange={handleChange}
-                className="flex-1 h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                className="
+                  flex-1
+                  h-14
+                  bg-white/80
+                  border
+                  border-[#ece7ff]
+                  rounded-2xl
+                  px-5
+                  outline-none
+                  text-[#1f1147]
+                "
               >
 
                 <option value="">
@@ -382,12 +567,26 @@ export default function AddTherapistModal({
               <button
                 type="button"
                 onClick={addSpecialization}
-                className="w-12 h-12 rounded-xl border border-[#3a3a3a] flex items-center justify-center hover:bg-[#222]"
+                className="
+                  w-14
+                  h-14
+                  rounded-2xl
+                  bg-gradient-to-r
+                  from-violet-600
+                  to-fuchsia-500
+                  text-white
+                  flex
+                  items-center
+                  justify-center
+                  shadow-lg
+                  shadow-violet-500/20
+                "
               >
                 <Plus size={18} />
               </button>
             </div>
 
+            {/* TAGS */}
             <div className="flex flex-wrap gap-2 mt-4">
 
               {specializations.map((item, index) => (
@@ -398,7 +597,19 @@ export default function AddTherapistModal({
                   onClick={() =>
                     removeSpecialization(item)
                   }
-                  className="px-3 py-2 rounded-full bg-[#dffff2] text-black text-sm font-semibold"
+                  className="
+                    px-4
+                    py-2
+                    rounded-full
+                    bg-gradient-to-r
+                    from-violet-500
+                    to-fuchsia-500
+                    text-white
+                    text-sm
+                    font-semibold
+                    shadow-lg
+                    shadow-violet-500/20
+                  "
                 >
                   {item}
                 </button>
@@ -409,7 +620,13 @@ export default function AddTherapistModal({
           {/* STATUS */}
           <div>
 
-            <h3 className="text-xs tracking-widest text-zinc-500 font-bold mb-5">
+            <h3 className="
+              text-xs
+              tracking-[0.2em]
+              text-violet-500
+              font-bold
+              mb-5
+            ">
               STATUS
             </h3>
 
@@ -417,7 +634,17 @@ export default function AddTherapistModal({
               name="status"
               value={form.status}
               onChange={handleChange}
-              className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+              className="
+                w-full
+                h-14
+                bg-white/80
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                px-5
+                outline-none
+                text-[#1f1147]
+              "
             >
 
               <option>
@@ -434,12 +661,63 @@ export default function AddTherapistModal({
             </select>
           </div>
 
+          {/* NOTES */}
+          <div>
+
+            <label className="
+              text-sm
+              text-[#7c6ca8]
+              font-medium
+              mb-2
+              block
+            ">
+              Notes
+            </label>
+
+            <textarea
+              name="notes"
+              rows="4"
+              value={form.notes}
+              onChange={handleChange}
+              placeholder="Additional therapist notes..."
+              className="
+                w-full
+                bg-white/80
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                p-5
+                outline-none
+                resize-none
+                text-[#1f1147]
+                placeholder:text-[#8c84b3]
+              "
+            />
+          </div>
+
           {/* BUTTONS */}
           <div className="flex flex-col md:flex-row gap-3 pt-2">
 
             <button
               type="submit"
-              className="flex items-center justify-center gap-2 px-6 h-12 rounded-xl bg-[#dffff2] text-black font-bold hover:opacity-90 transition-all"
+              className="
+                flex
+                items-center
+                justify-center
+                gap-2
+                px-6
+                h-14
+                rounded-2xl
+                bg-gradient-to-r
+                from-violet-600
+                to-fuchsia-500
+                text-white
+                font-bold
+                hover:opacity-90
+                transition-all
+                shadow-lg
+                shadow-violet-500/20
+              "
             >
 
               <Save size={16} />
@@ -452,7 +730,18 @@ export default function AddTherapistModal({
             <button
               type="button"
               onClick={close}
-              className="px-6 h-12 rounded-xl border border-[#404040] hover:bg-[#252525] transition-all"
+              className="
+                px-6
+                h-14
+                rounded-2xl
+                border
+                border-[#ece7ff]
+                bg-white/80
+                hover:bg-[#f5f3ff]
+                transition-all
+                text-[#1f1147]
+                font-semibold
+              "
             >
               Cancel
             </button>
