@@ -131,9 +131,11 @@ export default function AddPatientModal({
         inset-0
         z-[9999]
         flex
-        items-center
-        justify-center
+       items-start
+justify-center
+overflow-y-auto
         p-4
+        py-10
       "
       style={{
         background:
