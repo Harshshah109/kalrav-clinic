@@ -46,6 +46,8 @@ import AddSessionModal
 
 import SessionHistory
   from '../components/patients/SessionHistory'
+  import AppointmentHistory
+  from '../components/patients/AppointmentHistory'
 
 export default function Patients({
   role
@@ -393,12 +395,17 @@ export default function Patients({
               </button>
 
               {/* Session History */}
-              {expandedPatient === patient.id && (
-                <SessionHistory
-                  patient={patient}
-                />
-              )}
+{expandedPatient === patient.id && (
+  <>
+    <SessionHistory
+      patient={patient}
+    />
 
+    <AppointmentHistory
+      patient={patient}
+    />
+  </>
+)}
               {/* PAYMENT HISTORY TOGGLE */}
               <button
                 onClick={() =>

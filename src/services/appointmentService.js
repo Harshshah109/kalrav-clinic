@@ -11,7 +11,7 @@ import { db } from './firebase'
 
 /* CORRECT COLLECTION */
 const appointmentRef =
-  collection(db, 'sessions')
+  collection(db, 'appointments')
 
 /* ADD */
 export const addAppointment =
@@ -44,7 +44,6 @@ export const getAppointments =
 
           ...data,
 
-          /* BACKWARD COMPATIBILITY */
           patient:
             data.patient ||
             data.patientName ||
@@ -66,7 +65,7 @@ export const updateAppointment =
     const appointmentDoc =
       doc(
         db,
-        'sessions',
+        'appointments',
         id
       )
 
@@ -83,7 +82,7 @@ export const deleteAppointment =
     const appointmentDoc =
       doc(
         db,
-        'sessions',
+        'appointments',
         id
       )
 
@@ -122,7 +121,7 @@ export const deleteAppointmentsByPatient =
         const appointmentDoc =
           doc(
             db,
-            'sessions',
+            'appointments',
             appointment.id
           )
 
