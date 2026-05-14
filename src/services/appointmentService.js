@@ -9,9 +9,9 @@ import {
 
 import { db } from './firebase'
 
-/* CORRECT COLLECTION */
+/* USING SESSIONS COLLECTION */
 const appointmentRef =
-  collection(db, 'appointments')
+  collection(db, 'sessions')
 
 /* ADD */
 export const addAppointment =
@@ -65,7 +65,7 @@ export const updateAppointment =
     const appointmentDoc =
       doc(
         db,
-        'appointments',
+        'sessions',
         id
       )
 
@@ -75,63 +75,18 @@ export const updateAppointment =
     )
   }
 
-/* DELETE SINGLE */
+/* DELETE */
 export const deleteAppointment =
   async (id) => {
 
     const appointmentDoc =
       doc(
         db,
-        'appointments',
+        'sessions',
         id
       )
 
     await deleteDoc(
       appointmentDoc
     )
-  }
-
-/* DELETE ALL BY PATIENT */
-export const deleteAppointmentsByPatient =
-  async (patientName) => {
-
-    try {
-
-      const snapshot =
-        await getDocs(
-          appointmentRef
-        )
-
-      const patientAppointments =
-        snapshot.docs.filter(
-          (docItem) => {
-
-            const data =
-              docItem.data()
-
-            return (
-              data.patient === patientName ||
-              data.patientName === patientName
-            )
-          }
-        )
-
-      for (const appointment of patientAppointments) {
-
-        const appointmentDoc =
-          doc(
-            db,
-            'appointments',
-            appointment.id
-          )
-
-        await deleteDoc(
-          appointmentDoc
-        )
-      }
-
-    } catch (err) {
-
-      console.log(err)
-    }
   }
