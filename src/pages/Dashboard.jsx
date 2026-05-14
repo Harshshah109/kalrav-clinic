@@ -479,10 +479,12 @@ export default function Dashboard({
       {/* GREETING */}
       <div className="mb-8">
 
-        <h1 className="
+       <h1 className="
   text-5xl
   md:text-6xl
   font-black
+  leading-[1.15]
+  pb-2
   mb-3
   tracking-tight
   bg-gradient-to-r
