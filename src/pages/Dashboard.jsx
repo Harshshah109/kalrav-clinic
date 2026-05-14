@@ -479,11 +479,28 @@ export default function Dashboard({
       {/* GREETING */}
       <div className="mb-8">
 
-        <h1 className="text-5xl font-bold mb-3 text-[#1f1147]">
-          {greeting()}
-        </h1>
+        <h1 className="
+  text-5xl
+  md:text-6xl
+  font-black
+  mb-3
+  tracking-tight
+  bg-gradient-to-r
+  from-violet-900
+  via-purple-700
+  to-fuchsia-600
+  bg-clip-text
+  text-transparent
+">
+  {greeting()}
+</h1>
 
-        <p className="text-[#7c6ca8] text-lg font-medium">
+        <p className="
+  text-[#7c6ca8]
+  text-xl
+  font-medium
+  tracking-wide
+">
           Kalrav Speech Therapy Clinic • {' '}
           {new Date().toDateString()}
         </p>
