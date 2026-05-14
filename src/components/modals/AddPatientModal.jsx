@@ -18,23 +18,14 @@ export default function AddPatientModal({
     useState({
 
       name: '',
-
       birthDate: '',
-
       gender: '',
-
       phone: '',
-
       parentName: '',
-
       address: '',
-
       condition: '',
-
       otherCondition: '',
-
       category: 'Assessment',
-
       notes: ''
     })
 
@@ -131,32 +122,47 @@ export default function AddPatientModal({
     }
 
   return (
-    <div className="
-      fixed
-      inset-0
-      z-50
-      bg-black/20
-      backdrop-blur-sm
-      flex
-      items-center
-      justify-center
-      p-3
-    ">
 
-      <div className="
-        w-full
-        max-w-3xl
-        max-h-[92vh]
-        overflow-y-auto
-        bg-white
-        border
-        border-[#ece7ff]
-        rounded-[32px]
-        p-6
-        md:p-7
-        relative
-        shadow-[0_10px_40px_rgba(124,58,237,0.12)]
-      ">
+    <div
+      className="
+        fixed
+        inset-0
+        z-[9999]
+        flex
+        items-center
+        justify-center
+        p-4
+      "
+      style={{
+        background:
+          'rgba(15,15,25,0.35)',
+
+        backdropFilter:
+          'blur(4px)'
+      }}
+    >
+
+      {/* MODAL */}
+      <div
+        className="
+          relative
+          w-full
+          max-w-3xl
+          max-h-[92vh]
+          overflow-y-auto
+          rounded-[32px]
+          border
+          border-[#ece7ff]
+          bg-white
+          p-6
+          md:p-7
+          shadow-2xl
+        "
+        style={{
+          opacity: 1,
+          filter: 'none'
+        }}
+      >
 
         {/* CLOSE */}
         <button
@@ -170,6 +176,7 @@ export default function AddPatientModal({
             rounded-2xl
             border
             border-[#ece7ff]
+            bg-white
             flex
             items-center
             justify-center
@@ -196,7 +203,7 @@ export default function AddPatientModal({
           className="space-y-7"
         >
 
-          {/* PERSONAL INFO */}
+          {/* SECTION */}
           <div>
 
             <h3 className="
@@ -220,11 +227,11 @@ export default function AddPatientModal({
               <div>
 
                 <label className="
-                  text-sm
-                  text-[#7c6ca8]
-                  font-medium
-                  mb-2
                   block
+                  text-sm
+                  font-medium
+                  text-[#7c6ca8]
+                  mb-2
                 ">
                   Patient Name *
                 </label>
@@ -235,19 +242,18 @@ export default function AddPatientModal({
                   value={form.name}
                   onChange={handleChange}
                   placeholder="Enter patient name"
+                  required
                   className="
                     w-full
                     h-14
-                    bg-[#faf8ff]
+                    rounded-2xl
                     border
                     border-[#ece7ff]
-                    rounded-2xl
+                    bg-[#faf8ff]
                     px-5
-                    outline-none
                     text-[#1f1147]
-                    placeholder:text-[#8c84b3]
+                    outline-none
                   "
-                  required
                 />
               </div>
 
@@ -255,11 +261,11 @@ export default function AddPatientModal({
               <div>
 
                 <label className="
-                  text-sm
-                  text-[#7c6ca8]
-                  font-medium
-                  mb-2
                   block
+                  text-sm
+                  font-medium
+                  text-[#7c6ca8]
+                  mb-2
                 ">
                   Birth Date *
                 </label>
@@ -269,21 +275,21 @@ export default function AddPatientModal({
                   name="birthDate"
                   value={form.birthDate}
                   onChange={handleChange}
+                  required
                   style={{
                     colorScheme: 'light'
                   }}
                   className="
                     w-full
                     h-14
-                    bg-[#faf8ff]
+                    rounded-2xl
                     border
                     border-[#ece7ff]
-                    rounded-2xl
+                    bg-[#faf8ff]
                     px-5
-                    outline-none
                     text-[#1f1147]
+                    outline-none
                   "
-                  required
                 />
               </div>
 
@@ -291,11 +297,11 @@ export default function AddPatientModal({
               <div>
 
                 <label className="
-                  text-sm
-                  text-[#7c6ca8]
-                  font-medium
-                  mb-2
                   block
+                  text-sm
+                  font-medium
+                  text-[#7c6ca8]
+                  mb-2
                 ">
                   Gender
                 </label>
@@ -310,13 +316,13 @@ export default function AddPatientModal({
                   className="
                     w-full
                     h-14
-                    bg-[#faf8ff]
+                    rounded-2xl
                     border
                     border-[#ece7ff]
-                    rounded-2xl
+                    bg-[#faf8ff]
                     px-5
-                    outline-none
                     text-[#1f1147]
+                    outline-none
                   "
                 >
 
@@ -342,11 +348,11 @@ export default function AddPatientModal({
               <div>
 
                 <label className="
-                  text-sm
-                  text-[#7c6ca8]
-                  font-medium
-                  mb-2
                   block
+                  text-sm
+                  font-medium
+                  text-[#7c6ca8]
+                  mb-2
                 ">
                   Phone Number
                 </label>
@@ -360,14 +366,13 @@ export default function AddPatientModal({
                   className="
                     w-full
                     h-14
-                    bg-[#faf8ff]
+                    rounded-2xl
                     border
                     border-[#ece7ff]
-                    rounded-2xl
+                    bg-[#faf8ff]
                     px-5
-                    outline-none
                     text-[#1f1147]
-                    placeholder:text-[#8c84b3]
+                    outline-none
                   "
                 />
               </div>
@@ -376,11 +381,11 @@ export default function AddPatientModal({
               <div>
 
                 <label className="
-                  text-sm
-                  text-[#7c6ca8]
-                  font-medium
-                  mb-2
                   block
+                  text-sm
+                  font-medium
+                  text-[#7c6ca8]
+                  mb-2
                 ">
                   Parent / Guardian Name
                 </label>
@@ -394,14 +399,13 @@ export default function AddPatientModal({
                   className="
                     w-full
                     h-14
-                    bg-[#faf8ff]
+                    rounded-2xl
                     border
                     border-[#ece7ff]
-                    rounded-2xl
+                    bg-[#faf8ff]
                     px-5
-                    outline-none
                     text-[#1f1147]
-                    placeholder:text-[#8c84b3]
+                    outline-none
                   "
                 />
               </div>
@@ -410,11 +414,11 @@ export default function AddPatientModal({
               <div>
 
                 <label className="
-                  text-sm
-                  text-[#7c6ca8]
-                  font-medium
-                  mb-2
                   block
+                  text-sm
+                  font-medium
+                  text-[#7c6ca8]
+                  mb-2
                 ">
                   Condition
                 </label>
@@ -429,13 +433,13 @@ export default function AddPatientModal({
                   className="
                     w-full
                     h-14
-                    bg-[#faf8ff]
+                    rounded-2xl
                     border
                     border-[#ece7ff]
-                    rounded-2xl
+                    bg-[#faf8ff]
                     px-5
-                    outline-none
                     text-[#1f1147]
+                    outline-none
                   "
                 >
 
@@ -480,11 +484,11 @@ export default function AddPatientModal({
               <div className="mt-4">
 
                 <label className="
-                  text-sm
-                  text-[#7c6ca8]
-                  font-medium
-                  mb-2
                   block
+                  text-sm
+                  font-medium
+                  text-[#7c6ca8]
+                  mb-2
                 ">
                   Specify Condition
                 </label>
@@ -498,16 +502,14 @@ export default function AddPatientModal({
                   className="
                     w-full
                     h-14
-                    bg-[#faf8ff]
+                    rounded-2xl
                     border
                     border-[#ece7ff]
-                    rounded-2xl
+                    bg-[#faf8ff]
                     px-5
-                    outline-none
                     text-[#1f1147]
-                    placeholder:text-[#8c84b3]
+                    outline-none
                   "
-                  required
                 />
               </div>
             )}
@@ -516,11 +518,11 @@ export default function AddPatientModal({
             <div className="mt-4">
 
               <label className="
-                text-sm
-                text-[#7c6ca8]
-                font-medium
-                mb-2
                 block
+                text-sm
+                font-medium
+                text-[#7c6ca8]
+                mb-2
               ">
                 Address
               </label>
@@ -533,16 +535,15 @@ export default function AddPatientModal({
                 placeholder="Enter address"
                 className="
                   w-full
-                  bg-[#faf8ff]
+                  rounded-2xl
                   border
                   border-[#ece7ff]
-                  rounded-2xl
+                  bg-[#faf8ff]
                   px-5
                   py-4
+                  text-[#1f1147]
                   outline-none
                   resize-none
-                  text-[#1f1147]
-                  placeholder:text-[#8c84b3]
                 "
               />
             </div>
@@ -551,11 +552,11 @@ export default function AddPatientModal({
             <div className="mt-4">
 
               <label className="
-                text-sm
-                text-[#7c6ca8]
-                font-medium
-                mb-2
                 block
+                text-sm
+                font-medium
+                text-[#7c6ca8]
+                mb-2
               ">
                 Patient Category
               </label>
@@ -570,13 +571,13 @@ export default function AddPatientModal({
                 className="
                   w-full
                   h-14
-                  bg-[#faf8ff]
+                  rounded-2xl
                   border
                   border-[#ece7ff]
-                  rounded-2xl
+                  bg-[#faf8ff]
                   px-5
-                  outline-none
                   text-[#1f1147]
+                  outline-none
                 "
               >
 
@@ -598,11 +599,11 @@ export default function AddPatientModal({
             <div className="mt-4">
 
               <label className="
-                text-sm
-                text-[#7c6ca8]
-                font-medium
-                mb-2
                 block
+                text-sm
+                font-medium
+                text-[#7c6ca8]
+                mb-2
               ">
                 Notes
               </label>
@@ -615,16 +616,15 @@ export default function AddPatientModal({
                 placeholder="Additional patient information..."
                 className="
                   w-full
-                  bg-[#faf8ff]
+                  rounded-2xl
                   border
                   border-[#ece7ff]
-                  rounded-2xl
+                  bg-[#faf8ff]
                   px-5
                   py-4
+                  text-[#1f1147]
                   outline-none
                   resize-none
-                  text-[#1f1147]
-                  placeholder:text-[#8c84b3]
                 "
               />
             </div>
