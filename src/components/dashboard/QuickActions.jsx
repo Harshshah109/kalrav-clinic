@@ -43,24 +43,48 @@ export default function QuickActions() {
     {
       title: 'Add Patient',
       icon: Users,
+      gradient:
+        'from-violet-500 to-fuchsia-500',
+
+      shadow:
+        'shadow-violet-500/20',
+
       action: () =>
         setOpenPatient(true)
     },
     {
       title: 'New Appointment',
       icon: CalendarDays,
+      gradient:
+        'from-cyan-400 to-blue-500',
+
+      shadow:
+        'shadow-cyan-500/20',
+
       action: () =>
         setOpenAppointment(true)
     },
     {
       title: 'Add Therapist',
       icon: Stethoscope,
+      gradient:
+        'from-pink-400 to-rose-500',
+
+      shadow:
+        'shadow-pink-500/20',
+
       action: () =>
         setOpenTherapist(true)
     },
     {
       title: 'Add Payment',
       icon: Wallet,
+      gradient:
+        'from-emerald-400 to-green-500',
+
+      shadow:
+        'shadow-emerald-500/20',
+
       action: () =>
         setOpenPayment(true)
     }
@@ -68,14 +92,34 @@ export default function QuickActions() {
 
   return (
     <>
-      <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+      <div className="
+        bg-white/75
+        border
+        border-[#ece7ff]
+        rounded-3xl
+        p-6
+        backdrop-blur-xl
+        shadow-[0_10px_30px_rgba(124,58,237,0.08)]
+      ">
 
         {/* Header */}
         <div className="mb-6">
 
-          <h2 className="text-2xl font-bold">
+          <h2 className="
+            text-3xl
+            font-bold
+            text-[#1f1147]
+            mb-1
+          ">
             Quick Actions
           </h2>
+
+          <p className="
+            text-[#7c6ca8]
+            text-sm
+          ">
+            Manage clinic instantly
+          </p>
         </div>
 
         {/* Actions */}
@@ -89,24 +133,67 @@ export default function QuickActions() {
               <button
                 key={item.title}
                 onClick={item.action}
-                className="w-full flex items-center gap-4 p-5 rounded-2xl border border-[#2f2f2f] hover:bg-[#1f1f1f] hover:border-[#3a3a3a] transition-all"
+                className="
+                  w-full
+                  flex
+                  items-center
+                  gap-4
+                  p-5
+                  rounded-3xl
+                  border
+                  border-[#ece7ff]
+                  bg-[#faf8ff]
+                  hover:bg-[#f5f3ff]
+                  transition-all
+                  group
+                "
               >
 
-                <div className="w-12 h-12 rounded-2xl bg-[#222] flex items-center justify-center">
+                {/* ICON */}
+                <div className={`
+                  w-14
+                  h-14
+                  rounded-2xl
+                  bg-gradient-to-br
+                  ${item.gradient}
+                  text-white
+                  flex
+                  items-center
+                  justify-center
+                  shadow-lg
+                  ${item.shadow}
+                  group-hover:scale-105
+                  transition-all
+                `}>
 
-                  <Icon size={20} />
+                  <Icon size={22} />
                 </div>
 
-                <span className="font-semibold text-lg">
-                  {item.title}
-                </span>
+                {/* TEXT */}
+                <div className="text-left">
+
+                  <h3 className="
+                    font-bold
+                    text-lg
+                    text-[#1f1147]
+                  ">
+                    {item.title}
+                  </h3>
+
+                  <p className="
+                    text-sm
+                    text-[#8c84b3]
+                  ">
+                    Quick clinic action
+                  </p>
+                </div>
               </button>
             )
           })}
         </div>
       </div>
 
-      {/* Modals */}
+      {/* MODALS */}
 
       {openPatient && (
         <AddPatientModal

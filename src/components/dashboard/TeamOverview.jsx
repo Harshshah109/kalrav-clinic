@@ -3,20 +3,51 @@ export default function TeamOverview({
 }) {
 
   return (
-    <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+    <div className="
+      bg-white/75
+      border
+      border-[#ece7ff]
+      rounded-3xl
+      p-6
+      backdrop-blur-xl
+      shadow-[0_10px_30px_rgba(124,58,237,0.08)]
+    ">
 
       <div className="flex items-center justify-between mb-6">
 
-        <h2 className="text-2xl font-bold">
-          Team Overview
-        </h2>
+        <div>
+
+          <h2 className="
+            text-3xl
+            font-bold
+            text-[#1f1147]
+            mb-1
+          ">
+            Team Overview
+          </h2>
+
+          <p className="
+            text-[#7c6ca8]
+            text-sm
+          ">
+            Active therapist management
+          </p>
+        </div>
       </div>
 
       <div className="space-y-4">
 
         {therapists.length === 0 && (
 
-          <div className="text-zinc-500 text-sm">
+          <div className="
+            bg-[#faf8ff]
+            border
+            border-[#ece7ff]
+            rounded-2xl
+            p-5
+            text-[#8c84b3]
+            text-sm
+          ">
             No therapists found
           </div>
         )}
@@ -25,14 +56,43 @@ export default function TeamOverview({
 
           <div
             key={item.id}
-            className="flex items-center justify-between"
+            className="
+              flex
+              flex-col
+              md:flex-row
+              md:items-center
+              md:justify-between
+              gap-4
+              bg-[#faf8ff]
+              border
+              border-[#ece7ff]
+              rounded-3xl
+              p-5
+              hover:bg-[#f5f3ff]
+              transition-all
+            "
           >
 
-            {/* Left */}
+            {/* LEFT */}
             <div className="flex items-center gap-4">
 
               {/* Avatar */}
-              <div className="w-14 h-14 rounded-full bg-[#dffff2] text-black flex items-center justify-center font-bold uppercase">
+              <div className="
+                w-14
+                h-14
+                rounded-full
+                bg-gradient-to-br
+                from-violet-500
+                to-fuchsia-500
+                text-white
+                flex
+                items-center
+                justify-center
+                font-bold
+                uppercase
+                shadow-lg
+                shadow-violet-500/20
+              ">
 
                 {(item.name || 'TH')
                   .slice(0, 2)}
@@ -41,18 +101,26 @@ export default function TeamOverview({
               {/* Info */}
               <div>
 
-                <h3 className="font-semibold text-lg">
+                <h3 className="
+                  font-bold
+                  text-xl
+                  text-[#1f1147]
+                  mb-1
+                ">
                   {item.name}
                 </h3>
 
-                <p className="text-zinc-500 text-sm">
+                <p className="
+                  text-[#7c6ca8]
+                  text-sm
+                ">
                   {item.role ||
                     'Speech Therapist'}
                 </p>
               </div>
             </div>
 
-            {/* Status */}
+            {/* STATUS */}
             <div>
 
               <span

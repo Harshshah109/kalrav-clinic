@@ -25,7 +25,9 @@ export default function CalendarPage() {
     useState([])
 
   useEffect(() => {
+
     loadAppointments()
+
   }, [])
 
   const loadAppointments =
@@ -34,37 +36,65 @@ export default function CalendarPage() {
       const data =
         await getAppointments()
 
-      setAppointments(data)
+      setAppointments(
+        data || []
+      )
     }
 
   const selectedDate =
-  `${date.getFullYear()}-${
-    String(
-      date.getMonth() + 1
-    ).padStart(2, '0')
-  }-${
-    String(
-      date.getDate()
-    ).padStart(2, '0')
-  }`
+    `${date.getFullYear()}-${
+      String(
+        date.getMonth() + 1
+      ).padStart(2, '0')
+    }-${
+      String(
+        date.getDate()
+      ).padStart(2, '0')
+    }`
 
   const filteredAppointments =
     appointments.filter(
-      (item) =>
-        item.date === selectedDate
+      (item) => {
+
+        const appointmentDate =
+          item.date?.seconds
+            ? (() => {
+
+                const d =
+                  new Date(
+                    item.date.seconds * 1000
+                  )
+
+                return `${d.getFullYear()}-${
+                  String(
+                    d.getMonth() + 1
+                  ).padStart(2, '0')
+                }-${
+                  String(
+                    d.getDate()
+                  ).padStart(2, '0')
+                }`
+              })()
+            : item.date
+
+        return (
+          appointmentDate ===
+          selectedDate
+        )
+      }
     )
 
   return (
-    <div className="pb-10">
+    <div className="pb-10 text-[#1f1147]">
 
       {/* Header */}
       <div className="mb-8">
 
-        <h1 className="text-4xl font-bold mb-2">
+        <h1 className="text-5xl font-bold mb-2">
           Clinic Calendar
         </h1>
 
-        <p className="text-zinc-400">
+        <p className="text-[#7c6ca8] text-lg">
           Manage appointments visually
         </p>
       </div>
@@ -72,7 +102,16 @@ export default function CalendarPage() {
       <div className="grid grid-cols-1 xl:grid-cols-[420px_1fr] gap-6">
 
         {/* Calendar */}
-        <div className="bg-[#171717] border border-[#2b2b2b] rounded-3xl p-6 h-fit">
+        <div className="
+          bg-white/75
+          border
+          border-[#ece7ff]
+          rounded-3xl
+          p-6
+          h-fit
+          backdrop-blur-xl
+          shadow-[0_10px_30px_rgba(124,58,237,0.08)]
+        ">
 
           <Calendar
             onChange={setDate}
@@ -82,36 +121,90 @@ export default function CalendarPage() {
         </div>
 
         {/* Right Side */}
-        <div className="bg-[#171717] border border-[#2b2b2b] rounded-3xl p-6">
+        <div className="
+          bg-white/75
+          border
+          border-[#ece7ff]
+          rounded-3xl
+          p-6
+          backdrop-blur-xl
+          shadow-[0_10px_30px_rgba(124,58,237,0.08)]
+        ">
 
           {/* Selected Date */}
           <div className="flex items-center gap-3 mb-8">
 
-            <div className="w-12 h-12 rounded-2xl bg-[#dffff2] text-black flex items-center justify-center">
+            <div className="
+              w-14
+              h-14
+              rounded-2xl
+              bg-gradient-to-br
+              from-violet-500
+              to-fuchsia-500
+              text-white
+              flex
+              items-center
+              justify-center
+              shadow-lg
+              shadow-violet-500/20
+            ">
 
-              <CalendarDays size={22} />
+              <CalendarDays size={24} />
             </div>
 
             <div>
 
-              <p className="text-zinc-400 text-sm">
+              <p className="text-[#7c6ca8] text-sm font-medium">
                 Selected Date
               </p>
 
-              <h2 className="text-2xl font-bold">
-                {selectedDate}
+              <h2 className="text-3xl font-bold">
+                {
+                  new Date(selectedDate)
+                    .toLocaleDateString(
+                      'en-IN',
+                      {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                      }
+                    )
+                }
               </h2>
             </div>
           </div>
 
           {/* Appointments */}
-          <div className="space-y-4">
+          <div className="space-y-4 max-h-[850px] overflow-y-auto pr-2 custom-scrollbar">
 
             {filteredAppointments.length === 0 && (
 
-              <div className="bg-[#1d1d1d] border border-[#2a2a2a] rounded-3xl p-10 text-center">
+              <div className="
+                bg-[#faf8ff]
+                border
+                border-[#ece7ff]
+                rounded-3xl
+                p-10
+                text-center
+              ">
 
-                <div className="w-20 h-20 rounded-3xl bg-[#252525] flex items-center justify-center mx-auto mb-5">
+                <div className="
+                  w-20
+                  h-20
+                  rounded-3xl
+                  bg-gradient-to-br
+                  from-violet-500
+                  to-fuchsia-500
+                  text-white
+                  flex
+                  items-center
+                  justify-center
+                  mx-auto
+                  mb-5
+                  shadow-lg
+                  shadow-violet-500/20
+                ">
 
                   <CalendarDays size={35} />
                 </div>
@@ -120,7 +213,7 @@ export default function CalendarPage() {
                   No Appointments
                 </h2>
 
-                <p className="text-zinc-500">
+                <p className="text-[#8c84b3]">
                   No appointments scheduled on this date
                 </p>
               </div>
@@ -130,11 +223,40 @@ export default function CalendarPage() {
 
               <div
                 key={item.id}
-                className="bg-[#1d1d1d] border border-[#2a2a2a] rounded-3xl p-5 flex flex-col lg:flex-row lg:items-center gap-5 hover:border-[#3a3a3a] transition-all"
+                className="
+                  bg-[#faf8ff]
+                  border
+                  border-[#ece7ff]
+                  rounded-3xl
+                  p-5
+                  flex
+                  flex-col
+                  lg:flex-row
+                  lg:items-center
+                  gap-5
+                  hover:bg-[#f5f3ff]
+                  transition-all
+                "
               >
 
                 {/* Avatar */}
-                <div className="w-16 h-16 rounded-2xl bg-[#dffff2] text-black flex items-center justify-center font-bold text-lg uppercase">
+                <div className="
+                  w-16
+                  h-16
+                  rounded-2xl
+                  bg-gradient-to-br
+                  from-violet-500
+                  to-fuchsia-500
+                  text-white
+                  flex
+                  items-center
+                  justify-center
+                  font-bold
+                  text-lg
+                  uppercase
+                  shadow-lg
+                  shadow-violet-500/20
+                ">
 
                   {(item.patient || 'PT').slice(0, 2)}
                 </div>
@@ -146,7 +268,7 @@ export default function CalendarPage() {
                     {item.patient}
                   </h3>
 
-                  <div className="flex flex-wrap gap-4 text-sm text-zinc-400">
+                  <div className="flex flex-wrap gap-4 text-sm text-[#7c6ca8]">
 
                     <div className="flex items-center gap-2">
 
@@ -163,7 +285,7 @@ export default function CalendarPage() {
                     </div>
                   </div>
 
-                  <p className="text-zinc-500 mt-3">
+                  <p className="text-[#8c84b3] mt-3">
                     {item.therapy}
                   </p>
                 </div>

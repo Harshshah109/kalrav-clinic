@@ -163,41 +163,39 @@ function Appointments({
     }
 
   const filteredAppointments =
-  appointments
+    appointments
 
-    .filter((item) => {
+      .filter((item) => {
 
-      const matchesSearch =
-        (
-          item.patient ||
-          item.patientName ||
-          ''
-        )
-
-          .toLowerCase()
-
-          .includes(
-            search.toLowerCase()
+        const matchesSearch =
+          (
+            item.patient ||
+            item.patientName ||
+            ''
           )
 
-      const matchesStatus =
-        statusFilter === 'All'
-          ? true
-          : item.status === statusFilter
+            .toLowerCase()
 
-      /* ROLE FILTER */
-const matchesRole = true
-      return (
-        matchesSearch &&
-        matchesStatus &&
-        matchesRole
+            .includes(
+              search.toLowerCase()
+            )
+
+        const matchesStatus =
+          statusFilter === 'All'
+            ? true
+            : item.status === statusFilter
+
+        return (
+          matchesSearch &&
+          matchesStatus
+        )
+      })
+
+      .sort((a, b) =>
+        parseTime(a.time) -
+        parseTime(b.time)
       )
-    })
 
-    .sort((a, b) =>
-      parseTime(a.time) -
-      parseTime(b.time)
-    )
   const todayAppointments =
     filteredAppointments.filter(
       (item) =>
@@ -223,20 +221,33 @@ const matchesRole = true
     ({ item }) => (
 
       <div
-        className={`border rounded-2xl p-5 flex flex-col md:flex-row md:items-center gap-5 ${
-          item.status === 'Cancelled'
-            ? 'border-red-500/30 opacity-50'
-            : 'border-[#313131]'
-        }`}
+        className={`
+          border
+          rounded-3xl
+          p-5
+          flex
+          flex-col
+          md:flex-row
+          md:items-center
+          gap-5
+          bg-white/75
+          backdrop-blur-xl
+          shadow-[0_10px_30px_rgba(124,58,237,0.08)]
+          ${
+            item.status === 'Cancelled'
+              ? 'border-red-200 opacity-60'
+              : 'border-[#ece7ff]'
+          }
+        `}
       >
 
         <div className="min-w-[120px]">
 
-          <h3 className="text-xl font-bold">
+          <h3 className="text-xl font-bold text-[#1f1147]">
             {item.time}
           </h3>
 
-          <p className="text-sm text-zinc-500 mt-1">
+          <p className="text-sm text-[#8c84b3] mt-1">
             {
               item.date?.seconds
                 ? new Date(
@@ -247,7 +258,22 @@ const matchesRole = true
           </p>
         </div>
 
-        <div className="w-14 h-14 rounded-full bg-[#dffff2] text-black flex items-center justify-center font-bold uppercase">
+        <div className="
+          w-14
+          h-14
+          rounded-full
+          bg-gradient-to-br
+          from-violet-500
+          to-fuchsia-500
+          text-white
+          flex
+          items-center
+          justify-center
+          font-bold
+          uppercase
+          shadow-lg
+          shadow-violet-500/20
+        ">
           {
             (
               item.patient ||
@@ -259,14 +285,14 @@ const matchesRole = true
 
         <div className="flex-1">
 
-          <h3 className="text-xl font-bold mb-1">
+          <h3 className="text-xl font-bold mb-1 text-[#1f1147]">
             {
               item.patient ||
               item.patientName
             }
           </h3>
 
-          <p className="text-zinc-400">
+          <p className="text-[#7c6ca8]">
             {
               item.therapy ||
               'Speech Therapy'
@@ -278,51 +304,59 @@ const matchesRole = true
         </div>
 
         {item.status === 'Pending'
-  ? (
+          ? (
 
-    <button
-      onClick={async () => {
+            <button
+              onClick={async () => {
 
-        const confirmStatus =
-          window.confirm(
-            'Confirm this appointment?'
-          )
+                const confirmStatus =
+                  window.confirm(
+                    'Confirm this appointment?'
+                  )
 
-        if (!confirmStatus)
-          return
+                if (!confirmStatus)
+                  return
 
-        const {
-          updateAppointment
-        } = await import(
-          '../services/appointmentService'
-        )
+                const {
+                  updateAppointment
+                } = await import(
+                  '../services/appointmentService'
+                )
 
-        await updateAppointment(
-          item.id,
-          {
-            status: 'Confirmed'
-          }
-        )
+                await updateAppointment(
+                  item.id,
+                  {
+                    status: 'Confirmed'
+                  }
+                )
 
-        loadAppointments()
-      }}
-      className="px-4 py-2 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-700 hover:opacity-90"
-    >
-      Confirm Pending
-    </button>
+                loadAppointments()
+              }}
+              className="
+                px-4
+                py-2
+                rounded-full
+                text-sm
+                font-semibold
+                bg-amber-100
+                text-amber-700
+              "
+            >
+              Confirm Pending
+            </button>
 
-  ) : (
+          ) : (
 
-    <span
-      className={`px-4 py-2 rounded-full text-sm font-semibold ${
-        item.status === 'Confirmed'
-          ? 'bg-emerald-100 text-emerald-700'
-          : 'bg-red-100 text-red-700'
-      }`}
-    >
-      {item.status}
-    </span>
-  )}
+            <span
+              className={`px-4 py-2 rounded-full text-sm font-semibold ${
+                item.status === 'Confirmed'
+                  ? 'bg-emerald-100 text-emerald-700'
+                  : 'bg-red-100 text-red-700'
+              }`}
+            >
+              {item.status}
+            </span>
+          )}
 
         <div className="flex gap-3">
 
@@ -361,7 +395,7 @@ const matchesRole = true
               const message =
 `Hello,
 
-Please confirm you therapy session today.
+Please confirm your therapy session today.
 
 Time: ${item.time}
 `
@@ -371,7 +405,18 @@ Time: ${item.time}
                 '_blank'
               )
             }}
-            className="w-12 h-12 rounded-2xl border border-emerald-500/30 text-emerald-400 flex items-center justify-center hover:bg-emerald-500/10"
+            className="
+              w-12
+              h-12
+              rounded-2xl
+              border
+              border-emerald-200
+              text-emerald-500
+              flex
+              items-center
+              justify-center
+              hover:bg-emerald-50
+            "
           >
             <MessageSquare size={18} />
           </button>
@@ -382,7 +427,17 @@ Time: ${item.time}
                 onClick={() =>
                   setSelectedAppointment(item)
                 }
-                className="w-12 h-12 rounded-2xl border border-[#383838] flex items-center justify-center hover:bg-[#222]"
+                className="
+                  w-12
+                  h-12
+                  rounded-2xl
+                  border
+                  border-[#ece7ff]
+                  flex
+                  items-center
+                  justify-center
+                  hover:bg-[#f5f3ff]
+                "
               >
                 <Pencil size={18} />
               </button>
@@ -404,7 +459,18 @@ Time: ${item.time}
 
                   loadAppointments()
                 }}
-                className="w-12 h-12 rounded-2xl border border-red-500/30 text-red-400 flex items-center justify-center hover:bg-red-500/10"
+                className="
+                  w-12
+                  h-12
+                  rounded-2xl
+                  border
+                  border-red-200
+                  text-red-500
+                  flex
+                  items-center
+                  justify-center
+                  hover:bg-red-50
+                "
               >
                 <Trash2 size={18} />
               </button>
@@ -415,17 +481,17 @@ Time: ${item.time}
     )
 
   return (
-    <div className="pb-10">
+    <div className="pb-10 text-[#1f1147]">
 
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
 
         <div>
 
-          <h1 className="text-4xl font-bold mb-2">
+          <h1 className="text-5xl font-bold mb-2">
             Appointments
           </h1>
 
-          <p className="text-zinc-400">
+          <p className="text-[#7c6ca8] text-lg">
             Manage daily schedule and bookings
           </p>
         </div>
@@ -436,7 +502,19 @@ Time: ${item.time}
             onClick={() =>
               setOpenModal(true)
             }
-            className="flex items-center gap-2 border border-[#3a3a3a] rounded-2xl px-6 py-4 hover:bg-[#1c1c1c]"
+            className="
+              flex
+              items-center
+              gap-2
+              border
+              border-[#ece7ff]
+              bg-white/75
+              rounded-2xl
+              px-6
+              py-4
+              hover:bg-[#f5f3ff]
+              font-semibold
+            "
           >
             <Plus size={20} />
 
@@ -447,11 +525,21 @@ Time: ${item.time}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
 
-        <div className="bg-[#171717] border border-[#2f2f2f] rounded-2xl px-4 h-14 flex items-center gap-3">
+        <div className="
+          bg-white/75
+          border
+          border-[#ece7ff]
+          rounded-2xl
+          px-4
+          h-14
+          flex
+          items-center
+          gap-3
+        ">
 
           <Search
             size={18}
-            className="text-zinc-500"
+            className="text-[#8c84b3]"
           />
 
           <input
@@ -461,7 +549,11 @@ Time: ${item.time}
             onChange={(e) =>
               setSearch(e.target.value)
             }
-            className="bg-transparent outline-none w-full"
+            className="
+              bg-transparent
+              outline-none
+              w-full
+            "
           />
         </div>
 
@@ -472,7 +564,15 @@ Time: ${item.time}
               e.target.value
             )
           }
-          className="bg-[#171717] border border-[#2f2f2f] rounded-2xl px-4 h-14 outline-none"
+          className="
+            bg-white/75
+            border
+            border-[#ece7ff]
+            rounded-2xl
+            px-4
+            h-14
+            outline-none
+          "
         >
           <option>All</option>
           <option>Pending</option>
@@ -482,35 +582,57 @@ Time: ${item.time}
 
         <div className="relative">
 
-  <input
-    type="date"
-    value={selectedDate}
-    onChange={(e) =>
-      setSelectedDate(
-        e.target.value
-      )
-    }
-    className="w-full bg-[#171717] border border-[#2f2f2f] rounded-2xl px-4 h-14 outline-none text-white"
-    style={{
-      colorScheme: 'dark'
-    }}
-  />
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) =>
+              setSelectedDate(
+                e.target.value
+              )
+            }
+            className="
+              w-full
+              bg-white/75
+              border
+              border-[#ece7ff]
+              rounded-2xl
+              px-4
+              h-14
+              outline-none
+              text-[#1f1147]
+            "
+            style={{
+              colorScheme: 'light'
+            }}
+          />
 
-  <style>
-    {`
-      input[type="date"]::-webkit-calendar-picker-indicator {
-        filter: invert(1);
-        opacity: 1;
-        cursor: pointer;
-      }
-    `}
-  </style>
-</div>
+          <style>
+            {`
+              input[type="date"]::-webkit-calendar-picker-indicator {
+                filter:
+                invert(27%)
+                sepia(94%)
+                saturate(2322%)
+                hue-rotate(247deg)
+                brightness(93%)
+                contrast(95%);
+                opacity: 1;
+                cursor: pointer;
+              }
+            `}
+          </style>
+        </div>
       </div>
 
       {selectedDate ? (
 
-        <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+        <div className="
+          bg-white/75
+          border
+          border-[#ece7ff]
+          rounded-3xl
+          p-6
+        ">
 
           <div className="flex items-center gap-3 mb-5">
 
@@ -531,7 +653,7 @@ Time: ${item.time}
                   )}
               </h2>
 
-              <p className="text-zinc-400 text-sm">
+              <p className="text-[#7c6ca8] text-sm">
                 {selectedDateAppointments.length} appointments
               </p>
             </div>
@@ -541,7 +663,7 @@ Time: ${item.time}
 
             {selectedDateAppointments.length === 0 && (
 
-              <div className="text-zinc-500 text-center py-10">
+              <div className="text-[#8c84b3] text-center py-10">
                 No appointments yet
               </div>
             )}
@@ -559,7 +681,14 @@ Time: ${item.time}
       ) : (
 
         <>
-          <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6 mb-6">
+          <div className="
+            bg-white/75
+            border
+            border-[#ece7ff]
+            rounded-3xl
+            p-6
+            mb-6
+          ">
 
             <div className="flex items-center gap-3 mb-5">
 
@@ -571,7 +700,7 @@ Time: ${item.time}
                   Today's Appointments
                 </h2>
 
-                <p className="text-zinc-400 text-sm">
+                <p className="text-[#7c6ca8] text-sm">
                   {todayAppointments.length} appointments
                 </p>
               </div>
@@ -581,7 +710,7 @@ Time: ${item.time}
 
               {todayAppointments.length === 0 && (
 
-                <div className="text-zinc-500 text-center py-10">
+                <div className="text-[#8c84b3] text-center py-10">
                   No appointments today
                 </div>
               )}
@@ -596,7 +725,13 @@ Time: ${item.time}
             </div>
           </div>
 
-          <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+          <div className="
+            bg-white/75
+            border
+            border-[#ece7ff]
+            rounded-3xl
+            p-6
+          ">
 
             <div className="flex items-center gap-3 mb-5">
 
@@ -608,7 +743,7 @@ Time: ${item.time}
                   Tomorrow's Appointments
                 </h2>
 
-                <p className="text-zinc-400 text-sm">
+                <p className="text-[#7c6ca8] text-sm">
                   {tomorrowAppointments.length} appointments
                 </p>
               </div>
@@ -618,7 +753,7 @@ Time: ${item.time}
 
               {tomorrowAppointments.length === 0 && (
 
-                <div className="text-zinc-500 text-center py-10">
+                <div className="text-[#8c84b3] text-center py-10">
                   No appointments tomorrow
                 </div>
               )}

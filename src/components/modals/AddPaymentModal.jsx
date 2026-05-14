@@ -105,10 +105,7 @@ export default function AddPaymentModal({
           selectedPatient.totalPaid || 0
         )
 
-      /* =========================
-         FROM WALLET
-      ========================= */
-
+      /* FROM WALLET */
       if (
         form.method ===
         'From Wallet'
@@ -138,10 +135,7 @@ export default function AddPaymentModal({
           )
       }
 
-      /* =========================
-         ADVANCE PAYMENT
-      ========================= */
-
+      /* ADVANCE */
       else if (
         form.paymentType ===
         'Advance Payment'
@@ -156,10 +150,7 @@ export default function AddPaymentModal({
           paymentAmount
       }
 
-      /* =========================
-         PENDING PAYMENT
-      ========================= */
-
+      /* PENDING */
       else if (
         form.paymentType ===
         'Pending Payment'
@@ -170,10 +161,7 @@ export default function AddPaymentModal({
           paymentAmount
       }
 
-      /* =========================
-         NORMAL PAYMENT
-      ========================= */
-
+      /* NORMAL */
       else {
 
         updatedPaid =
@@ -243,18 +231,63 @@ export default function AddPaymentModal({
     }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3">
+    <div className="
+      fixed
+      inset-0
+      z-50
+      bg-black/40
+      backdrop-blur-md
+      flex
+      items-center
+      justify-center
+      p-3
+    ">
 
-      <div className="w-full max-w-2xl bg-[#1b1b1b] border border-[#343434] rounded-3xl p-6 relative max-h-[90vh] overflow-y-auto">
+      <div className="
+        w-full
+        max-w-2xl
+        bg-white/90
+        border
+        border-[#ece7ff]
+        rounded-[32px]
+        p-6
+        relative
+        max-h-[90vh]
+        overflow-y-auto
+        backdrop-blur-xl
+        shadow-[0_10px_40px_rgba(124,58,237,0.12)]
+      ">
 
+        {/* CLOSE */}
         <button
           onClick={close}
-          className="absolute top-5 right-5 w-10 h-10 rounded-xl border border-[#404040] flex items-center justify-center hover:bg-[#252525]"
+          className="
+            absolute
+            top-5
+            right-5
+            w-10
+            h-10
+            rounded-xl
+            border
+            border-[#ece7ff]
+            flex
+            items-center
+            justify-center
+            hover:bg-[#f5f3ff]
+            transition-all
+            text-[#1f1147]
+          "
         >
           <X size={18} />
         </button>
 
-        <h2 className="text-3xl font-bold mb-8">
+        {/* TITLE */}
+        <h2 className="
+          text-4xl
+          font-bold
+          mb-8
+          text-[#1f1147]
+        ">
           Add Payment
         </h2>
 
@@ -266,7 +299,13 @@ export default function AddPaymentModal({
           {/* PATIENT */}
           <div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
+            <label className="
+              text-sm
+              text-[#7c6ca8]
+              font-medium
+              mb-2
+              block
+            ">
               Patient
             </label>
 
@@ -295,33 +334,34 @@ export default function AddPaymentModal({
 
               placeholder="Search patient..."
 
-              className="text-black"
-
               styles={{
 
                 control: (base) => ({
                   ...base,
-                  backgroundColor: '#222',
-                  borderColor: '#3a3a3a',
+                  backgroundColor: '#ffffffcc',
+                  borderColor: '#ece7ff',
                   minHeight: 56,
-                  borderRadius: 16,
-                  boxShadow: 'none'
+                  borderRadius: 18,
+                  boxShadow: 'none',
+                  paddingLeft: 6
                 }),
 
                 menu: (base) => ({
                   ...base,
-                  backgroundColor: '#1b1b1b',
-                  border: '1px solid #343434'
+                  backgroundColor: '#fff',
+                  border: '1px solid #ece7ff',
+                  borderRadius: 18,
+                  overflow: 'hidden'
                 }),
 
                 singleValue: (base) => ({
                   ...base,
-                  color: 'white'
+                  color: '#1f1147'
                 }),
 
                 input: (base) => ({
                   ...base,
-                  color: 'white'
+                  color: '#1f1147'
                 }),
 
                 option: (
@@ -331,15 +371,15 @@ export default function AddPaymentModal({
                   ...base,
                   backgroundColor:
                     state.isFocused
-                      ? '#2a2a2a'
-                      : '#1b1b1b',
+                      ? '#f5f3ff'
+                      : '#fff',
 
-                  color: 'white'
+                  color: '#1f1147'
                 }),
 
                 placeholder: (base) => ({
                   ...base,
-                  color: '#777'
+                  color: '#8c84b3'
                 })
               }}
             />
@@ -350,26 +390,56 @@ export default function AddPaymentModal({
 
             <div className="grid grid-cols-2 gap-4">
 
-              <div className="bg-[#171717] border border-[#2f2f2f] rounded-2xl p-4">
+              {/* Wallet */}
+              <div className="
+                bg-[#faf8ff]
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                p-5
+              ">
 
-                <p className="text-zinc-400 text-sm mb-2">
+                <p className="
+                  text-[#8c84b3]
+                  text-sm
+                  mb-2
+                ">
                   Wallet Balance
                 </p>
 
-                <h2 className="text-3xl font-bold text-cyan-400">
+                <h2 className="
+                  text-3xl
+                  font-bold
+                  text-cyan-500
+                ">
                   ₹{
                     selectedPatient.walletBalance || 0
                   }
                 </h2>
               </div>
 
-              <div className="bg-[#171717] border border-[#2f2f2f] rounded-2xl p-4">
+              {/* Due */}
+              <div className="
+                bg-[#faf8ff]
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                p-5
+              ">
 
-                <p className="text-zinc-400 text-sm mb-2">
+                <p className="
+                  text-[#8c84b3]
+                  text-sm
+                  mb-2
+                ">
                   Pending Due
                 </p>
 
-                <h2 className="text-3xl font-bold text-yellow-400">
+                <h2 className="
+                  text-3xl
+                  font-bold
+                  text-amber-500
+                ">
                   ₹{
                     selectedPatient.pendingDue || 0
                   }
@@ -381,9 +451,16 @@ export default function AddPaymentModal({
           {/* AMOUNT + DATE */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
+            {/* Amount */}
             <div>
 
-              <label className="text-sm text-zinc-300 mb-2 block">
+              <label className="
+                text-sm
+                text-[#7c6ca8]
+                font-medium
+                mb-2
+                block
+              ">
                 Amount
               </label>
 
@@ -393,14 +470,31 @@ export default function AddPaymentModal({
                 placeholder="500"
                 value={form.amount}
                 onChange={handleChange}
-                className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none"
+                className="
+                  w-full
+                  h-14
+                  bg-white/80
+                  border
+                  border-[#ece7ff]
+                  rounded-2xl
+                  px-5
+                  outline-none
+                  text-[#1f1147]
+                "
                 required
               />
             </div>
 
+            {/* Date */}
             <div>
 
-              <label className="text-sm text-zinc-300 mb-2 block">
+              <label className="
+                text-sm
+                text-[#7c6ca8]
+                font-medium
+                mb-2
+                block
+              ">
                 Payment Date
               </label>
 
@@ -409,7 +503,20 @@ export default function AddPaymentModal({
                 name="date"
                 value={form.date}
                 onChange={handleChange}
-                className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none"
+                className="
+                  w-full
+                  h-14
+                  bg-white/80
+                  border
+                  border-[#ece7ff]
+                  rounded-2xl
+                  px-5
+                  outline-none
+                  text-[#1f1147]
+                "
+                style={{
+                  colorScheme: 'light'
+                }}
                 required
               />
             </div>
@@ -418,9 +525,16 @@ export default function AddPaymentModal({
           {/* TYPE + METHOD */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
+            {/* Type */}
             <div>
 
-              <label className="text-sm text-zinc-300 mb-2 block">
+              <label className="
+                text-sm
+                text-[#7c6ca8]
+                font-medium
+                mb-2
+                block
+              ">
                 Payment Type
               </label>
 
@@ -428,7 +542,17 @@ export default function AddPaymentModal({
                 name="paymentType"
                 value={form.paymentType}
                 onChange={handleChange}
-                className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none"
+                className="
+                  w-full
+                  h-14
+                  bg-white/80
+                  border
+                  border-[#ece7ff]
+                  rounded-2xl
+                  px-5
+                  outline-none
+                  text-[#1f1147]
+                "
               >
 
                 <option>
@@ -453,9 +577,16 @@ export default function AddPaymentModal({
               </select>
             </div>
 
+            {/* Method */}
             <div>
 
-              <label className="text-sm text-zinc-300 mb-2 block">
+              <label className="
+                text-sm
+                text-[#7c6ca8]
+                font-medium
+                mb-2
+                block
+              ">
                 Payment Method
               </label>
 
@@ -463,7 +594,17 @@ export default function AddPaymentModal({
                 name="method"
                 value={form.method}
                 onChange={handleChange}
-                className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none"
+                className="
+                  w-full
+                  h-14
+                  bg-white/80
+                  border
+                  border-[#ece7ff]
+                  rounded-2xl
+                  px-5
+                  outline-none
+                  text-[#1f1147]
+                "
               >
 
                 <option>
@@ -492,7 +633,13 @@ export default function AddPaymentModal({
           {/* NOTES */}
           <div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
+            <label className="
+              text-sm
+              text-[#7c6ca8]
+              font-medium
+              mb-2
+              block
+            ">
               Notes
             </label>
 
@@ -502,7 +649,18 @@ export default function AddPaymentModal({
               placeholder="Additional payment notes..."
               value={form.notes}
               onChange={handleChange}
-              className="w-full bg-[#222] border border-[#3a3a3a] rounded-2xl p-5 outline-none resize-none"
+              className="
+                w-full
+                bg-white/80
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                p-5
+                outline-none
+                resize-none
+                text-[#1f1147]
+                placeholder:text-[#8c84b3]
+              "
             />
           </div>
 
@@ -511,7 +669,23 @@ export default function AddPaymentModal({
 
             <button
               type="submit"
-              className="flex items-center justify-center gap-2 px-6 h-14 rounded-2xl bg-[#dffff2] text-black font-bold hover:opacity-90"
+              className="
+                flex
+                items-center
+                justify-center
+                gap-2
+                px-6
+                h-14
+                rounded-2xl
+                bg-gradient-to-r
+                from-violet-600
+                to-fuchsia-500
+                text-white
+                font-bold
+                hover:opacity-90
+                shadow-lg
+                shadow-violet-500/20
+              "
             >
 
               <IndianRupee size={16} />
@@ -522,7 +696,18 @@ export default function AddPaymentModal({
             <button
               type="button"
               onClick={close}
-              className="px-6 h-14 rounded-2xl border border-[#404040] hover:bg-[#252525]"
+              className="
+                px-6
+                h-14
+                rounded-2xl
+                border
+                border-[#ece7ff]
+                bg-white/80
+                hover:bg-[#f5f3ff]
+                transition-all
+                text-[#1f1147]
+                font-semibold
+              "
             >
               Cancel
             </button>

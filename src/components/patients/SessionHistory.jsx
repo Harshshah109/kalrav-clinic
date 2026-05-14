@@ -77,7 +77,15 @@ export default function SessionHistory({
 
       {sessions.length === 0 && (
 
-        <div className="bg-[#151515] border border-[#2f2f2f] rounded-2xl p-5 text-zinc-500 text-sm">
+        <div className="
+          bg-white/75
+          border
+          border-[#ece7ff]
+          rounded-2xl
+          p-5
+          text-[#8c84b3]
+          text-sm
+        ">
 
           No session history yet
         </div>
@@ -87,7 +95,15 @@ export default function SessionHistory({
 
         <div
           key={session.id}
-          className="bg-[#151515] border border-[#2f2f2f] rounded-2xl overflow-hidden"
+          className="
+            bg-white/75
+            border
+            border-[#ece7ff]
+            rounded-3xl
+            overflow-hidden
+            backdrop-blur-xl
+            shadow-[0_10px_30px_rgba(124,58,237,0.08)]
+          "
         >
 
           {/* TOP */}
@@ -101,19 +117,40 @@ export default function SessionHistory({
                   : session.id
               )
             }
-            className="w-full p-5 flex items-center justify-between hover:bg-[#1c1c1c] transition-all"
+            className="
+              w-full
+              p-5
+              flex
+              items-center
+              justify-between
+              hover:bg-[#f5f3ff]
+              transition-all
+            "
           >
 
             <div className="text-left">
 
-              <div className="flex items-center gap-2 text-white font-semibold mb-2">
+              <div className="
+                flex
+                items-center
+                gap-2
+                text-[#1f1147]
+                font-semibold
+                mb-2
+              ">
 
                 <CalendarDays size={16} />
 
                 {session.sessionDate}
               </div>
 
-              <div className="flex items-center gap-4 text-sm text-zinc-500">
+              <div className="
+                flex
+                items-center
+                gap-4
+                text-sm
+                text-[#8c84b3]
+              ">
 
                 <div className="flex items-center gap-2">
 
@@ -137,7 +174,12 @@ export default function SessionHistory({
           {/* CONTENT */}
           {openSession === session.id && (
 
-            <div className="border-t border-[#2a2a2a] p-5 space-y-5">
+            <div className="
+              border-t
+              border-[#ece7ff]
+              p-5
+              space-y-5
+            ">
 
               {/* ACTIONS */}
               <div className="flex gap-3">
@@ -160,7 +202,19 @@ export default function SessionHistory({
                         session.nextGoal || ''
                     })
                   }}
-                  className="flex items-center gap-2 px-4 h-11 rounded-2xl border border-[#383838] hover:bg-[#1d1d1d]"
+                  className="
+                    flex
+                    items-center
+                    gap-2
+                    px-4
+                    h-11
+                    rounded-2xl
+                    border
+                    border-[#ece7ff]
+                    bg-white
+                    hover:bg-[#f5f3ff]
+                    transition-all
+                  "
                 >
 
                   <Pencil size={16} />
@@ -185,7 +239,19 @@ export default function SessionHistory({
 
                     loadSessions()
                   }}
-                  className="flex items-center gap-2 px-4 h-11 rounded-2xl border border-red-500/30 text-red-400 hover:bg-red-500/10"
+                  className="
+                    flex
+                    items-center
+                    gap-2
+                    px-4
+                    h-11
+                    rounded-2xl
+                    border
+                    border-red-200
+                    text-red-500
+                    hover:bg-red-50
+                    transition-all
+                  "
                 >
 
                   <Trash2 size={16} />
@@ -197,7 +263,11 @@ export default function SessionHistory({
               {/* NOTES */}
               <div>
 
-                <p className="text-sm text-zinc-500 mb-2">
+                <p className="
+                  text-sm
+                  text-[#8c84b3]
+                  mb-2
+                ">
                   Session Notes
                 </p>
 
@@ -215,12 +285,29 @@ export default function SessionHistory({
                             e.target.value
                         })
                       }
-                      className="w-full min-h-[120px] bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 outline-none"
+                      className="
+                        w-full
+                        min-h-[120px]
+                        bg-[#faf8ff]
+                        border
+                        border-[#ece7ff]
+                        rounded-2xl
+                        p-4
+                        outline-none
+                      "
                     />
 
                   ) : (
 
-                    <div className="bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 text-zinc-300 leading-relaxed">
+                    <div className="
+                      bg-[#faf8ff]
+                      border
+                      border-[#ece7ff]
+                      rounded-2xl
+                      p-4
+                      text-[#1f1147]
+                      leading-relaxed
+                    ">
                       {session.notes}
                     </div>
                   )}
@@ -229,7 +316,11 @@ export default function SessionHistory({
               {/* PROGRESS */}
               <div>
 
-                <p className="text-sm text-zinc-500 mb-2">
+                <p className="
+                  text-sm
+                  text-[#8c84b3]
+                  mb-2
+                ">
                   Progress
                 </p>
 
@@ -247,12 +338,29 @@ export default function SessionHistory({
                             e.target.value
                         })
                       }
-                      className="w-full min-h-[100px] bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 outline-none"
+                      className="
+                        w-full
+                        min-h-[100px]
+                        bg-[#faf8ff]
+                        border
+                        border-[#ece7ff]
+                        rounded-2xl
+                        p-4
+                        outline-none
+                      "
                     />
 
                   ) : (
 
-                    <div className="bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 text-zinc-300 leading-relaxed">
+                    <div className="
+                      bg-[#faf8ff]
+                      border
+                      border-[#ece7ff]
+                      rounded-2xl
+                      p-4
+                      text-[#1f1147]
+                      leading-relaxed
+                    ">
                       {
                         session.progress ||
                         'No progress added'
@@ -264,7 +372,11 @@ export default function SessionHistory({
               {/* GOAL */}
               <div>
 
-                <p className="text-sm text-zinc-500 mb-2">
+                <p className="
+                  text-sm
+                  text-[#8c84b3]
+                  mb-2
+                ">
                   Next Goal
                 </p>
 
@@ -283,7 +395,16 @@ export default function SessionHistory({
                               e.target.value
                           })
                         }
-                        className="w-full min-h-[100px] bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 outline-none"
+                        className="
+                          w-full
+                          min-h-[100px]
+                          bg-[#faf8ff]
+                          border
+                          border-[#ece7ff]
+                          rounded-2xl
+                          p-4
+                          outline-none
+                        "
                       />
 
                       <button
@@ -300,7 +421,22 @@ export default function SessionHistory({
 
                           loadSessions()
                         }}
-                        className="mt-4 flex items-center gap-2 px-5 h-12 rounded-2xl bg-[#dffff2] text-black font-semibold"
+                        className="
+                          mt-4
+                          flex
+                          items-center
+                          gap-2
+                          px-5
+                          h-12
+                          rounded-2xl
+                          bg-gradient-to-r
+                          from-violet-600
+                          to-fuchsia-500
+                          text-white
+                          font-semibold
+                          shadow-lg
+                          shadow-violet-500/20
+                        "
                       >
 
                         <Save size={16} />
@@ -311,7 +447,15 @@ export default function SessionHistory({
 
                   ) : (
 
-                    <div className="bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 text-zinc-300 leading-relaxed">
+                    <div className="
+                      bg-[#faf8ff]
+                      border
+                      border-[#ece7ff]
+                      rounded-2xl
+                      p-4
+                      text-[#1f1147]
+                      leading-relaxed
+                    ">
                       {
                         session.nextGoal ||
                         'No goal added'

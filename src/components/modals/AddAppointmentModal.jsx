@@ -38,10 +38,6 @@ export default function AddAppointmentModal({
     setTherapists] =
       useState([])
 
-      const [searchPatient,
-  setSearchPatient] =
-    useState('')
-
   const [form, setForm] =
     useState({
 
@@ -105,7 +101,6 @@ export default function AddAppointmentModal({
         e.target.value
     }
 
-    /* AUTO SET PHONE */
     if (
       e.target.name === 'patient'
     ) {
@@ -177,21 +172,65 @@ export default function AddAppointmentModal({
     }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3">
+    <div className="
+      fixed
+      inset-0
+      z-50
+      bg-black/40
+      backdrop-blur-md
+      flex
+      items-center
+      justify-center
+      p-3
+    ">
 
-      <div className="w-full max-w-2xl bg-[#1b1b1b] border border-[#343434] rounded-3xl p-6 md:p-7 relative max-h-[90vh] overflow-y-auto">
+      <div className="
+        w-full
+        max-w-2xl
+        bg-white/90
+        border
+        border-[#ece7ff]
+        rounded-[32px]
+        p-6
+        md:p-7
+        relative
+        max-h-[90vh]
+        overflow-y-auto
+        backdrop-blur-xl
+        shadow-[0_10px_40px_rgba(124,58,237,0.12)]
+      ">
 
         {/* Close */}
         <button
           onClick={close}
-          className="absolute top-5 right-5 w-11 h-11 rounded-2xl border border-[#404040] flex items-center justify-center hover:bg-[#252525] transition-all"
+          className="
+            absolute
+            top-5
+            right-5
+            w-11
+            h-11
+            rounded-2xl
+            border
+            border-[#ece7ff]
+            flex
+            items-center
+            justify-center
+            hover:bg-[#f5f3ff]
+            transition-all
+            text-[#1f1147]
+          "
         >
 
           <X size={18} />
         </button>
 
         {/* Title */}
-        <h2 className="text-3xl font-bold mb-8">
+        <h2 className="
+          text-4xl
+          font-bold
+          mb-8
+          text-[#1f1147]
+        ">
 
           {isEdit
             ? 'Edit Appointment'
@@ -203,106 +242,119 @@ export default function AddAppointmentModal({
           className="space-y-5"
         >
 
-         {/* Patient */}
-<div>
+          {/* Patient */}
+          <div>
 
-  <label className="text-sm text-zinc-300 mb-2 block">
-    Patient
-  </label>
+            <label className="
+              text-sm
+              text-[#7c6ca8]
+              font-medium
+              mb-2
+              block
+            ">
+              Patient
+            </label>
 
-  <Select
-    options={patients.map((patient) => ({
-      value: patient.name,
-      label: patient.name
-    }))}
+            <Select
+              options={patients.map((patient) => ({
+                value: patient.name,
+                label: patient.name
+              }))}
 
-    value={
-      form.patient
-        ? {
-            value: form.patient,
-            label: form.patient
-          }
-        : null
-    }
+              value={
+                form.patient
+                  ? {
+                      value: form.patient,
+                      label: form.patient
+                    }
+                  : null
+              }
 
-    onChange={(selected) => {
+              onChange={(selected) => {
 
-      const selectedPatient =
-        patients.find(
-          (p) =>
-            p.name === selected.value
-        )
+                const selectedPatient =
+                  patients.find(
+                    (p) =>
+                      p.name === selected.value
+                  )
 
-      setForm({
-        ...form,
+                setForm({
+                  ...form,
 
-        patient:
-          selected.value,
+                  patient:
+                    selected.value,
 
-        patientPhone:
-          selectedPatient?.phone || ''
-      })
-    }}
+                  patientPhone:
+                    selectedPatient?.phone || ''
+                })
+              }}
 
-    placeholder="Search patient..."
+              placeholder="Search patient..."
 
-    className="text-black"
+              styles={{
 
-    styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: '#ffffffcc',
+                  borderColor: '#ece7ff',
+                  minHeight: 56,
+                  borderRadius: 18,
+                  boxShadow: 'none',
+                  paddingLeft: 6
+                }),
 
-      control: (base) => ({
-        ...base,
-        backgroundColor: '#222',
-        borderColor: '#3a3a3a',
-        minHeight: 56,
-        borderRadius: 16,
-        boxShadow: 'none'
-      }),
+                menu: (base) => ({
+                  ...base,
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #ece7ff',
+                  borderRadius: 18,
+                  overflow: 'hidden'
+                }),
 
-      menu: (base) => ({
-        ...base,
-        backgroundColor: '#1b1b1b',
-        border: '1px solid #343434'
-      }),
+                singleValue: (base) => ({
+                  ...base,
+                  color: '#1f1147'
+                }),
 
-      singleValue: (base) => ({
-        ...base,
-        color: 'white'
-      }),
+                input: (base) => ({
+                  ...base,
+                  color: '#1f1147'
+                }),
 
-      input: (base) => ({
-        ...base,
-        color: 'white'
-      }),
+                option: (
+                  base,
+                  state
+                ) => ({
+                  ...base,
+                  backgroundColor:
+                    state.isFocused
+                      ? '#f5f3ff'
+                      : '#fff',
 
-      option: (
-        base,
-        state
-      ) => ({
-        ...base,
-        backgroundColor:
-          state.isFocused
-            ? '#2a2a2a'
-            : '#1b1b1b',
+                  color: '#1f1147',
+                  cursor: 'pointer'
+                }),
 
-        color: 'white',
-        cursor: 'pointer'
-      }),
-
-      placeholder: (base) => ({
-        ...base,
-        color: '#777'
-      })
-    }}
-  />
-</div>
+                placeholder: (base) => ({
+                  ...base,
+                  color: '#8c84b3'
+                })
+              }}
+            />
+          </div>
 
           {/* Date + Time */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
             <div>
 
-              <label className="text-sm text-zinc-300 mb-2 block">
+              <label className="
+                text-sm
+                text-[#7c6ca8]
+                font-medium
+                mb-2
+                block
+              ">
                 Date
               </label>
 
@@ -311,67 +363,102 @@ export default function AddAppointmentModal({
                 name="date"
                 value={form.date}
                 onChange={handleChange}
-                className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
+                className="
+                  w-full
+                  h-14
+                  bg-white/80
+                  border
+                  border-[#ece7ff]
+                  rounded-2xl
+                  px-5
+                  outline-none
+                  text-[#1f1147]
+                "
+                style={{
+                  colorScheme: 'light'
+                }}
                 required
               />
             </div>
 
             <div>
 
-              <label className="text-sm text-zinc-300 mb-2 block">
+              <label className="
+                text-sm
+                text-[#7c6ca8]
+                font-medium
+                mb-2
+                block
+              ">
                 Time
               </label>
 
               <select
-  name="time"
-  value={form.time}
-  onChange={handleChange}
-  className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
->
+                name="time"
+                value={form.time}
+                onChange={handleChange}
+                className="
+                  w-full
+                  h-14
+                  bg-white/80
+                  border
+                  border-[#ece7ff]
+                  rounded-2xl
+                  px-5
+                  outline-none
+                  text-[#1f1147]
+                "
+              >
 
-  {Array.from({ length: 49 }, (_, index) => {
+                {Array.from({ length: 49 }, (_, index) => {
 
-    const totalMinutes =
-      9 * 60 + index * 15
+                  const totalMinutes =
+                    9 * 60 + index * 15
 
-    const hours =
-      Math.floor(totalMinutes / 60)
+                  const hours =
+                    Math.floor(totalMinutes / 60)
 
-    const minutes =
-      totalMinutes % 60
+                  const minutes =
+                    totalMinutes % 60
 
-    const formattedHours =
-      hours % 12 === 0
-        ? 12
-        : hours % 12
+                  const formattedHours =
+                    hours % 12 === 0
+                      ? 12
+                      : hours % 12
 
-    const ampm =
-      hours >= 12
-        ? 'PM'
-        : 'AM'
+                  const ampm =
+                    hours >= 12
+                      ? 'PM'
+                      : 'AM'
 
-    const time =
-      `${formattedHours}:${String(
-        minutes
-      ).padStart(2, '0')} ${ampm}`
+                  const time =
+                    `${formattedHours}:${String(
+                      minutes
+                    ).padStart(2, '0')} ${ampm}`
 
-    return (
-      <option
-        key={time}
-        value={time}
-      >
-        {time}
-      </option>
-    )
-  })}
-</select>
+                  return (
+                    <option
+                      key={time}
+                      value={time}
+                    >
+                      {time}
+                    </option>
+                  )
+                })}
+              </select>
             </div>
           </div>
 
           {/* Therapist */}
           <div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
+            <label className="
+              text-sm
+              text-[#7c6ca8]
+              font-medium
+              mb-2
+              block
+            ">
               Therapist
             </label>
 
@@ -379,7 +466,17 @@ export default function AddAppointmentModal({
               name="therapist"
               value={form.therapist}
               onChange={handleChange}
-              className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
+              className="
+                w-full
+                h-14
+                bg-white/80
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                px-5
+                outline-none
+                text-[#1f1147]
+              "
             >
 
               <option value="">
@@ -401,7 +498,13 @@ export default function AddAppointmentModal({
           {/* Session Type */}
           <div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
+            <label className="
+              text-sm
+              text-[#7c6ca8]
+              font-medium
+              mb-2
+              block
+            ">
               Session Type
             </label>
 
@@ -409,7 +512,17 @@ export default function AddAppointmentModal({
               name="therapy"
               value={form.therapy}
               onChange={handleChange}
-              className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
+              className="
+                w-full
+                h-14
+                bg-white/80
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                px-5
+                outline-none
+                text-[#1f1147]
+              "
             >
 
               <option>
@@ -437,7 +550,13 @@ export default function AddAppointmentModal({
           {/* Duration */}
           <div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
+            <label className="
+              text-sm
+              text-[#7c6ca8]
+              font-medium
+              mb-2
+              block
+            ">
               Duration
             </label>
 
@@ -445,7 +564,17 @@ export default function AddAppointmentModal({
               name="duration"
               value={form.duration}
               onChange={handleChange}
-              className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
+              className="
+                w-full
+                h-14
+                bg-white/80
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                px-5
+                outline-none
+                text-[#1f1147]
+              "
             >
 
               <option>30 min</option>
@@ -457,7 +586,13 @@ export default function AddAppointmentModal({
           {/* Status */}
           <div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
+            <label className="
+              text-sm
+              text-[#7c6ca8]
+              font-medium
+              mb-2
+              block
+            ">
               Status
             </label>
 
@@ -465,7 +600,17 @@ export default function AddAppointmentModal({
               name="status"
               value={form.status}
               onChange={handleChange}
-              className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl px-5 outline-none focus:border-[#7ddfc6]"
+              className="
+                w-full
+                h-14
+                bg-white/80
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                px-5
+                outline-none
+                text-[#1f1147]
+              "
             >
 
               <option>
@@ -487,7 +632,24 @@ export default function AddAppointmentModal({
 
             <button
               type="submit"
-              className="flex items-center justify-center gap-2 px-6 h-14 rounded-2xl bg-[#dffff2] text-black font-bold hover:opacity-90 transition-all"
+              className="
+                flex
+                items-center
+                justify-center
+                gap-2
+                px-6
+                h-14
+                rounded-2xl
+                bg-gradient-to-r
+                from-violet-600
+                to-fuchsia-500
+                text-white
+                font-bold
+                shadow-lg
+                shadow-violet-500/20
+                hover:opacity-90
+                transition-all
+              "
             >
 
               <Check size={18} />
@@ -500,7 +662,18 @@ export default function AddAppointmentModal({
             <button
               type="button"
               onClick={close}
-              className="px-6 h-14 rounded-2xl border border-[#404040] hover:bg-[#252525] transition-all"
+              className="
+                px-6
+                h-14
+                rounded-2xl
+                border
+                border-[#ece7ff]
+                bg-white/80
+                hover:bg-[#f5f3ff]
+                transition-all
+                text-[#1f1147]
+                font-semibold
+              "
             >
               Cancel
             </button>

@@ -22,10 +22,15 @@ export default function AddPatientModal({
       birthDate: '',
 
       gender: '',
+
       phone: '',
+
       parentName: '',
+
       address: '',
+
       condition: '',
+
       otherCondition: '',
 
       category: 'Assessment',
@@ -126,18 +131,64 @@ export default function AddPatientModal({
     }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3">
+    <div className="
+      fixed
+      inset-0
+      z-50
+      bg-black/40
+      backdrop-blur-md
+      flex
+      items-center
+      justify-center
+      p-3
+    ">
 
-      <div className="w-full max-w-3xl max-h-[92vh] overflow-y-auto bg-[#1b1b1b] border border-[#343434] rounded-3xl p-6 md:p-7 relative">
+      <div className="
+        w-full
+        max-w-3xl
+        max-h-[92vh]
+        overflow-y-auto
+        bg-white/90
+        border
+        border-[#ece7ff]
+        rounded-[32px]
+        p-6
+        md:p-7
+        relative
+        backdrop-blur-xl
+        shadow-[0_10px_40px_rgba(124,58,237,0.12)]
+      ">
 
+        {/* CLOSE */}
         <button
           onClick={close}
-          className="absolute top-5 right-5 w-10 h-10 rounded-xl border border-[#404040] flex items-center justify-center hover:bg-[#252525]"
+          className="
+            absolute
+            top-5
+            right-5
+            w-11
+            h-11
+            rounded-2xl
+            border
+            border-[#ece7ff]
+            flex
+            items-center
+            justify-center
+            hover:bg-[#f5f3ff]
+            transition-all
+            text-[#1f1147]
+          "
         >
           <X size={18} />
         </button>
 
-        <h2 className="text-3xl font-bold mb-8">
+        {/* TITLE */}
+        <h2 className="
+          text-4xl
+          font-bold
+          mb-8
+          text-[#1f1147]
+        ">
           Add New Patient
         </h2>
 
@@ -148,7 +199,13 @@ export default function AddPatientModal({
 
           <div>
 
-            <h3 className="text-xs tracking-widest text-zinc-500 font-bold mb-5">
+            <h3 className="
+              text-xs
+              tracking-[0.2em]
+              text-violet-500
+              font-bold
+              mb-5
+            ">
               PERSONAL INFO
             </h3>
 
@@ -157,7 +214,13 @@ export default function AddPatientModal({
               {/* NAME */}
               <div>
 
-                <label className="text-sm text-zinc-300 mb-2 block">
+                <label className="
+                  text-sm
+                  text-[#7c6ca8]
+                  font-medium
+                  mb-2
+                  block
+                ">
                   Patient Name *
                 </label>
 
@@ -166,7 +229,17 @@ export default function AddPatientModal({
                   name="name"
                   value={form.name}
                   onChange={handleChange}
-                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                  className="
+                    w-full
+                    h-14
+                    bg-white/80
+                    border
+                    border-[#ece7ff]
+                    rounded-2xl
+                    px-5
+                    outline-none
+                    text-[#1f1147]
+                  "
                   required
                 />
               </div>
@@ -174,7 +247,13 @@ export default function AddPatientModal({
               {/* DOB */}
               <div>
 
-                <label className="text-sm text-zinc-300 mb-2 block">
+                <label className="
+                  text-sm
+                  text-[#7c6ca8]
+                  font-medium
+                  mb-2
+                  block
+                ">
                   Birth Date *
                 </label>
 
@@ -183,7 +262,20 @@ export default function AddPatientModal({
                   name="birthDate"
                   value={form.birthDate}
                   onChange={handleChange}
-                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                  className="
+                    w-full
+                    h-14
+                    bg-white/80
+                    border
+                    border-[#ece7ff]
+                    rounded-2xl
+                    px-5
+                    outline-none
+                    text-[#1f1147]
+                  "
+                  style={{
+                    colorScheme: 'light'
+                  }}
                   required
                 />
               </div>
@@ -191,7 +283,13 @@ export default function AddPatientModal({
               {/* GENDER */}
               <div>
 
-                <label className="text-sm text-zinc-300 mb-2 block">
+                <label className="
+                  text-sm
+                  text-[#7c6ca8]
+                  font-medium
+                  mb-2
+                  block
+                ">
                   Gender
                 </label>
 
@@ -199,7 +297,17 @@ export default function AddPatientModal({
                   name="gender"
                   value={form.gender}
                   onChange={handleChange}
-                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                  className="
+                    w-full
+                    h-14
+                    bg-white/80
+                    border
+                    border-[#ece7ff]
+                    rounded-2xl
+                    px-5
+                    outline-none
+                    text-[#1f1147]
+                  "
                 >
 
                   <option value="">
@@ -223,7 +331,13 @@ export default function AddPatientModal({
               {/* PHONE */}
               <div>
 
-                <label className="text-sm text-zinc-300 mb-2 block">
+                <label className="
+                  text-sm
+                  text-[#7c6ca8]
+                  font-medium
+                  mb-2
+                  block
+                ">
                   Phone Number
                 </label>
 
@@ -232,14 +346,30 @@ export default function AddPatientModal({
                   name="phone"
                   value={form.phone}
                   onChange={handleChange}
-                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                  className="
+                    w-full
+                    h-14
+                    bg-white/80
+                    border
+                    border-[#ece7ff]
+                    rounded-2xl
+                    px-5
+                    outline-none
+                    text-[#1f1147]
+                  "
                 />
               </div>
 
               {/* PARENT */}
               <div>
 
-                <label className="text-sm text-zinc-300 mb-2 block">
+                <label className="
+                  text-sm
+                  text-[#7c6ca8]
+                  font-medium
+                  mb-2
+                  block
+                ">
                   Parent / Guardian Name
                 </label>
 
@@ -248,14 +378,30 @@ export default function AddPatientModal({
                   name="parentName"
                   value={form.parentName}
                   onChange={handleChange}
-                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                  className="
+                    w-full
+                    h-14
+                    bg-white/80
+                    border
+                    border-[#ece7ff]
+                    rounded-2xl
+                    px-5
+                    outline-none
+                    text-[#1f1147]
+                  "
                 />
               </div>
 
               {/* CONDITION */}
               <div>
 
-                <label className="text-sm text-zinc-300 mb-2 block">
+                <label className="
+                  text-sm
+                  text-[#7c6ca8]
+                  font-medium
+                  mb-2
+                  block
+                ">
                   Condition
                 </label>
 
@@ -263,7 +409,17 @@ export default function AddPatientModal({
                   name="condition"
                   value={form.condition}
                   onChange={handleChange}
-                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                  className="
+                    w-full
+                    h-14
+                    bg-white/80
+                    border
+                    border-[#ece7ff]
+                    rounded-2xl
+                    px-5
+                    outline-none
+                    text-[#1f1147]
+                  "
                   required
                 >
 
@@ -307,7 +463,13 @@ export default function AddPatientModal({
 
               <div className="mt-4">
 
-                <label className="text-sm text-zinc-300 mb-2 block">
+                <label className="
+                  text-sm
+                  text-[#7c6ca8]
+                  font-medium
+                  mb-2
+                  block
+                ">
                   Specify Condition
                 </label>
 
@@ -317,7 +479,18 @@ export default function AddPatientModal({
                   value={form.otherCondition}
                   onChange={handleChange}
                   placeholder="Enter custom condition"
-                  className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                  className="
+                    w-full
+                    h-14
+                    bg-white/80
+                    border
+                    border-[#ece7ff]
+                    rounded-2xl
+                    px-5
+                    outline-none
+                    text-[#1f1147]
+                    placeholder:text-[#8c84b3]
+                  "
                   required
                 />
               </div>
@@ -326,7 +499,13 @@ export default function AddPatientModal({
             {/* ADDRESS */}
             <div className="mt-4">
 
-              <label className="text-sm text-zinc-300 mb-2 block">
+              <label className="
+                text-sm
+                text-[#7c6ca8]
+                font-medium
+                mb-2
+                block
+              ">
                 Address
               </label>
 
@@ -335,14 +514,31 @@ export default function AddPatientModal({
                 value={form.address}
                 onChange={handleChange}
                 rows={3}
-                className="w-full bg-[#222] border border-[#3a3a3a] rounded-xl px-4 py-3 outline-none resize-none"
+                className="
+                  w-full
+                  bg-white/80
+                  border
+                  border-[#ece7ff]
+                  rounded-2xl
+                  px-5
+                  py-4
+                  outline-none
+                  resize-none
+                  text-[#1f1147]
+                "
               />
             </div>
 
             {/* CATEGORY */}
             <div className="mt-4">
 
-              <label className="text-sm text-zinc-300 mb-2 block">
+              <label className="
+                text-sm
+                text-[#7c6ca8]
+                font-medium
+                mb-2
+                block
+              ">
                 Patient Category
               </label>
 
@@ -350,7 +546,17 @@ export default function AddPatientModal({
                 name="category"
                 value={form.category}
                 onChange={handleChange}
-                className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+                className="
+                  w-full
+                  h-14
+                  bg-white/80
+                  border
+                  border-[#ece7ff]
+                  rounded-2xl
+                  px-5
+                  outline-none
+                  text-[#1f1147]
+                "
               >
 
                 <option>
@@ -370,7 +576,13 @@ export default function AddPatientModal({
             {/* NOTES */}
             <div className="mt-4">
 
-              <label className="text-sm text-zinc-300 mb-2 block">
+              <label className="
+                text-sm
+                text-[#7c6ca8]
+                font-medium
+                mb-2
+                block
+              ">
                 Notes
               </label>
 
@@ -380,7 +592,19 @@ export default function AddPatientModal({
                 onChange={handleChange}
                 rows={4}
                 placeholder="Additional patient information..."
-                className="w-full bg-[#222] border border-[#3a3a3a] rounded-xl px-4 py-3 outline-none resize-none"
+                className="
+                  w-full
+                  bg-white/80
+                  border
+                  border-[#ece7ff]
+                  rounded-2xl
+                  px-5
+                  py-4
+                  outline-none
+                  resize-none
+                  text-[#1f1147]
+                  placeholder:text-[#8c84b3]
+                "
               />
             </div>
           </div>
@@ -390,7 +614,24 @@ export default function AddPatientModal({
 
             <button
               type="submit"
-              className="flex items-center justify-center gap-2 px-6 h-12 rounded-xl bg-[#dffff2] text-black font-bold hover:opacity-90 transition-all"
+              className="
+                flex
+                items-center
+                justify-center
+                gap-2
+                px-6
+                h-14
+                rounded-2xl
+                bg-gradient-to-r
+                from-violet-600
+                to-fuchsia-500
+                text-white
+                font-bold
+                hover:opacity-90
+                transition-all
+                shadow-lg
+                shadow-violet-500/20
+              "
             >
 
               <Save size={16} />
@@ -401,7 +642,18 @@ export default function AddPatientModal({
             <button
               type="button"
               onClick={close}
-              className="px-6 h-12 rounded-xl border border-[#404040] hover:bg-[#252525] transition-all"
+              className="
+                px-6
+                h-14
+                rounded-2xl
+                border
+                border-[#ece7ff]
+                bg-white/80
+                hover:bg-[#f5f3ff]
+                transition-all
+                text-[#1f1147]
+                font-semibold
+              "
             >
               Cancel
             </button>

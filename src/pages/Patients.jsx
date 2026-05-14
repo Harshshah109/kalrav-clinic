@@ -100,18 +100,18 @@ export default function Patients({
     }
 
   return (
-    <div className="pb-10">
+    <div className="pb-10 text-[#1f1147]">
 
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
 
         <div>
 
-          <h1 className="text-4xl font-bold mb-2">
+          <h1 className="text-5xl font-bold mb-2 text-[#1f1147]">
             Patients
           </h1>
 
-          <p className="text-zinc-400">
+          <p className="text-[#7c6ca8] text-lg">
             Manage patient records and sessions
           </p>
         </div>
@@ -122,12 +122,27 @@ export default function Patients({
             onClick={() =>
               setOpenModal(true)
             }
-            className="flex items-center justify-center gap-2 border border-[#3a3a3a] rounded-2xl px-6 py-4 hover:bg-[#1c1c1c] transition-all"
+            className="
+              flex
+              items-center
+              justify-center
+              gap-2
+              border
+              border-[#ece7ff]
+              bg-white/75
+              rounded-2xl
+              px-6
+              py-4
+              hover:bg-[#f5f3ff]
+              transition-all
+              text-[#1f1147]
+              font-semibold
+            "
           >
 
             <Plus size={20} />
 
-            <span className="font-semibold">
+            <span>
               Add Patient
             </span>
           </button>
@@ -135,13 +150,21 @@ export default function Patients({
       </div>
 
       {/* Search */}
-      <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-4 mb-6">
+      <div className="
+        bg-white/75
+        border
+        border-[#ece7ff]
+        rounded-3xl
+        p-4
+        mb-6
+        backdrop-blur-xl
+      ">
 
         <div className="flex items-center gap-3">
 
           <Search
             size={20}
-            className="text-zinc-500"
+            className="text-[#8c84b3]"
           />
 
           <input
@@ -153,7 +176,13 @@ export default function Patients({
                 e.target.value
               )
             }
-            className="bg-transparent outline-none w-full text-white placeholder:text-zinc-500"
+            className="
+              bg-transparent
+              outline-none
+              w-full
+              text-[#1f1147]
+              placeholder:text-[#8c84b3]
+            "
           />
         </div>
       </div>
@@ -175,14 +204,37 @@ export default function Patients({
 
             <div
               key={patient.id}
-              className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-5"
+              className="
+                bg-white/75
+                border
+                border-[#ece7ff]
+                rounded-3xl
+                p-5
+                backdrop-blur-xl
+                shadow-[0_10px_30px_rgba(124,58,237,0.08)]
+              "
             >
 
               {/* Top */}
               <div className="flex flex-col xl:flex-row xl:items-center gap-5">
 
                 {/* Avatar */}
-                <div className="w-16 h-16 rounded-full bg-[#dffff2] text-black flex items-center justify-center text-lg font-bold">
+                <div className="
+                  w-16
+                  h-16
+                  rounded-full
+                  bg-gradient-to-br
+                  from-violet-500
+                  to-fuchsia-500
+                  text-white
+                  flex
+                  items-center
+                  justify-center
+                  text-lg
+                  font-bold
+                  shadow-lg
+                  shadow-violet-500/20
+                ">
                   {patient.name?.slice(0, 2)}
                 </div>
 
@@ -207,11 +259,11 @@ export default function Patients({
                     </span>
                   </div>
 
-                  <p className="text-zinc-400 mb-3">
+                  <p className="text-[#7c6ca8] mb-3">
                     {patient.condition} • Age {patient.age}
                   </p>
 
-                  <div className="flex flex-wrap gap-4 text-sm text-zinc-400">
+                  <div className="flex flex-wrap gap-4 text-sm text-[#7c6ca8]">
 
                     <div className="flex items-center gap-2">
                       <CalendarDays size={16} />
@@ -230,16 +282,22 @@ export default function Patients({
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
 
                       {/* Total Paid */}
-                      <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
+                      <div className="
+                        bg-[#faf8ff]
+                        rounded-2xl
+                        p-4
+                        border
+                        border-[#ece7ff]
+                      ">
 
-                        <div className="flex items-center gap-2 mb-2 text-zinc-500 text-sm">
+                        <div className="flex items-center gap-2 mb-2 text-[#8c84b3] text-sm">
 
                           <IndianRupee size={15} />
 
                           Total Paid
                         </div>
 
-                        <h3 className="text-2xl font-bold text-emerald-400">
+                        <h3 className="text-2xl font-bold text-emerald-500">
                           ₹{
                             patient.totalPaid || 0
                           }
@@ -247,16 +305,22 @@ export default function Patients({
                       </div>
 
                       {/* Wallet */}
-                      <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
+                      <div className="
+                        bg-[#faf8ff]
+                        rounded-2xl
+                        p-4
+                        border
+                        border-[#ece7ff]
+                      ">
 
-                        <div className="flex items-center gap-2 mb-2 text-zinc-500 text-sm">
+                        <div className="flex items-center gap-2 mb-2 text-[#8c84b3] text-sm">
 
                           <IndianRupee size={15} />
 
                           Wallet Balance
                         </div>
 
-                        <h3 className="text-2xl font-bold text-cyan-400">
+                        <h3 className="text-2xl font-bold text-cyan-500">
                           ₹{
                             patient.walletBalance || 0
                           }
@@ -264,9 +328,15 @@ export default function Patients({
                       </div>
 
                       {/* Due */}
-                      <div className="bg-[#1f1f1f] rounded-2xl p-4 border border-[#2d2d2d]">
+                      <div className="
+                        bg-[#faf8ff]
+                        rounded-2xl
+                        p-4
+                        border
+                        border-[#ece7ff]
+                      ">
 
-                        <div className="flex items-center gap-2 mb-2 text-zinc-500 text-sm">
+                        <div className="flex items-center gap-2 mb-2 text-[#8c84b3] text-sm">
 
                           <AlertCircle size={15} />
 
@@ -275,8 +345,8 @@ export default function Patients({
 
                         <h3 className={`text-2xl font-bold ${
                           patient.pendingDue > 0
-                            ? 'text-yellow-400'
-                            : 'text-emerald-400'
+                            ? 'text-yellow-500'
+                            : 'text-emerald-500'
                         }`}>
 
                           {
@@ -298,7 +368,18 @@ export default function Patients({
                     onClick={() =>
                       setSessionPatient(patient)
                     }
-                    className="w-12 h-12 rounded-2xl border border-[#383838] flex items-center justify-center hover:bg-[#222] transition-all text-white"
+                    className="
+                      w-12
+                      h-12
+                      rounded-2xl
+                      border
+                      border-[#ece7ff]
+                      flex
+                      items-center
+                      justify-center
+                      hover:bg-[#f5f3ff]
+                      transition-all
+                    "
                   >
                     <ClipboardPen size={18} />
                   </button>
@@ -311,7 +392,18 @@ export default function Patients({
                         onClick={() =>
                           setSelectedPatient(patient)
                         }
-                        className="w-12 h-12 rounded-2xl border border-[#383838] flex items-center justify-center hover:bg-[#222] transition-all text-white"
+                        className="
+                          w-12
+                          h-12
+                          rounded-2xl
+                          border
+                          border-[#ece7ff]
+                          flex
+                          items-center
+                          justify-center
+                          hover:bg-[#f5f3ff]
+                          transition-all
+                        "
                       >
                         <Pencil size={18} />
                       </button>
@@ -365,7 +457,19 @@ export default function Patients({
                             console.log(err)
                           }
                         }}
-                        className="w-12 h-12 rounded-2xl border border-red-500/30 text-red-400 flex items-center justify-center hover:bg-red-500/10 transition-all"
+                        className="
+                          w-12
+                          h-12
+                          rounded-2xl
+                          border
+                          border-red-200
+                          text-red-500
+                          flex
+                          items-center
+                          justify-center
+                          hover:bg-red-50
+                          transition-all
+                        "
                       >
                         <Trash2 size={18} />
                       </button>
@@ -385,7 +489,7 @@ export default function Patients({
                       : patient.id
                   )
                 }
-                className="mt-5 text-sm text-[#dffff2]"
+                className="mt-5 text-sm text-violet-600 font-semibold"
               >
                 {expandedPatient === patient.id
                   ? 'Hide Session History'
@@ -393,11 +497,12 @@ export default function Patients({
               </button>
 
               {/* Session History */}
-{expandedPatient === patient.id && (
-  <SessionHistory
-    patient={patient}
-  />
-)}
+              {expandedPatient === patient.id && (
+                <SessionHistory
+                  patient={patient}
+                />
+              )}
+
               {/* PAYMENT HISTORY TOGGLE */}
               <button
                 onClick={() =>
@@ -409,7 +514,7 @@ export default function Patients({
                       : patient.id
                   )
                 }
-                className="mt-4 flex items-center gap-2 text-sm text-cyan-400"
+                className="mt-4 flex items-center gap-2 text-sm text-cyan-600 font-semibold"
               >
                 {expandedPayments === patient.id
                   ? (
@@ -429,7 +534,14 @@ export default function Patients({
               {/* PAYMENT HISTORY */}
               {expandedPayments === patient.id && (
 
-                <div className="mt-5 bg-[#1b1b1b] border border-[#2d2d2d] rounded-3xl p-5">
+                <div className="
+                  mt-5
+                  bg-white/80
+                  border
+                  border-[#ece7ff]
+                  rounded-3xl
+                  p-5
+                ">
 
                   <div className="flex items-center justify-between mb-5">
 
@@ -437,7 +549,7 @@ export default function Patients({
                       Payment History
                     </h3>
 
-                    <span className="text-sm text-zinc-500">
+                    <span className="text-sm text-[#8c84b3]">
                       {
                         payments.filter(
                           (payment) =>
@@ -481,12 +593,29 @@ export default function Patients({
 
                         <div
                           key={payment.id}
-                          className="bg-[#171717] border border-[#2f2f2f] rounded-2xl p-4"
+                          className="
+                            bg-[#faf8ff]
+                            border
+                            border-[#ece7ff]
+                            rounded-2xl
+                            p-4
+                          "
                         >
 
                           <div className="flex flex-col md:flex-row md:items-center gap-4">
 
-                            <div className="w-12 h-12 rounded-2xl bg-[#dffff2] text-black flex items-center justify-center">
+                            <div className="
+                              w-12
+                              h-12
+                              rounded-2xl
+                              bg-gradient-to-br
+                              from-violet-500
+                              to-fuchsia-500
+                              text-white
+                              flex
+                              items-center
+                              justify-center
+                            ">
 
                               <IndianRupee size={20} />
                             </div>
@@ -499,7 +628,15 @@ export default function Patients({
                                   ₹{payment.amount}
                                 </h3>
 
-                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#222] text-cyan-400">
+                                <span className="
+                                  px-3
+                                  py-1
+                                  rounded-full
+                                  text-xs
+                                  font-semibold
+                                  bg-cyan-100
+                                  text-cyan-700
+                                ">
                                   {
                                     payment.paymentType ||
                                     'Payment'
@@ -507,84 +644,100 @@ export default function Patients({
                                 </span>
 
                                 {payment.status === 'Pending'
-  ? (
+                                  ? (
 
-    <button
-      onClick={async () => {
+                                    <button
+                                      onClick={async () => {
 
-        const confirmPayment =
-          window.confirm(
-            'Mark this pending payment as paid?'
-          )
+                                        const confirmPayment =
+                                          window.confirm(
+                                            'Mark this pending payment as paid?'
+                                          )
 
-        if (!confirmPayment)
-          return
+                                        if (!confirmPayment)
+                                          return
 
-        const updatedDue =
-          Math.max(
-            Number(
-              patient.pendingDue || 0
-            ) -
-            Number(
-              payment.amount || 0
-            ),
-            0
-          )
+                                        const updatedDue =
+                                          Math.max(
+                                            Number(
+                                              patient.pendingDue || 0
+                                            ) -
+                                            Number(
+                                              payment.amount || 0
+                                            ),
+                                            0
+                                          )
 
-        const {
-          updatePayment
-        } = await import(
-          '../services/paymentService'
-        )
+                                        const {
+                                          updatePayment
+                                        } = await import(
+                                          '../services/paymentService'
+                                        )
 
-        const {
-          updatePatient
-        } = await import(
-          '../services/patientService'
-        )
+                                        const {
+                                          updatePatient
+                                        } = await import(
+                                          '../services/patientService'
+                                        )
 
-        await updatePayment(
-          payment.id,
-          {
-            status: 'Paid',
-            paymentType:
-              'Due Clearance'
-          }
-        )
+                                        await updatePayment(
+                                          payment.id,
+                                          {
+                                            status: 'Paid',
+                                            paymentType:
+                                              'Due Clearance'
+                                          }
+                                        )
 
-        await updatePatient(
-          patient.id,
-          {
-            pendingDue:
-              updatedDue,
+                                        await updatePatient(
+                                          patient.id,
+                                          {
+                                            pendingDue:
+                                              updatedDue,
 
-            totalPaid:
-              Number(
-                patient.totalPaid || 0
-              ) +
-              Number(
-                payment.amount || 0
-              )
-          }
-        )
+                                            totalPaid:
+                                              Number(
+                                                patient.totalPaid || 0
+                                              ) +
+                                              Number(
+                                                payment.amount || 0
+                                              )
+                                          }
+                                        )
 
-        loadPatients()
-      }}
-      className="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 hover:opacity-90"
-    >
-      Mark Paid
-    </button>
+                                        loadPatients()
+                                      }}
+                                      className="
+                                        px-3
+                                        py-1
+                                        rounded-full
+                                        text-xs
+                                        font-semibold
+                                        bg-yellow-100
+                                        text-yellow-700
+                                      "
+                                    >
+                                      Mark Paid
+                                    </button>
 
-  )
-  : (
+                                  )
+                                  : (
 
-    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
-      Paid
-    </span>
-  )}
+                                    <span className="
+                                      px-3
+                                      py-1
+                                      rounded-full
+                                      text-xs
+                                      font-semibold
+                                      bg-emerald-100
+                                      text-emerald-700
+                                    ">
+                                      Paid
+                                    </span>
+                                  )}
                               </div>
 
-                              <p className="text-zinc-400 text-sm">
+                              <p className="text-[#7c6ca8] text-sm">
                                 {payment.method} • {
                                   payment.date?.seconds
                                     ? new Date(
@@ -596,7 +749,7 @@ export default function Patients({
 
                               {payment.notes && (
 
-                                <p className="text-zinc-500 text-sm mt-2">
+                                <p className="text-[#8c84b3] text-sm mt-2">
                                   {payment.notes}
                                 </p>
                               )}
@@ -611,7 +764,7 @@ export default function Patients({
                         patient.name
                     ).length === 0 && (
 
-                      <div className="text-zinc-500 text-center py-10">
+                      <div className="text-[#8c84b3] text-center py-10">
                         No payments found
                       </div>
                     )}
