@@ -3,7 +3,10 @@ import {
   addDoc,
   getDocs,
   query,
-  where
+  where,
+  doc,
+  updateDoc,
+  deleteDoc
 } from 'firebase/firestore'
 
 import { db } from './firebase'
@@ -11,6 +14,7 @@ import { db } from './firebase'
 const sessionRef =
   collection(db, 'sessionHistory')
 
+/* ADD */
 export const addSession =
   async (data) => {
 
@@ -20,6 +24,7 @@ export const addSession =
     )
   }
 
+/* GET */
 export const getPatientSessions =
   async (patientName) => {
 
@@ -40,5 +45,38 @@ export const getPatientSessions =
         id: docItem.id,
         ...docItem.data()
       })
+    )
+  }
+
+/* UPDATE */
+export const updateSession =
+  async (id, data) => {
+
+    const sessionDoc =
+      doc(
+        db,
+        'sessionHistory',
+        id
+      )
+
+    await updateDoc(
+      sessionDoc,
+      data
+    )
+  }
+
+/* DELETE */
+export const deleteSession =
+  async (id) => {
+
+    const sessionDoc =
+      doc(
+        db,
+        'sessionHistory',
+        id
+      )
+
+    await deleteDoc(
+      sessionDoc
     )
   }

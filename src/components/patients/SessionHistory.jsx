@@ -7,11 +7,16 @@ import {
   CalendarDays,
   Clock3,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Pencil,
+  Trash2,
+  Save
 } from 'lucide-react'
 
 import {
-  getPatientSessions
+  getPatientSessions,
+  updateSession,
+  deleteSession
 } from '../../services/sessionService'
 
 export default function SessionHistory({
@@ -23,6 +28,14 @@ export default function SessionHistory({
 
   const [openSession, setOpenSession] =
     useState(null)
+
+  const [editingSession,
+    setEditingSession] =
+      useState(null)
+
+  const [editData,
+    setEditData] =
+      useState({})
 
   useEffect(() => {
 
@@ -55,12 +68,12 @@ export default function SessionHistory({
         })
 
       setSessions(
-        sortedSessions
+        sortedSessions || []
       )
     }
 
   return (
-    <div className="mt-5 max-h-[420px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+    <div className="mt-5 max-h-[520px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
 
       {sessions.length === 0 && (
 
@@ -77,7 +90,7 @@ export default function SessionHistory({
           className="bg-[#151515] border border-[#2f2f2f] rounded-2xl overflow-hidden"
         >
 
-          {/* Top Bar */}
+          {/* TOP */}
           <button
             onClick={() =>
 
@@ -103,6 +116,7 @@ export default function SessionHistory({
               <div className="flex items-center gap-4 text-sm text-zinc-500">
 
                 <div className="flex items-center gap-2">
+
                   <Clock3 size={14} />
 
                   {session.sessionTime}
@@ -120,45 +134,190 @@ export default function SessionHistory({
             }
           </button>
 
-          {/* Expanded Content */}
+          {/* CONTENT */}
           {openSession === session.id && (
 
             <div className="border-t border-[#2a2a2a] p-5 space-y-5">
 
-              {/* Notes */}
+              {/* ACTIONS */}
+              <div className="flex gap-3">
+
+                <button
+                  onClick={() => {
+
+                    setEditingSession(
+                      session.id
+                    )
+
+                    setEditData({
+                      notes:
+                        session.notes || '',
+
+                      progress:
+                        session.progress || '',
+
+                      nextGoal:
+                        session.nextGoal || ''
+                    })
+                  }}
+                  className="flex items-center gap-2 px-4 h-11 rounded-2xl border border-[#383838] hover:bg-[#1d1d1d]"
+                >
+
+                  <Pencil size={16} />
+
+                  Edit
+                </button>
+
+                <button
+                  onClick={async () => {
+
+                    const confirmDelete =
+                      window.confirm(
+                        'Delete this session?'
+                      )
+
+                    if (!confirmDelete)
+                      return
+
+                    await deleteSession(
+                      session.id
+                    )
+
+                    loadSessions()
+                  }}
+                  className="flex items-center gap-2 px-4 h-11 rounded-2xl border border-red-500/30 text-red-400 hover:bg-red-500/10"
+                >
+
+                  <Trash2 size={16} />
+
+                  Delete
+                </button>
+              </div>
+
+              {/* NOTES */}
               <div>
 
                 <p className="text-sm text-zinc-500 mb-2">
                   Session Notes
                 </p>
 
-                <div className="bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 text-zinc-300 leading-relaxed">
-                  {session.notes}
-                </div>
+                {editingSession === session.id
+                  ? (
+
+                    <textarea
+                      value={
+                        editData.notes
+                      }
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          notes:
+                            e.target.value
+                        })
+                      }
+                      className="w-full min-h-[120px] bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 outline-none"
+                    />
+
+                  ) : (
+
+                    <div className="bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 text-zinc-300 leading-relaxed">
+                      {session.notes}
+                    </div>
+                  )}
               </div>
 
-              {/* Progress */}
+              {/* PROGRESS */}
               <div>
 
                 <p className="text-sm text-zinc-500 mb-2">
                   Progress
                 </p>
 
-                <div className="bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 text-zinc-300 leading-relaxed">
-                  {session.progress || 'No progress added'}
-                </div>
+                {editingSession === session.id
+                  ? (
+
+                    <textarea
+                      value={
+                        editData.progress
+                      }
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          progress:
+                            e.target.value
+                        })
+                      }
+                      className="w-full min-h-[100px] bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 outline-none"
+                    />
+
+                  ) : (
+
+                    <div className="bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 text-zinc-300 leading-relaxed">
+                      {
+                        session.progress ||
+                        'No progress added'
+                      }
+                    </div>
+                  )}
               </div>
 
-              {/* Goal */}
+              {/* GOAL */}
               <div>
 
                 <p className="text-sm text-zinc-500 mb-2">
                   Next Goal
                 </p>
 
-                <div className="bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 text-zinc-300 leading-relaxed">
-                  {session.nextGoal || 'No goal added'}
-                </div>
+                {editingSession === session.id
+                  ? (
+
+                    <>
+                      <textarea
+                        value={
+                          editData.nextGoal
+                        }
+                        onChange={(e) =>
+                          setEditData({
+                            ...editData,
+                            nextGoal:
+                              e.target.value
+                          })
+                        }
+                        className="w-full min-h-[100px] bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 outline-none"
+                      />
+
+                      <button
+                        onClick={async () => {
+
+                          await updateSession(
+                            session.id,
+                            editData
+                          )
+
+                          setEditingSession(
+                            null
+                          )
+
+                          loadSessions()
+                        }}
+                        className="mt-4 flex items-center gap-2 px-5 h-12 rounded-2xl bg-[#dffff2] text-black font-semibold"
+                      >
+
+                        <Save size={16} />
+
+                        Save Changes
+                      </button>
+                    </>
+
+                  ) : (
+
+                    <div className="bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 text-zinc-300 leading-relaxed">
+                      {
+                        session.nextGoal ||
+                        'No goal added'
+                      }
+                    </div>
+                  )}
               </div>
             </div>
           )}
