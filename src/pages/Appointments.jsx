@@ -186,15 +186,7 @@ function Appointments({
           : item.status === statusFilter
 
       /* ROLE FILTER */
-      const matchesRole =
-        role === 'admin'
-          ? true
-          : (
-              item.therapist === role ||
-              item.therapistName === role ||
-              true
-            )
-
+const matchesRole = true
       return (
         matchesSearch &&
         matchesStatus &&
