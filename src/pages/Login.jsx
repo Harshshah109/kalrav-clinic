@@ -5,7 +5,13 @@ import {
   LockKeyhole
 } from 'lucide-react'
 
+import { useNavigate }
+  from 'react-router-dom'
+
 export default function Login() {
+
+  const navigate =
+    useNavigate()
 
   const [email, setEmail] =
     useState('')
@@ -17,7 +23,40 @@ export default function Login() {
 
     e.preventDefault()
 
-    // login logic
+    /* ADMIN LOGIN */
+    if (
+      email === 'admin@kalrav.com' &&
+      password === 'admin123'
+    ) {
+
+      localStorage.setItem(
+        'role',
+        'admin'
+      )
+
+      navigate('/')
+    }
+
+    /* THERAPIST LOGIN */
+    else if (
+      email === 'therapist@kalrav.com' &&
+      password === 'therapist123'
+    ) {
+
+      localStorage.setItem(
+        'role',
+        'therapist'
+      )
+
+      navigate('/')
+    }
+
+    else {
+
+      alert(
+        'Invalid email or password'
+      )
+    }
   }
 
   return (
@@ -59,7 +98,7 @@ export default function Login() {
         rounded-full
       " />
 
-      {/* CARD */}
+      {/* LOGIN CARD */}
       <div className="
         relative
         w-full
@@ -74,17 +113,27 @@ export default function Login() {
       ">
 
         {/* LOGO */}
-        <div className="flex justify-center mb-6">
+        <div className="
+          flex
+          justify-center
+          mb-6
+        ">
 
           <img
             src="/logo.png"
             alt="Kalrav"
-            className="h-24 object-contain"
+            className="
+              h-24
+              object-contain
+            "
           />
         </div>
 
         {/* TITLE */}
-        <div className="text-center mb-8">
+        <div className="
+          text-center
+          mb-8
+        ">
 
           <h1 className="
             text-4xl
@@ -136,14 +185,18 @@ export default function Login() {
 
               <Mail
                 size={18}
-                className="text-violet-500"
+                className="
+                  text-violet-500
+                "
               />
 
               <input
                 type="email"
                 value={email}
                 onChange={(e) =>
-                  setEmail(e.target.value)
+                  setEmail(
+                    e.target.value
+                  )
                 }
                 placeholder="Enter your email"
                 className="
@@ -184,7 +237,9 @@ export default function Login() {
 
               <LockKeyhole
                 size={18}
-                className="text-violet-500"
+                className="
+                  text-violet-500
+                "
               />
 
               <input
@@ -232,14 +287,32 @@ export default function Login() {
           </button>
         </form>
 
-        {/* FOOTER */}
+        {/* DEMO LOGIN */}
         <div className="
-          text-center
           mt-8
+          pt-6
+          border-t
+          border-[#ece7ff]
+          space-y-2
           text-sm
-          text-[#8c84b3]
+          text-[#7c6ca8]
         ">
-          Secure Clinic Management System
+
+          <p className="font-semibold">
+            Demo Credentials
+          </p>
+
+          <p>
+            Admin:
+            admin@kalrav.com /
+            admin123
+          </p>
+
+          <p>
+            Therapist:
+            therapist@kalrav.com /
+            therapist123
+          </p>
         </div>
       </div>
     </div>
