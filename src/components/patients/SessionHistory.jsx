@@ -1,13 +1,12 @@
 import {
   useEffect,
+  useMemo,
   useState
 } from 'react'
 
 import {
   CalendarDays,
-  Clock3,
-  ChevronDown,
-  ChevronUp
+  Clock3
 } from 'lucide-react'
 
 import {
@@ -21,8 +20,8 @@ export default function SessionHistory({
   const [sessions, setSessions] =
     useState([])
 
-  const [openSession, setOpenSession] =
-    useState(null)
+  const [filter, setFilter] =
+    useState('monthly')
 
   useEffect(() => {
 
@@ -55,115 +54,144 @@ export default function SessionHistory({
         })
 
       setSessions(
-        sortedSessions
+        sortedSessions || []
       )
     }
 
+  const filteredSessions =
+    useMemo(() => {
+
+      const now =
+        new Date()
+
+      return sessions.filter(
+        (session) => {
+
+          if (!session.sessionDate)
+            return false
+
+          const sessionDate =
+            new Date(
+              session.sessionDate
+            )
+
+          if (filter === 'weekly') {
+
+            const diff =
+              (now - sessionDate) /
+              (1000 * 60 * 60 * 24)
+
+            return diff <= 7
+          }
+
+          if (filter === 'monthly') {
+
+            return (
+              sessionDate.getMonth() ===
+                now.getMonth() &&
+              sessionDate.getFullYear() ===
+                now.getFullYear()
+            )
+          }
+
+          if (filter === 'yearly') {
+
+            return (
+              sessionDate.getFullYear() ===
+              now.getFullYear()
+            )
+          }
+
+          return true
+        }
+      )
+
+    }, [sessions, filter])
+
   return (
-    <div className="mt-5 max-h-[420px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+    <div className="mt-5">
 
-      {sessions.length === 0 && (
+      {/* FILTERS */}
+      <div className="flex bg-[#171717] border border-[#2f2f2f] rounded-2xl p-1 w-fit mb-5">
 
-        <div className="bg-[#151515] border border-[#2f2f2f] rounded-2xl p-5 text-zinc-500 text-sm">
+        {[
+          'weekly',
+          'monthly',
+          'yearly'
+        ].map((item) => (
 
-          No session history yet
-        </div>
-      )}
-
-      {sessions.map((session) => (
-
-        <div
-          key={session.id}
-          className="bg-[#151515] border border-[#2f2f2f] rounded-2xl overflow-hidden"
-        >
-
-          {/* Top Bar */}
           <button
+            key={item}
             onClick={() =>
-
-              setOpenSession(
-
-                openSession === session.id
-                  ? null
-                  : session.id
-              )
+              setFilter(item)
             }
-            className="w-full p-5 flex items-center justify-between hover:bg-[#1c1c1c] transition-all"
+            className={`px-4 h-10 rounded-xl text-sm font-semibold transition-all ${
+              filter === item
+                ? 'bg-[#dffff2] text-black'
+                : 'text-zinc-400'
+            }`}
           >
-
-            <div className="text-left">
-
-              <div className="flex items-center gap-2 text-white font-semibold mb-2">
-
-                <CalendarDays size={16} />
-
-                {session.sessionDate}
-              </div>
-
-              <div className="flex items-center gap-4 text-sm text-zinc-500">
-
-                <div className="flex items-center gap-2">
-                  <Clock3 size={14} />
-
-                  {session.sessionTime}
-                </div>
-
-                <span>
-                  {session.therapist}
-                </span>
-              </div>
-            </div>
-
-            {openSession === session.id
-              ? <ChevronUp size={18} />
-              : <ChevronDown size={18} />
+            {
+              item.charAt(0)
+                .toUpperCase() +
+              item.slice(1)
             }
           </button>
+        ))}
+      </div>
 
-          {/* Expanded Content */}
-          {openSession === session.id && (
+      {/* HISTORY */}
+      <div className="max-h-[420px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
 
-            <div className="border-t border-[#2a2a2a] p-5 space-y-5">
+        {filteredSessions.length === 0 && (
 
-              {/* Notes */}
+          <div className="bg-[#151515] border border-[#2f2f2f] rounded-2xl p-5 text-zinc-500 text-sm">
+
+            No appointment history yet
+          </div>
+        )}
+
+        {filteredSessions.map((session) => (
+
+          <div
+            key={session.id}
+            className="bg-[#151515] border border-[#2f2f2f] rounded-2xl p-5"
+          >
+
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
               <div>
 
-                <p className="text-sm text-zinc-500 mb-2">
-                  Session Notes
-                </p>
+                <div className="flex items-center gap-2 text-white font-semibold mb-2">
 
-                <div className="bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 text-zinc-300 leading-relaxed">
-                  {session.notes}
+                  <CalendarDays size={16} />
+
+                  {session.sessionDate}
+                </div>
+
+                <div className="flex items-center gap-4 text-sm text-zinc-500">
+
+                  <div className="flex items-center gap-2">
+
+                    <Clock3 size={14} />
+
+                    {session.sessionTime}
+                  </div>
+
+                  <span>
+                    {session.therapist}
+                  </span>
                 </div>
               </div>
 
-              {/* Progress */}
-              <div>
+              <div className="px-4 py-2 rounded-full bg-[#1d1d1d] border border-[#2b2b2b] text-sm text-cyan-400 font-semibold w-fit">
 
-                <p className="text-sm text-zinc-500 mb-2">
-                  Progress
-                </p>
-
-                <div className="bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 text-zinc-300 leading-relaxed">
-                  {session.progress || 'No progress added'}
-                </div>
-              </div>
-
-              {/* Goal */}
-              <div>
-
-                <p className="text-sm text-zinc-500 mb-2">
-                  Next Goal
-                </p>
-
-                <div className="bg-[#1d1d1d] border border-[#2b2b2b] rounded-2xl p-4 text-zinc-300 leading-relaxed">
-                  {session.nextGoal || 'No goal added'}
-                </div>
+                Speech Therapist
               </div>
             </div>
-          )}
-        </div>
-      ))}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
