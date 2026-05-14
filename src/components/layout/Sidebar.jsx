@@ -80,10 +80,32 @@ export default function Sidebar({
     setOpenMobile] =
       useState(false)
 
+  const navClass =
+    ({ isActive }) =>
+
+      `flex items-center gap-3 px-4 py-4 rounded-2xl transition-all duration-200 border ${
+        isActive
+          ? `
+            bg-gradient-to-r
+            from-violet-600
+            to-fuchsia-500
+            text-white
+            border-transparent
+            shadow-lg
+            shadow-violet-500/20
+          `
+          : `
+            bg-white/70
+            border-[#ebe7ff]
+            text-[#433878]
+            hover:bg-[#f5f3ff]
+          `
+      }`
+
   return (
     <>
-      {/* MOBILE TOP BAR */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-16 bg-[#151515]/95 backdrop-blur-xl border-b border-[#2b2b2b] flex items-center justify-between px-5">
+      {/* MOBILE TOPBAR */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-16 bg-white/80 backdrop-blur-xl border-b border-[#ece7ff] flex items-center justify-between px-5">
 
         <img
           src={kalravLogo}
@@ -95,16 +117,16 @@ export default function Sidebar({
           onClick={() =>
             setOpenMobile(true)
           }
-          className="w-11 h-11 rounded-xl border border-[#333] flex items-center justify-center"
+          className="w-11 h-11 rounded-2xl bg-white border border-[#ece7ff] flex items-center justify-center shadow-sm"
         >
 
           <div className="flex flex-col gap-1">
 
-            <div className="w-5 h-[2px] bg-white rounded-full"></div>
+            <div className="w-5 h-[2px] bg-[#6d28d9] rounded-full"></div>
 
-            <div className="w-5 h-[2px] bg-white rounded-full"></div>
+            <div className="w-5 h-[2px] bg-[#6d28d9] rounded-full"></div>
 
-            <div className="w-5 h-[2px] bg-white rounded-full"></div>
+            <div className="w-5 h-[2px] bg-[#6d28d9] rounded-full"></div>
           </div>
         </button>
       </div>
@@ -112,14 +134,14 @@ export default function Sidebar({
       {/* MOBILE DRAWER */}
       {openMobile && (
 
-        <div className="md:hidden fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm">
+        <div className="md:hidden fixed inset-0 z-[60] bg-black/30 backdrop-blur-sm">
 
-          <div className="w-[85%] max-w-[320px] h-full bg-[#151515] border-r border-[#2a2a2a] flex flex-col justify-between">
+          <div className="w-[85%] max-w-[320px] h-full bg-white border-r border-[#ece7ff] flex flex-col justify-between">
 
             <div>
 
-              {/* Header */}
-              <div className="p-5 border-b border-[#2a2a2a] flex items-center justify-between">
+              {/* HEADER */}
+              <div className="p-5 border-b border-[#ece7ff] flex items-center justify-between">
 
                 <img
                   src={kalravLogo}
@@ -131,14 +153,17 @@ export default function Sidebar({
                   onClick={() =>
                     setOpenMobile(false)
                   }
-                  className="w-10 h-10 rounded-xl border border-[#333] flex items-center justify-center"
+                  className="w-10 h-10 rounded-2xl border border-[#ece7ff] bg-[#faf8ff] flex items-center justify-center"
                 >
 
-                  <X size={18} />
+                  <X
+                    size={18}
+                    className="text-[#6d28d9]"
+                  />
                 </button>
               </div>
 
-              {/* Mobile Nav */}
+              {/* NAV */}
               <div className="p-4">
 
                 {navSections
@@ -155,7 +180,7 @@ export default function Sidebar({
                     className="mb-6"
                   >
 
-                    <p className="text-xs text-zinc-500 tracking-[0.2em] mb-4">
+                    <p className="text-xs text-[#8b5cf6] tracking-[0.2em] mb-4 font-semibold">
 
                       {section.title}
                     </p>
@@ -180,18 +205,12 @@ export default function Sidebar({
                             onClick={() =>
                               setOpenMobile(false)
                             }
-                            className={({ isActive }) =>
-                              `flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all ${
-                                isActive
-                                  ? 'bg-[#1d1d1d] border-white text-white'
-                                  : 'border-[#343434] text-zinc-300 hover:bg-[#1d1d1d]'
-                              }`
-                            }
+                            className={navClass}
                           >
 
                             <item.icon size={18} />
 
-                            <span className="font-medium">
+                            <span className="font-semibold">
                               {item.name}
                             </span>
                           </NavLink>
@@ -202,12 +221,12 @@ export default function Sidebar({
               </div>
             </div>
 
-            {/* Logout */}
-            <div className="p-4 border-t border-[#2a2a2a]">
+            {/* LOGOUT */}
+            <div className="p-4 border-t border-[#ece7ff]">
 
               <button
                 onClick={logoutUser}
-                className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl border border-[#343434] hover:bg-[#1d1d1d] transition-all text-zinc-300"
+                className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl bg-white border border-[#ece7ff] hover:bg-[#faf8ff] transition-all text-[#433878]"
               >
 
                 <LogOut size={18} />
@@ -219,13 +238,13 @@ export default function Sidebar({
         </div>
       )}
 
-      {/* DESKTOP SIDEBAR */}
-      <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[270px] bg-[#151515] border-r border-[#2b2b2b] flex-col justify-between">
+      {/* DESKTOP */}
+      <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[270px] bg-white/75 backdrop-blur-xl border-r border-[#ece7ff] flex-col justify-between">
 
         <div>
 
-          {/* Logo */}
-          <div className="p-6 border-b border-[#2a2a2a]">
+          {/* LOGO */}
+          <div className="p-6 border-b border-[#ece7ff]">
 
             <img
               src={kalravLogo}
@@ -234,7 +253,7 @@ export default function Sidebar({
             />
           </div>
 
-          {/* Desktop Nav */}
+          {/* NAV */}
           <div className="px-4 py-5">
 
             {navSections
@@ -251,7 +270,7 @@ export default function Sidebar({
                 className="mb-6"
               >
 
-                <p className="text-xs text-zinc-500 tracking-[0.2em] mb-4">
+                <p className="text-xs text-[#8b5cf6] tracking-[0.2em] mb-4 font-semibold">
 
                   {section.title}
                 </p>
@@ -273,18 +292,12 @@ export default function Sidebar({
                         key={item.name}
                         to={item.path}
                         end={item.path === '/'}
-                        className={({ isActive }) =>
-                          `flex items-center gap-3 px-4 py-4 rounded-2xl border transition-all duration-200 ${
-                            isActive
-                              ? 'bg-[#1d1d1d] border-white text-white'
-                              : 'border-[#343434] text-zinc-300 hover:bg-[#1d1d1d]'
-                          }`
-                        }
+                        className={navClass}
                       >
 
                         <item.icon size={18} />
 
-                        <span className="font-medium">
+                        <span className="font-semibold">
                           {item.name}
                         </span>
                       </NavLink>
@@ -295,12 +308,12 @@ export default function Sidebar({
           </div>
         </div>
 
-        {/* Logout */}
-        <div className="p-4 border-t border-[#2a2a2a]">
+        {/* LOGOUT */}
+        <div className="p-4 border-t border-[#ece7ff]">
 
           <button
             onClick={logoutUser}
-            className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl border border-[#343434] hover:bg-[#1d1d1d] transition-all text-zinc-300"
+            className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl bg-white border border-[#ece7ff] hover:bg-[#faf8ff] transition-all text-[#433878]"
           >
 
             <LogOut size={18} />
@@ -311,7 +324,7 @@ export default function Sidebar({
       </aside>
 
       {/* MOBILE BOTTOM NAV */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-20 bg-[#151515]/95 backdrop-blur-xl border-t border-[#2b2b2b] flex items-center justify-around px-2">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-20 bg-white/85 backdrop-blur-xl border-t border-[#ece7ff] flex items-center justify-around px-2">
 
         {[
           {
@@ -338,8 +351,8 @@ export default function Sidebar({
             className={({ isActive }) =>
               `flex flex-col items-center justify-center gap-1 text-xs ${
                 isActive
-                  ? 'text-white'
-                  : 'text-zinc-500'
+                  ? 'text-[#7c3aed]'
+                  : 'text-[#8c84b3]'
               }`
             }
           >

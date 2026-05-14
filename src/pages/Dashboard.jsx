@@ -219,14 +219,14 @@ export default function Dashboard({
       )
 
   const pendingRevenue =
-  patients.reduce(
-    (sum, patient) =>
-      sum +
-      Number(
-        patient.pendingDue || 0
-      ),
-    0
-  )
+    patients.reduce(
+      (sum, patient) =>
+        sum +
+        Number(
+          patient.pendingDue || 0
+        ),
+      0
+    )
 
   const formatDate =
     (dateObj) => {
@@ -334,32 +334,63 @@ export default function Dashboard({
     appointments
   }) => (
 
-    <div className="bg-[#171717] border border-[#2f2f2f] rounded-3xl p-6">
+    <div className="
+      rounded-[32px]
+      border
+      border-white/70
+      bg-white/75
+      backdrop-blur-xl
+      shadow-[0_10px_30px_rgba(124,58,237,0.08)]
+      p-6
+    ">
 
-      <div className="flex items-center gap-3 mb-5">
+      <div className="flex items-center gap-4 mb-6">
 
-        <div className="w-12 h-12 rounded-2xl bg-[#222] flex items-center justify-center">
+        <div className="
+          w-14
+          h-14
+          rounded-2xl
+          bg-gradient-to-br
+          from-violet-500
+          to-fuchsia-500
+          text-white
+          flex
+          items-center
+          justify-center
+          shadow-lg
+          shadow-violet-500/20
+        ">
 
-          <CalendarDays size={22} />
+          <CalendarDays size={24} />
         </div>
 
         <div>
 
-          <h2 className="text-2xl font-bold">
+          <h2 className="text-2xl font-bold text-[#1f1147]">
             {title}
           </h2>
 
-          <p className="text-zinc-400 text-sm">
+          <p className="text-[#7c6ca8] text-sm font-medium">
             {appointments.length} appointments
           </p>
         </div>
       </div>
 
-      <div className="space-y-3 max-h-[420px] overflow-y-auto pr-2">
+      <div className="space-y-4 max-h-[420px] overflow-y-auto pr-2 custom-scrollbar">
 
         {appointments.length === 0 && (
 
-          <div className="text-zinc-500 text-sm py-10 text-center">
+          <div className="
+            text-[#8c84b3]
+            text-sm
+            py-12
+            text-center
+            bg-[#faf8ff]
+            rounded-2xl
+            border
+            border-[#ece7ff]
+          ">
+
             No appointments
           </div>
         )}
@@ -368,17 +399,39 @@ export default function Dashboard({
 
           <div
             key={index}
-            className="bg-[#1f1f1f] border border-[#2d2d2d] rounded-2xl p-4 flex items-center gap-4"
+            className="
+              bg-[#faf8ff]
+              border
+              border-[#ece7ff]
+              rounded-3xl
+              p-5
+              flex
+              items-center
+              gap-4
+            "
           >
 
             <div className="min-w-[90px]">
 
-              <h3 className="font-bold text-lg">
+              <h3 className="font-bold text-xl text-[#1f1147]">
                 {item.time}
               </h3>
             </div>
 
-            <div className="w-12 h-12 rounded-full bg-[#dffff2] text-black flex items-center justify-center font-bold uppercase">
+            <div className="
+              w-14
+              h-14
+              rounded-full
+              bg-gradient-to-br
+              from-violet-500
+              to-fuchsia-500
+              text-white
+              flex
+              items-center
+              justify-center
+              font-bold
+              uppercase
+            ">
               {
                 (
                   item.patient ||
@@ -390,14 +443,14 @@ export default function Dashboard({
 
             <div className="flex-1">
 
-              <h3 className="font-semibold">
+              <h3 className="font-semibold text-lg text-[#1f1147]">
                 {
                   item.patient ||
                   item.patientName
                 }
               </h3>
 
-              <p className="text-sm text-zinc-400">
+              <p className="text-sm text-[#7c6ca8]">
                 {
                   item.therapist ||
                   item.therapistName
@@ -405,11 +458,11 @@ export default function Dashboard({
               </p>
             </div>
 
-            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+            <span className={`px-4 py-2 rounded-full text-xs font-bold ${
               item.status === 'Confirmed'
                 ? 'bg-emerald-100 text-emerald-700'
                 : item.status === 'Pending'
-                ? 'bg-yellow-100 text-yellow-700'
+                ? 'bg-amber-100 text-amber-700'
                 : 'bg-red-100 text-red-700'
             }`}>
               {item.status}
@@ -421,22 +474,22 @@ export default function Dashboard({
   )
 
   return (
-    <div className="pb-10">
+    <div className="pb-10 text-[#1f1147]">
 
-      {/* Greeting */}
+      {/* GREETING */}
       <div className="mb-8">
 
-        <h1 className="text-5xl font-bold mb-3">
+        <h1 className="text-5xl font-bold mb-3 text-[#1f1147]">
           {greeting()}
         </h1>
 
-        <p className="text-zinc-400 text-lg">
+        <p className="text-[#7c6ca8] text-lg font-medium">
           Kalrav Speech Therapy Clinic • {' '}
           {new Date().toDateString()}
         </p>
       </div>
 
-      {/* ADMIN FILTER */}
+      {/* FILTER */}
       {role === 'admin' && (
 
         <div className="flex flex-wrap gap-3 mb-6">
@@ -453,10 +506,10 @@ export default function Dashboard({
               onClick={() =>
                 setFilter(item)
               }
-              className={`px-5 h-12 rounded-2xl border transition-all capitalize ${
+              className={`px-5 h-12 rounded-2xl border transition-all capitalize font-semibold ${
                 filter === item
-                  ? 'bg-[#dffff2] text-black border-[#dffff2]'
-                  : 'border-[#2f2f2f] bg-[#171717] text-zinc-300'
+                  ? 'bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white border-transparent'
+                  : 'border-[#ece7ff] bg-white/70 text-[#6d28d9]'
               }`}
             >
               {item}
@@ -465,10 +518,9 @@ export default function Dashboard({
         </div>
       )}
 
-      {/* Stats */}
+      {/* STATS */}
       <StatsCards
-       
-  appointments={todayAppointments}
+        appointments={todayAppointments}
         patients={patients}
         therapists={therapists}
         revenue={
@@ -509,12 +561,13 @@ export default function Dashboard({
         />
       </div>
 
-      {/* ADMIN SECTION */}
+      {/* ADMIN */}
       {role === 'admin' && (
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-6">
 
           <div className="xl:col-span-2">
+
             <TeamOverview
               therapists={therapists}
             />

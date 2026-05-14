@@ -7,15 +7,40 @@ export default function Layout({
 }) {
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[#f6f4ff] text-[#111827]">
 
-      {/* Sidebar */}
+      {/* SIDEBAR */}
       <Sidebar role={role} />
 
-      {/* Main */}
-      <main className="md:ml-[270px] pt-20 md:pt-0 pb-24 md:pb-6 p-4 md:p-8">
+      {/* MAIN */}
+      <main
+        className="
+          md:ml-[270px]
+          pt-20
+          md:pt-0
+          pb-24
+          md:pb-8
+          p-4
+          md:p-8
+        "
+      >
 
-        <Outlet />
+        <div
+          className="
+            min-h-[calc(100vh-40px)]
+            rounded-[36px]
+            bg-white/65
+            backdrop-blur-xl
+            border border-white/70
+            shadow-[0_10px_40px_rgba(124,58,237,0.08)]
+            p-5
+            md:p-8
+          "
+        >
+
+          <Outlet />
+
+        </div>
       </main>
     </div>
   )
