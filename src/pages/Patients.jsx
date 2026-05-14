@@ -100,7 +100,7 @@ export default function Patients({
     }
 
   return (
-    <div className="pb-10 text-[#1f1147]">
+    <div className="pb-10 relative isolate z-0">
 
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">

@@ -298,3 +298,25 @@ button {
 button:hover {
   transform: translateY(-1px);
 }
+/* MODAL FIX */
+
+body:has(.modal-open) {
+  overflow: hidden;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  position: relative;
+  z-index: 100000;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+}

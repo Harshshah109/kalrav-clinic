@@ -124,8 +124,10 @@ export default function AddPatientModal({
   return (
 
     <div
-      className="
-        fixed
+  className="
+    modal-overlay
+    p-4
+  
         inset-0
         z-[9999]
         flex
@@ -144,8 +146,10 @@ export default function AddPatientModal({
 
       {/* MODAL */}
       <div
-        className="
-          relative
+  className="
+    modal-content
+    w-full
+    max-w-3xl
           w-full
           max-w-3xl
           max-h-[92vh]
