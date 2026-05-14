@@ -5,13 +5,7 @@ import {
   LockKeyhole
 } from 'lucide-react'
 
-import { useNavigate }
-  from 'react-router-dom'
-
 export default function Login() {
-
-  const navigate =
-    useNavigate()
 
   const [email, setEmail] =
     useState('')
@@ -34,7 +28,7 @@ export default function Login() {
         'admin'
       )
 
-      navigate('/')
+      window.location.href = '/'
     }
 
     /* THERAPIST LOGIN */
@@ -48,7 +42,7 @@ export default function Login() {
         'therapist'
       )
 
-      navigate('/')
+      window.location.href = '/'
     }
 
     else {
