@@ -5,13 +5,16 @@ import {
   Mail
 } from 'lucide-react'
 
-import { loginUser } from '../services/authService'
+import { loginUser }
+  from '../services/authService'
 
 export default function Login({
   onLogin
 }) {
 
-  const [email, setEmail] = useState('')
+  const [email, setEmail] =
+    useState('')
+
   const [password, setPassword] =
     useState('')
 
@@ -21,119 +24,298 @@ export default function Login({
   const [error, setError] =
     useState('')
 
-  const handleSubmit = async (e) => {
+  const handleSubmit =
+    async (e) => {
 
-    e.preventDefault()
+      e.preventDefault()
 
-    try {
+      try {
 
-      setLoading(true)
-      setError('')
+        setLoading(true)
+        setError('')
 
-      await loginUser(email, password)
+        await loginUser(
+          email,
+          password
+        )
 
-      onLogin()
+        onLogin()
 
-    } catch (err) {
+      } catch (err) {
 
-  console.log(err)
+        console.log(err)
 
-  setError(err.message)
-}
+        setError(err.message)
+      }
 
-    setLoading(false)
-  }
+      setLoading(false)
+    }
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4">
 
-      <div className="w-full max-w-md bg-[#171717] border border-[#2f2f2f] rounded-3xl p-8">
+    <div className="
+      min-h-screen
+      flex
+      items-center
+      justify-center
+      bg-gradient-to-br
+      from-[#faf7ff]
+      via-[#f6f2ff]
+      to-[#eef2ff]
+      px-4
+      relative
+      overflow-hidden
+    ">
 
-        {/* Logo */}
-        <div className="mb-10 text-center">
+      {/* BACKGROUND GLOW */}
+      <div className="
+        absolute
+        top-[-120px]
+        right-[-120px]
+        w-[350px]
+        h-[350px]
+        bg-fuchsia-300/30
+        blur-3xl
+        rounded-full
+      " />
 
-          <h1 className="text-4xl font-bold mb-2">
-            Kalrav
+      <div className="
+        absolute
+        bottom-[-120px]
+        left-[-120px]
+        w-[350px]
+        h-[350px]
+        bg-violet-300/30
+        blur-3xl
+        rounded-full
+      " />
+
+      {/* CARD */}
+      <div className="
+        relative
+        w-full
+        max-w-md
+        rounded-[36px]
+        border
+        border-white/60
+        bg-white/80
+        backdrop-blur-xl
+        p-8
+        shadow-[0_20px_60px_rgba(124,58,237,0.18)]
+      ">
+
+        {/* LOGO */}
+        <div className="
+          flex
+          justify-center
+          mb-5
+        ">
+
+          <img
+            src="/logo.png"
+            alt="Kalrav"
+            className="
+              h-24
+              object-contain
+            "
+          />
+        </div>
+
+        {/* TITLE */}
+        <div className="
+          mb-8
+          text-center
+        ">
+
+          <h1 className="
+            text-4xl
+            font-black
+            mb-2
+            text-[#1f1147]
+          ">
+            Welcome Back
           </h1>
 
-          <p className="text-zinc-400">
+          <p className="
+            text-[#7c6ca8]
+            text-base
+          ">
             Speech Therapy Clinic Admin
           </p>
         </div>
 
-        {/* Error */}
+        {/* ERROR */}
         {error && (
-          <div className="mb-5 bg-red-500/10 border border-red-500/30 text-red-300 rounded-2xl p-4">
+
+          <div className="
+            mb-5
+            rounded-2xl
+            border
+            border-red-200
+            bg-red-50
+            text-red-600
+            p-4
+            text-sm
+            font-medium
+          ">
             {error}
           </div>
         )}
 
-        {/* Form */}
+        {/* FORM */}
         <form
           onSubmit={handleSubmit}
+          autoComplete="off"
           className="space-y-5"
         >
 
-          {/* Email */}
+          {/* EMAIL */}
           <div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
-              Email
+            <label className="
+              text-sm
+              font-semibold
+              text-[#6d5ca5]
+              mb-2
+              block
+            ">
+              Email Address
             </label>
 
-            <div className="relative">
+            <div className="
+              relative
+              flex
+              items-center
+            ">
 
               <Mail
                 size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"
+                className="
+                  absolute
+                  left-4
+                  text-violet-500
+                "
               />
 
               <input
                 type="email"
-                placeholder="admin@kalrav.com"
+                name="no-autofill-email"
+                autoComplete="off"
+                spellCheck="false"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) =>
-                  setEmail(e.target.value)
+                  setEmail(
+                    e.target.value
+                  )
                 }
-                className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl pl-12 pr-4 outline-none"
+                className="
+                  w-full
+                  h-14
+                  rounded-2xl
+                  border
+                  border-[#e9ddff]
+                  bg-[#faf8ff]
+                  pl-12
+                  pr-4
+                  outline-none
+                  text-[#1f1147]
+                  placeholder:text-[#9b8cc9]
+                  focus:border-violet-400
+                  focus:bg-white
+                  transition-all
+                "
                 required
               />
             </div>
           </div>
 
-          {/* Password */}
+          {/* PASSWORD */}
           <div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
+            <label className="
+              text-sm
+              font-semibold
+              text-[#6d5ca5]
+              mb-2
+              block
+            ">
               Password
             </label>
 
-            <div className="relative">
+            <div className="
+              relative
+              flex
+              items-center
+            ">
 
               <Lock
                 size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"
+                className="
+                  absolute
+                  left-4
+                  text-violet-500
+                "
               />
 
               <input
                 type="password"
-                placeholder="••••••••"
+                name="no-autofill-password"
+                autoComplete="new-password"
+                spellCheck="false"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) =>
-                  setPassword(e.target.value)
+                  setPassword(
+                    e.target.value
+                  )
                 }
-                className="w-full h-14 bg-[#222] border border-[#3a3a3a] rounded-2xl pl-12 pr-4 outline-none"
+                className="
+                  w-full
+                  h-14
+                  rounded-2xl
+                  border
+                  border-[#e9ddff]
+                  bg-[#faf8ff]
+                  pl-12
+                  pr-4
+                  outline-none
+                  text-[#1f1147]
+                  placeholder:text-[#9b8cc9]
+                  focus:border-violet-400
+                  focus:bg-white
+                  transition-all
+                "
                 required
               />
             </div>
           </div>
 
-          {/* Button */}
+          {/* BUTTON */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-14 rounded-2xl bg-[#dffff2] text-black font-bold hover:opacity-90 transition-all"
+            className="
+              w-full
+              h-14
+              rounded-2xl
+              bg-gradient-to-r
+              from-violet-600
+              via-fuchsia-500
+              to-purple-500
+              text-white
+              font-bold
+              text-lg
+              shadow-lg
+              shadow-violet-500/25
+              hover:scale-[1.01]
+              hover:opacity-95
+              transition-all
+              disabled:opacity-60
+              disabled:cursor-not-allowed
+            "
           >
+
             {loading
               ? 'Signing In...'
               : 'Login'}
