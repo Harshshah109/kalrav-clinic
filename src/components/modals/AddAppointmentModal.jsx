@@ -172,35 +172,50 @@ export default function AddAppointmentModal({
     }
 
   return (
-    <div className="
-      fixed
-      inset-0
-      z-50
-      bg-black/40
-      backdrop-blur-md
-      flex
-      items-center
-      justify-center
-      p-3
-    ">
 
-      <div className="
-        w-full
-        max-w-2xl
-        bg-white/90
-        border
-        border-[#ece7ff]
-        rounded-[32px]
-        p-6
-        md:p-7
-        relative
-        max-h-[90vh]
+    <div
+      className="
+        fixed
+        inset-0
+        z-[9999]
         overflow-y-auto
-        backdrop-blur-xl
-        shadow-[0_10px_40px_rgba(124,58,237,0.12)]
-      ">
+        px-4
+        py-10
+        flex
+        justify-center
+      "
+      style={{
+        alignItems: 'flex-start',
 
-        {/* Close */}
+        background:
+          'rgba(15,15,25,0.35)',
+
+        backdropFilter:
+          'blur(4px)'
+      }}
+    >
+
+      {/* MODAL */}
+      <div
+        className="
+          relative
+          w-full
+          max-w-2xl
+          max-h-[85vh]
+          overflow-y-auto
+          custom-scrollbar
+          rounded-[32px]
+          border
+          border-[#ece7ff]
+          bg-white
+          p-6
+          md:p-7
+          shadow-2xl
+          mt-2
+        "
+      >
+
+        {/* CLOSE */}
         <button
           onClick={close}
           className="
@@ -218,13 +233,14 @@ export default function AddAppointmentModal({
             hover:bg-[#f5f3ff]
             transition-all
             text-[#1f1147]
+            bg-white
           "
         >
 
           <X size={18} />
         </button>
 
-        {/* Title */}
+        {/* TITLE */}
         <h2 className="
           text-4xl
           font-bold
@@ -242,7 +258,7 @@ export default function AddAppointmentModal({
           className="space-y-5"
         >
 
-          {/* Patient */}
+          {/* PATIENT */}
           <div>
 
             <label className="
@@ -295,7 +311,7 @@ export default function AddAppointmentModal({
 
                 control: (base) => ({
                   ...base,
-                  backgroundColor: '#ffffffcc',
+                  backgroundColor: '#faf8ff',
                   borderColor: '#ece7ff',
                   minHeight: 56,
                   borderRadius: 18,
@@ -343,8 +359,13 @@ export default function AddAppointmentModal({
             />
           </div>
 
-          {/* Date + Time */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* DATE + TIME */}
+          <div className="
+            grid
+            grid-cols-1
+            md:grid-cols-2
+            gap-4
+          ">
 
             <div>
 
@@ -363,10 +384,13 @@ export default function AddAppointmentModal({
                 name="date"
                 value={form.date}
                 onChange={handleChange}
+                style={{
+                  colorScheme: 'light'
+                }}
                 className="
                   w-full
                   h-14
-                  bg-white/80
+                  bg-[#faf8ff]
                   border
                   border-[#ece7ff]
                   rounded-2xl
@@ -374,9 +398,6 @@ export default function AddAppointmentModal({
                   outline-none
                   text-[#1f1147]
                 "
-                style={{
-                  colorScheme: 'light'
-                }}
                 required
               />
             </div>
@@ -400,7 +421,7 @@ export default function AddAppointmentModal({
                 className="
                   w-full
                   h-14
-                  bg-white/80
+                  bg-[#faf8ff]
                   border
                   border-[#ece7ff]
                   rounded-2xl
@@ -449,7 +470,7 @@ export default function AddAppointmentModal({
             </div>
           </div>
 
-          {/* Therapist */}
+          {/* THERAPIST */}
           <div>
 
             <label className="
@@ -469,7 +490,7 @@ export default function AddAppointmentModal({
               className="
                 w-full
                 h-14
-                bg-white/80
+                bg-[#faf8ff]
                 border
                 border-[#ece7ff]
                 rounded-2xl
@@ -495,7 +516,7 @@ export default function AddAppointmentModal({
             </select>
           </div>
 
-          {/* Session Type */}
+          {/* SESSION TYPE */}
           <div>
 
             <label className="
@@ -515,7 +536,7 @@ export default function AddAppointmentModal({
               className="
                 w-full
                 h-14
-                bg-white/80
+                bg-[#faf8ff]
                 border
                 border-[#ece7ff]
                 rounded-2xl
@@ -547,7 +568,7 @@ export default function AddAppointmentModal({
             </select>
           </div>
 
-          {/* Duration */}
+          {/* DURATION */}
           <div>
 
             <label className="
@@ -567,7 +588,7 @@ export default function AddAppointmentModal({
               className="
                 w-full
                 h-14
-                bg-white/80
+                bg-[#faf8ff]
                 border
                 border-[#ece7ff]
                 rounded-2xl
@@ -583,7 +604,7 @@ export default function AddAppointmentModal({
             </select>
           </div>
 
-          {/* Status */}
+          {/* STATUS */}
           <div>
 
             <label className="
@@ -603,7 +624,7 @@ export default function AddAppointmentModal({
               className="
                 w-full
                 h-14
-                bg-white/80
+                bg-[#faf8ff]
                 border
                 border-[#ece7ff]
                 rounded-2xl
@@ -627,8 +648,14 @@ export default function AddAppointmentModal({
             </select>
           </div>
 
-          {/* Buttons */}
-          <div className="flex flex-col md:flex-row gap-3 pt-2">
+          {/* BUTTONS */}
+          <div className="
+            flex
+            flex-col
+            md:flex-row
+            gap-3
+            pt-2
+          ">
 
             <button
               type="submit"
@@ -668,7 +695,7 @@ export default function AddAppointmentModal({
                 rounded-2xl
                 border
                 border-[#ece7ff]
-                bg-white/80
+                bg-white
                 hover:bg-[#f5f3ff]
                 transition-all
                 text-[#1f1147]
