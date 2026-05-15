@@ -57,7 +57,7 @@ export default function AddAppointmentModal({
         editData?.therapist || '',
 
       therapy:
-        editData?.therapy || 'Articulation Therapy',
+  editData?.therapy || 'Speech Therapy',
 
       duration:
         editData?.duration || '30 min',
@@ -530,79 +530,34 @@ export default function AddAppointmentModal({
             </label>
 
             <select
-              name="therapy"
-              value={form.therapy}
-              onChange={handleChange}
-              className="
-                w-full
-                h-14
-                bg-[#faf8ff]
-                border
-                border-[#ece7ff]
-                rounded-2xl
-                px-5
-                outline-none
-                text-[#1f1147]
-              "
-            >
+  name="therapy"
+  value={form.therapy}
+  onChange={handleChange}
+  className="
+    w-full
+    h-14
+    bg-[#faf8ff]
+    border
+    border-[#ece7ff]
+    rounded-2xl
+    px-5
+    outline-none
+    text-[#1f1147]
+  "
+>
 
-              <option>
-                Articulation Therapy
-              </option>
+  <option>
+    Speech Therapy
+  </option>
 
-              <option>
-                Speech Therapy
-              </option>
+  <option>
+    Assessment
+  </option>
 
-              <option>
-                Voice Therapy
-              </option>
-
-              <option>
-                Stuttering Therapy
-              </option>
-
-              <option>
-                Language Development
-              </option>
-            </select>
+</select>
           </div>
 
-          {/* DURATION */}
-          <div>
-
-            <label className="
-              text-sm
-              text-[#7c6ca8]
-              font-medium
-              mb-2
-              block
-            ">
-              Duration
-            </label>
-
-            <select
-              name="duration"
-              value={form.duration}
-              onChange={handleChange}
-              className="
-                w-full
-                h-14
-                bg-[#faf8ff]
-                border
-                border-[#ece7ff]
-                rounded-2xl
-                px-5
-                outline-none
-                text-[#1f1147]
-              "
-            >
-
-              <option>30 min</option>
-              <option>45 min</option>
-              <option>60 min</option>
-            </select>
-          </div>
+          
 
           {/* STATUS */}
           <div>
