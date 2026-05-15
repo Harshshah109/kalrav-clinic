@@ -516,7 +516,7 @@ export default function AddAppointmentModal({
 
 {/* COMBINED OPTIONS */}
 
-<option value="Nirali / Khushali">
+<option value="Nirali / Khushali Thaker">
   Nirali / Khushali Thaker
 </option>
 
