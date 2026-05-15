@@ -504,15 +504,25 @@ export default function AddAppointmentModal({
                 Select Therapist
               </option>
 
-              {therapists.map((item) => (
+             {therapists.map((item) => (
 
-                <option
-                  key={item.id}
-                  value={item.name}
-                >
-                  {item.name}
-                </option>
-              ))}
+  <option
+    key={item.id}
+    value={item.name}
+  >
+    {item.name}
+  </option>
+))}
+
+{/* COMBINED OPTIONS */}
+
+<option value="Nirali / Khushali">
+  Nirali / Khushali
+</option>
+
+<option value="Nirali / Dhrishi">
+  Nirali / Dhrishi
+</option>
             </select>
           </div>
 
