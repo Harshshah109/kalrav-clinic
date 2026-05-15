@@ -542,6 +542,262 @@ export default function Patients({
           ))}
       </div>
 
+      {/* Session History Toggle */}
+<button
+  onClick={() =>
+
+    setExpandedPatient(
+
+      expandedPatient === patient.id
+        ? null
+        : patient.id
+    )
+  }
+  className="mt-5 text-sm text-violet-600 font-semibold"
+>
+  {expandedPatient === patient.id
+    ? 'Hide Session History'
+    : 'View Session History'}
+</button>
+
+{/* Session History */}
+{expandedPatient === patient.id && (
+  <SessionHistory
+    patient={patient}
+  />
+)}
+
+{/* PAYMENT HISTORY TOGGLE */}
+<button
+  onClick={() =>
+
+    setExpandedPayments(
+
+      expandedPayments === patient.id
+        ? null
+        : patient.id
+    )
+  }
+  className="mt-4 flex items-center gap-2 text-sm text-cyan-600 font-semibold"
+>
+  {expandedPayments === patient.id
+    ? (
+      <>
+        <ChevronUp size={16} />
+        Hide Payments
+      </>
+    )
+    : (
+      <>
+        <ChevronDown size={16} />
+        View Payments
+      </>
+    )}
+</button>
+
+{/* APPOINTMENT HISTORY */}
+<button
+  onClick={() =>
+    setHistoryPatient(patient)
+  }
+  className="
+    mt-3
+    flex
+    items-center
+    gap-2
+    text-sm
+    text-violet-600
+    font-semibold
+    hover:text-fuchsia-500
+    transition-all
+  "
+>
+  <CalendarDays size={16} />
+
+  View Appointment History
+</button>
+
+{/* PAYMENT HISTORY */}
+{expandedPayments === patient.id && (
+
+  <div className="
+    mt-5
+    bg-white/80
+    border
+    border-[#ece7ff]
+    rounded-3xl
+    p-5
+  ">
+
+    <div className="flex items-center justify-between mb-5">
+
+      <h3 className="text-xl font-bold">
+        Payment History
+      </h3>
+
+      <span className="text-sm text-[#8c84b3]">
+        {
+          payments.filter(
+            (payment) =>
+              payment.patient ===
+              patient.name
+          ).length
+        } payments
+      </span>
+    </div>
+
+    <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+
+      {payments
+
+        .filter(
+          (payment) =>
+            payment.patient ===
+            patient.name
+        )
+
+        .sort((a, b) => {
+
+          const dateA =
+            a.createdAt?.seconds
+              ? new Date(
+                  a.createdAt.seconds * 1000
+                )
+              : new Date(a.createdAt)
+
+          const dateB =
+            b.createdAt?.seconds
+              ? new Date(
+                  b.createdAt.seconds * 1000
+                )
+              : new Date(b.createdAt)
+
+          return dateB - dateA
+        })
+
+        .map((payment) => (
+
+          <div
+            key={payment.id}
+            className="
+              bg-[#faf8ff]
+              border
+              border-[#ece7ff]
+              rounded-2xl
+              p-4
+            "
+          >
+
+            <div className="flex flex-col md:flex-row md:items-center gap-4">
+
+              <div className="
+                w-12
+                h-12
+                rounded-2xl
+                bg-gradient-to-br
+                from-violet-500
+                to-fuchsia-500
+                text-white
+                flex
+                items-center
+                justify-center
+              ">
+
+                <IndianRupee size={20} />
+              </div>
+
+              <div className="flex-1">
+
+                <div className="flex flex-wrap items-center gap-3 mb-2">
+
+                  <h3 className="text-xl font-bold">
+                    ₹{payment.amount}
+                  </h3>
+
+                  <span className="
+                    px-3
+                    py-1
+                    rounded-full
+                    text-xs
+                    font-semibold
+                    bg-cyan-100
+                    text-cyan-700
+                  ">
+                    {
+                      payment.paymentType ||
+                      'Payment'
+                    }
+                  </span>
+
+                  {payment.status === 'Pending'
+                    ? (
+
+                      <button
+                        className="
+                          px-3
+                          py-1
+                          rounded-full
+                          text-xs
+                          font-semibold
+                          bg-yellow-100
+                          text-yellow-700
+                        "
+                      >
+                        Pending
+                      </button>
+
+                    )
+                    : (
+
+                      <span className="
+                        px-3
+                        py-1
+                        rounded-full
+                        text-xs
+                        font-semibold
+                        bg-emerald-100
+                        text-emerald-700
+                      ">
+                        Paid
+                      </span>
+                    )}
+                </div>
+
+                <p className="text-[#7c6ca8] text-sm">
+                  {payment.method} • {
+                    payment.date?.seconds
+                      ? new Date(
+                          payment.date.seconds * 1000
+                        ).toLocaleDateString()
+                      : payment.date
+                  }
+                </p>
+
+                {payment.notes && (
+
+                  <p className="text-[#8c84b3] text-sm mt-2">
+                    {payment.notes}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+
+      {payments.filter(
+        (payment) =>
+          payment.patient ===
+          patient.name
+      ).length === 0 && (
+
+        <div className="text-[#8c84b3] text-center py-10">
+          No payments found
+        </div>
+      )}
+    </div>
+  </div>
+)}
+
       {/* Add Patient Modal */}
       {openModal && (
         <AddPatientModal
