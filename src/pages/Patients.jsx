@@ -165,7 +165,7 @@ export default function Patients({
         )}
       </div>
 
-      {/* TOGGLE */}
+      {/* FILTER TOGGLE */}
       <div className="
         flex
         flex-wrap
@@ -240,7 +240,7 @@ export default function Patients({
         </div>
       </div>
 
-      {/* PATIENTS */}
+      {/* PATIENT LIST */}
       <div className="space-y-5">
 
         {patients
@@ -379,6 +379,124 @@ export default function Patients({
                       {patient.phone}
                     </div>
                   </div>
+
+                  {/* FINANCE */}
+                  {role === 'admin' && (
+
+                    <div className="
+                      grid
+                      grid-cols-1
+                      md:grid-cols-3
+                      gap-4
+                      mt-5
+                    ">
+
+                      {/* TOTAL PAID */}
+                      <div className="
+                        bg-[#faf8ff]
+                        rounded-2xl
+                        p-4
+                        border
+                        border-[#ece7ff]
+                      ">
+
+                        <div className="
+                          flex
+                          items-center
+                          gap-2
+                          mb-2
+                          text-[#8c84b3]
+                          text-sm
+                        ">
+
+                          <IndianRupee size={15} />
+
+                          Total Paid
+                        </div>
+
+                        <h3 className="
+                          text-2xl
+                          font-bold
+                          text-emerald-500
+                        ">
+                          ₹{patient.totalPaid || 0}
+                        </h3>
+                      </div>
+
+                      {/* WALLET */}
+                      <div className="
+                        bg-[#faf8ff]
+                        rounded-2xl
+                        p-4
+                        border
+                        border-[#ece7ff]
+                      ">
+
+                        <div className="
+                          flex
+                          items-center
+                          gap-2
+                          mb-2
+                          text-[#8c84b3]
+                          text-sm
+                        ">
+
+                          <IndianRupee size={15} />
+
+                          Wallet Balance
+                        </div>
+
+                        <h3 className="
+                          text-2xl
+                          font-bold
+                          text-cyan-500
+                        ">
+                          ₹{patient.walletBalance || 0}
+                        </h3>
+                      </div>
+
+                      {/* DUE */}
+                      <div className="
+                        bg-[#faf8ff]
+                        rounded-2xl
+                        p-4
+                        border
+                        border-[#ece7ff]
+                      ">
+
+                        <div className="
+                          flex
+                          items-center
+                          gap-2
+                          mb-2
+                          text-[#8c84b3]
+                          text-sm
+                        ">
+
+                          <AlertCircle size={15} />
+
+                          Pending Due
+                        </div>
+
+                        <h3 className={`
+                          text-2xl
+                          font-bold
+                          ${
+                            patient.pendingDue > 0
+                              ? 'text-yellow-500'
+                              : 'text-emerald-500'
+                          }
+                        `}>
+
+                          {
+                            patient.pendingDue > 0
+                              ? `₹${patient.pendingDue}`
+                              : 'No Due'
+                          }
+                        </h3>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* ACTIONS */}
