@@ -165,7 +165,7 @@ export default function Patients({
         )}
       </div>
 
-      {/* FILTER TOGGLE */}
+      {/* FILTER */}
       <div className="
         flex
         flex-wrap
@@ -192,7 +192,7 @@ export default function Patients({
               transition-all
               ${
                 patientFilter === item
-                  ? 'bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white shadow-lg shadow-violet-500/20'
+                  ? 'bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white'
                   : 'bg-white/75 border border-[#ece7ff] text-[#1f1147]'
               }
             `}
@@ -210,7 +210,6 @@ export default function Patients({
         rounded-3xl
         p-4
         mb-6
-        backdrop-blur-xl
       ">
 
         <div className="flex items-center gap-3">
@@ -234,13 +233,12 @@ export default function Patients({
               outline-none
               w-full
               text-[#1f1147]
-              placeholder:text-[#8c84b3]
             "
           />
         </div>
       </div>
 
-      {/* PATIENT LIST */}
+      {/* LIST */}
       <div className="space-y-5">
 
         {patients
@@ -274,8 +272,6 @@ export default function Patients({
                 border-[#ece7ff]
                 rounded-3xl
                 p-5
-                backdrop-blur-xl
-                shadow-[0_10px_30px_rgba(124,58,237,0.08)]
               "
             >
 
@@ -303,7 +299,6 @@ export default function Patients({
                   text-lg
                   font-bold
                 ">
-
                   {patient.name?.slice(0, 2)}
                 </div>
 
@@ -312,9 +307,7 @@ export default function Patients({
 
                   <div className="
                     flex
-                    flex-col
-                    md:flex-row
-                    md:items-center
+                    items-center
                     gap-3
                     mb-2
                   ">
@@ -332,7 +325,6 @@ export default function Patients({
                       rounded-full
                       text-xs
                       font-semibold
-                      w-fit
                       ${
                         patient.category === 'Finished'
                           ? 'bg-zinc-200 text-zinc-700'
@@ -341,8 +333,7 @@ export default function Patients({
                           : 'bg-emerald-100 text-emerald-700'
                       }
                     `}>
-
-                      {patient.category || 'Assessment'}
+                      {patient.category}
                     </span>
                   </div>
 
@@ -366,15 +357,6 @@ export default function Patients({
                       items-center
                       gap-2
                     ">
-                      <CalendarDays size={16} />
-                      Sessions
-                    </div>
-
-                    <div className="
-                      flex
-                      items-center
-                      gap-2
-                    ">
                       <Phone size={16} />
                       {patient.phone}
                     </div>
@@ -391,7 +373,6 @@ export default function Patients({
                       mt-5
                     ">
 
-                      {/* TOTAL PAID */}
                       <div className="
                         bg-[#faf8ff]
                         rounded-2xl
@@ -423,7 +404,6 @@ export default function Patients({
                         </h3>
                       </div>
 
-                      {/* WALLET */}
                       <div className="
                         bg-[#faf8ff]
                         rounded-2xl
@@ -455,7 +435,6 @@ export default function Patients({
                         </h3>
                       </div>
 
-                      {/* DUE */}
                       <div className="
                         bg-[#faf8ff]
                         rounded-2xl
@@ -478,21 +457,12 @@ export default function Patients({
                           Pending Due
                         </div>
 
-                        <h3 className={`
+                        <h3 className="
                           text-2xl
                           font-bold
-                          ${
-                            patient.pendingDue > 0
-                              ? 'text-yellow-500'
-                              : 'text-emerald-500'
-                          }
-                        `}>
-
-                          {
-                            patient.pendingDue > 0
-                              ? `₹${patient.pendingDue}`
-                              : 'No Due'
-                          }
+                          text-yellow-500
+                        ">
+                          ₹{patient.pendingDue || 0}
                         </h3>
                       </div>
                     </div>
@@ -515,7 +485,6 @@ export default function Patients({
                       flex
                       items-center
                       justify-center
-                      hover:bg-[#f5f3ff]
                     "
                   >
                     <ClipboardPen size={18} />
@@ -542,7 +511,6 @@ export default function Patients({
                           flex
                           items-center
                           justify-center
-                          hover:bg-[#f5f3ff]
                         "
                       >
                         <Pencil size={18} />
@@ -575,7 +543,6 @@ export default function Patients({
                           flex
                           items-center
                           justify-center
-                          hover:bg-red-50
                         "
                       >
                         <Trash2 size={18} />
@@ -650,6 +617,111 @@ export default function Patients({
                   )}
               </button>
 
+              {expandedPayments === patient.id && (
+
+                <div className="
+                  mt-5
+                  bg-white/80
+                  border
+                  border-[#ece7ff]
+                  rounded-3xl
+                  p-5
+                ">
+
+                  <div className="
+                    flex
+                    items-center
+                    justify-between
+                    mb-5
+                  ">
+
+                    <h3 className="
+                      text-xl
+                      font-bold
+                    ">
+                      Payment History
+                    </h3>
+
+                    <span className="
+                      text-sm
+                      text-[#8c84b3]
+                    ">
+                      {
+                        payments.filter(
+                          (payment) =>
+                            payment.patient ===
+                            patient.name
+                        ).length
+                      } payments
+                    </span>
+                  </div>
+
+                  <div className="
+                    space-y-4
+                  ">
+
+                    {payments
+
+                      .filter(
+                        (payment) =>
+                          payment.patient ===
+                          patient.name
+                      )
+
+                      .map((payment) => (
+
+                        <div
+                          key={payment.id}
+                          className="
+                            bg-[#faf8ff]
+                            border
+                            border-[#ece7ff]
+                            rounded-2xl
+                            p-4
+                          "
+                        >
+
+                          <div className="
+                            flex
+                            items-center
+                            justify-between
+                          ">
+
+                            <div>
+
+                              <h3 className="
+                                text-lg
+                                font-bold
+                              ">
+                                ₹{payment.amount}
+                              </h3>
+
+                              <p className="
+                                text-sm
+                                text-[#7c6ca8]
+                              ">
+                                {payment.method}
+                              </p>
+                            </div>
+
+                            <span className="
+                              px-3
+                              py-1
+                              rounded-full
+                              text-xs
+                              font-semibold
+                              bg-emerald-100
+                              text-emerald-700
+                            ">
+                              Paid
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+
               {/* APPOINTMENT HISTORY */}
               <button
                 onClick={() =>
@@ -673,7 +745,7 @@ export default function Patients({
           ))}
       </div>
 
-      {/* ADD PATIENT */}
+      {/* MODALS */}
       {openModal && (
         <AddPatientModal
           close={() =>
@@ -683,7 +755,6 @@ export default function Patients({
         />
       )}
 
-      {/* EDIT */}
       {selectedPatient && (
         <EditPatientModal
           patient={selectedPatient}
@@ -694,7 +765,6 @@ export default function Patients({
         />
       )}
 
-      {/* SESSION */}
       {sessionPatient && (
         <AddSessionModal
           patient={sessionPatient}
@@ -705,7 +775,6 @@ export default function Patients({
         />
       )}
 
-      {/* APPOINTMENT HISTORY */}
       {historyPatient && (
         <PatientAppointmentHistoryModal
           patient={historyPatient}
