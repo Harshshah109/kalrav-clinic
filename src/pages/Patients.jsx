@@ -47,6 +47,9 @@ import AddSessionModal
 import SessionHistory
   from '../components/patients/SessionHistory'
 
+  import PatientAppointmentHistoryModal
+  from '../components/modals/PatientAppointmentHistoryModal'
+
 export default function Patients({
   role
 }) {
@@ -75,6 +78,10 @@ export default function Patients({
   const [expandedPayments,
     setExpandedPayments] =
       useState(null)
+
+      const [historyPatient,
+  setHistoryPatient] =
+    useState(null)
 
   const [search, setSearch] =
     useState('')
@@ -530,6 +537,26 @@ export default function Patients({
                     </>
                   )}
               </button>
+              <button
+  onClick={() =>
+    setHistoryPatient(patient)
+  }
+  className="
+    mt-3
+    flex
+    items-center
+    gap-2
+    text-sm
+    text-violet-600
+    font-semibold
+    hover:text-fuchsia-500
+    transition-all
+  "
+>
+  <CalendarDays size={16} />
+
+  View Appointment History
+</button>
 
               {/* PAYMENT HISTORY */}
               {expandedPayments === patient.id && (
@@ -806,6 +833,16 @@ export default function Patients({
           refresh={loadPatients}
         />
       )}
+
+      {/* Appointment History Modal */}
+{historyPatient && (
+  <PatientAppointmentHistoryModal
+    patient={historyPatient}
+    close={() =>
+      setHistoryPatient(null)
+    }
+  />
+)}
     </div>
   )
 }
