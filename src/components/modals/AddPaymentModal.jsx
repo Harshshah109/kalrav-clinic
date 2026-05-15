@@ -231,31 +231,47 @@ export default function AddPaymentModal({
     }
 
   return (
-    <div cclassName="
-        fixed
-        inset-0
-        z-[9999]
-        overflow-y-auto
-        px-4
-        py-10
-        flex
-        justify-center
-    ">
+
+  <div
+    className="
+      fixed
+      inset-0
+      z-[9999]
+      overflow-y-auto
+      px-4
+      py-10
+      flex
+      justify-center
+    "
+    style={{
+      alignItems: 'flex-start',
+
+      background:
+        'rgba(15,15,25,0.35)',
+
+      backdropFilter:
+        'blur(4px)'
+    }}
+  >
 
       <div className="
-        w-full
-        max-w-2xl
-        bg-white/90
-        border
-        border-[#ece7ff]
-        rounded-[32px]
-        p-6
-        relative
-        max-h-[90vh]
-        overflow-y-auto
-        backdrop-blur-xl
-        shadow-[0_10px_40px_rgba(124,58,237,0.12)]
-      ">
+  relative
+  w-full
+  max-w-2xl
+  max-h-[85vh]
+  overflow-y-auto
+  custom-scrollbar
+  bg-white/90
+  border
+  border-[#ece7ff]
+  rounded-[32px]
+  p-6
+  md:p-7
+  backdrop-blur-xl
+  shadow-[0_10px_40px_rgba(124,58,237,0.12)]
+  mt-2
+"
+>
 
         {/* CLOSE */}
         <button
