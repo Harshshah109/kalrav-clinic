@@ -82,9 +82,30 @@ export default function TherapistAppointmentAnalyticsModal({
               name.trim()
             )
 
-        return splitNames.includes(
-          therapistName
-        )
+        return splitNames.some(
+  (name) => {
+
+    const cleanedSplit =
+      name
+        .trim()
+        .toLowerCase()
+
+    const cleanedTherapist =
+      therapistName
+        .trim()
+        .toLowerCase()
+
+    return (
+      cleanedTherapist.includes(
+        cleanedSplit
+      ) ||
+
+      cleanedSplit.includes(
+        cleanedTherapist
+      )
+    )
+  }
+)
       }
 
       return false
