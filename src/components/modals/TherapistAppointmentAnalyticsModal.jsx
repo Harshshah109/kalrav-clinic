@@ -51,11 +51,45 @@ export default function TherapistAppointmentAnalyticsModal({
         await getAppointments()
 
       const filtered =
-        (data || []).filter(
-          (item) =>
-            item.therapist ===
-            therapist.name
+  (data || []).filter(
+    (item) => {
+
+      const appointmentTherapist =
+        item.therapist || ''
+
+      const therapistName =
+        therapist.name || ''
+
+      /* DIRECT MATCH */
+
+      if (
+        appointmentTherapist ===
+        therapistName
+      ) {
+        return true
+      }
+
+      /* COMBINED THERAPIST */
+
+      if (
+        appointmentTherapist.includes('/')
+      ) {
+
+        const splitNames =
+          appointmentTherapist
+            .split('/')
+            .map((name) =>
+              name.trim()
+            )
+
+        return splitNames.includes(
+          therapistName
         )
+      }
+
+      return false
+    }
+  )
 
       setAppointments(filtered)
     }
