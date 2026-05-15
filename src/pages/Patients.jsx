@@ -445,9 +445,15 @@ export default function Patients({
                   {role === 'admin' && (
                     <>
                       <button
-                        onClick={() =>
-                          setSelectedPatient(patient)
-                        }
+                       onClick={() => {
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+
+  setSelectedPatient(patient)
+}}
                         className="
                           w-12
                           h-12
