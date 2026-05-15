@@ -113,7 +113,7 @@ export default function Patients({
   return (
     <div className="pb-10 relative isolate z-0">
 
-      {/* Header */}
+      {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
 
         <div>
@@ -160,7 +160,7 @@ export default function Patients({
         )}
       </div>
 
-      {/* Patient Type Toggle */}
+      {/* TOGGLE */}
       <div className="
         flex
         flex-wrap
@@ -197,7 +197,7 @@ export default function Patients({
         ))}
       </div>
 
-      {/* Search */}
+      {/* SEARCH */}
       <div className="
         bg-white/75
         border
@@ -235,7 +235,7 @@ export default function Patients({
         </div>
       </div>
 
-      {/* Patients */}
+      {/* PATIENTS */}
       <div className="space-y-5">
 
         {patients
@@ -274,10 +274,10 @@ export default function Patients({
               "
             >
 
-              {/* Top */}
+              {/* TOP */}
               <div className="flex flex-col xl:flex-row xl:items-center gap-5">
 
-                {/* Avatar */}
+                {/* AVATAR */}
                 <div className="
                   w-16
                   h-16
@@ -291,13 +291,11 @@ export default function Patients({
                   justify-center
                   text-lg
                   font-bold
-                  shadow-lg
-                  shadow-violet-500/20
                 ">
                   {patient.name?.slice(0, 2)}
                 </div>
 
-                {/* Info */}
+                {/* INFO */}
                 <div className="flex-1">
 
                   <div className="flex flex-col md:flex-row md:items-center gap-3 mb-2">
@@ -335,12 +333,11 @@ export default function Patients({
                     </div>
                   </div>
 
-                  {/* ADMIN ONLY FINANCE */}
+                  {/* FINANCE */}
                   {role === 'admin' && (
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
 
-                      {/* Total Paid */}
                       <div className="
                         bg-[#faf8ff]
                         rounded-2xl
@@ -357,13 +354,10 @@ export default function Patients({
                         </div>
 
                         <h3 className="text-2xl font-bold text-emerald-500">
-                          ₹{
-                            patient.totalPaid || 0
-                          }
+                          ₹{patient.totalPaid || 0}
                         </h3>
                       </div>
 
-                      {/* Wallet */}
                       <div className="
                         bg-[#faf8ff]
                         rounded-2xl
@@ -380,13 +374,10 @@ export default function Patients({
                         </div>
 
                         <h3 className="text-2xl font-bold text-cyan-500">
-                          ₹{
-                            patient.walletBalance || 0
-                          }
+                          ₹{patient.walletBalance || 0}
                         </h3>
                       </div>
 
-                      {/* Due */}
                       <div className="
                         bg-[#faf8ff]
                         rounded-2xl
@@ -419,7 +410,7 @@ export default function Patients({
                   )}
                 </div>
 
-                {/* Actions */}
+                {/* ACTIONS */}
                 <div className="flex gap-3">
 
                   <button
@@ -436,7 +427,6 @@ export default function Patients({
                       items-center
                       justify-center
                       hover:bg-[#f5f3ff]
-                      transition-all
                     "
                   >
                     <ClipboardPen size={18} />
@@ -445,15 +435,15 @@ export default function Patients({
                   {role === 'admin' && (
                     <>
                       <button
-                       onClick={() => {
+                        onClick={() => {
 
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  })
+                          window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                          })
 
-  setSelectedPatient(patient)
-}}
+                          setSelectedPatient(patient)
+                        }}
                         className="
                           w-12
                           h-12
@@ -464,7 +454,6 @@ export default function Patients({
                           items-center
                           justify-center
                           hover:bg-[#f5f3ff]
-                          transition-all
                         "
                       >
                         <Pencil size={18} />
@@ -475,48 +464,17 @@ export default function Patients({
 
                           const confirmDelete =
                             window.confirm(
-                              'Delete patient, appointments and payments permanently?'
+                              'Delete patient permanently?'
                             )
 
                           if (!confirmDelete)
                             return
 
-                          try {
+                          await deletePatient(
+                            patient.id
+                          )
 
-                            await deleteAppointmentsByPatient(
-                              patient.name
-                            )
-
-                            const patientPayments =
-                              payments.filter(
-                                (item) =>
-                                  item.patient === patient.name
-                              )
-
-                            for (const payment of patientPayments) {
-
-                              const paymentDoc =
-                                doc(
-                                  db,
-                                  'payments',
-                                  payment.id
-                                )
-
-                              await deleteDoc(
-                                paymentDoc
-                              )
-                            }
-
-                            await deletePatient(
-                              patient.id
-                            )
-
-                            loadPatients()
-
-                          } catch (err) {
-
-                            console.log(err)
-                          }
+                          loadPatients()
                         }}
                         className="
                           w-12
@@ -529,7 +487,6 @@ export default function Patients({
                           items-center
                           justify-center
                           hover:bg-red-50
-                          transition-all
                         "
                       >
                         <Trash2 size={18} />
@@ -538,267 +495,84 @@ export default function Patients({
                   )}
                 </div>
               </div>
+
+              {/* SESSION HISTORY */}
+              <button
+                onClick={() =>
+
+                  setExpandedPatient(
+
+                    expandedPatient === patient.id
+                      ? null
+                      : patient.id
+                  )
+                }
+                className="mt-5 text-sm text-violet-600 font-semibold"
+              >
+                {expandedPatient === patient.id
+                  ? 'Hide Session History'
+                  : 'View Session History'}
+              </button>
+
+              {expandedPatient === patient.id && (
+                <SessionHistory
+                  patient={patient}
+                />
+              )}
+
+              {/* PAYMENT TOGGLE */}
+              <button
+                onClick={() =>
+
+                  setExpandedPayments(
+
+                    expandedPayments === patient.id
+                      ? null
+                      : patient.id
+                  )
+                }
+                className="mt-4 flex items-center gap-2 text-sm text-cyan-600 font-semibold"
+              >
+                {expandedPayments === patient.id
+                  ? (
+                    <>
+                      <ChevronUp size={16} />
+                      Hide Payments
+                    </>
+                  )
+                  : (
+                    <>
+                      <ChevronDown size={16} />
+                      View Payments
+                    </>
+                  )}
+              </button>
+
+              {/* APPOINTMENT HISTORY */}
+              <button
+                onClick={() =>
+                  setHistoryPatient(patient)
+                }
+                className="
+                  mt-3
+                  flex
+                  items-center
+                  gap-2
+                  text-sm
+                  text-violet-600
+                  font-semibold
+                "
+              >
+                <CalendarDays size={16} />
+
+                View Appointment History
+              </button>
+
             </div>
           ))}
       </div>
 
-      {/* Session History Toggle */}
-<button
-  onClick={() =>
-
-    setExpandedPatient(
-
-      expandedPatient === patient.id
-        ? null
-        : patient.id
-    )
-  }
-  className="mt-5 text-sm text-violet-600 font-semibold"
->
-  {expandedPatient === patient.id
-    ? 'Hide Session History'
-    : 'View Session History'}
-</button>
-
-{/* Session History */}
-{expandedPatient === patient.id && (
-  <SessionHistory
-    patient={patient}
-  />
-)}
-
-{/* PAYMENT HISTORY TOGGLE */}
-<button
-  onClick={() =>
-
-    setExpandedPayments(
-
-      expandedPayments === patient.id
-        ? null
-        : patient.id
-    )
-  }
-  className="mt-4 flex items-center gap-2 text-sm text-cyan-600 font-semibold"
->
-  {expandedPayments === patient.id
-    ? (
-      <>
-        <ChevronUp size={16} />
-        Hide Payments
-      </>
-    )
-    : (
-      <>
-        <ChevronDown size={16} />
-        View Payments
-      </>
-    )}
-</button>
-
-{/* APPOINTMENT HISTORY */}
-<button
-  onClick={() =>
-    setHistoryPatient(patient)
-  }
-  className="
-    mt-3
-    flex
-    items-center
-    gap-2
-    text-sm
-    text-violet-600
-    font-semibold
-    hover:text-fuchsia-500
-    transition-all
-  "
->
-  <CalendarDays size={16} />
-
-  View Appointment History
-</button>
-
-{/* PAYMENT HISTORY */}
-{expandedPayments === patient.id && (
-
-  <div className="
-    mt-5
-    bg-white/80
-    border
-    border-[#ece7ff]
-    rounded-3xl
-    p-5
-  ">
-
-    <div className="flex items-center justify-between mb-5">
-
-      <h3 className="text-xl font-bold">
-        Payment History
-      </h3>
-
-      <span className="text-sm text-[#8c84b3]">
-        {
-          payments.filter(
-            (payment) =>
-              payment.patient ===
-              patient.name
-          ).length
-        } payments
-      </span>
-    </div>
-
-    <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
-
-      {payments
-
-        .filter(
-          (payment) =>
-            payment.patient ===
-            patient.name
-        )
-
-        .sort((a, b) => {
-
-          const dateA =
-            a.createdAt?.seconds
-              ? new Date(
-                  a.createdAt.seconds * 1000
-                )
-              : new Date(a.createdAt)
-
-          const dateB =
-            b.createdAt?.seconds
-              ? new Date(
-                  b.createdAt.seconds * 1000
-                )
-              : new Date(b.createdAt)
-
-          return dateB - dateA
-        })
-
-        .map((payment) => (
-
-          <div
-            key={payment.id}
-            className="
-              bg-[#faf8ff]
-              border
-              border-[#ece7ff]
-              rounded-2xl
-              p-4
-            "
-          >
-
-            <div className="flex flex-col md:flex-row md:items-center gap-4">
-
-              <div className="
-                w-12
-                h-12
-                rounded-2xl
-                bg-gradient-to-br
-                from-violet-500
-                to-fuchsia-500
-                text-white
-                flex
-                items-center
-                justify-center
-              ">
-
-                <IndianRupee size={20} />
-              </div>
-
-              <div className="flex-1">
-
-                <div className="flex flex-wrap items-center gap-3 mb-2">
-
-                  <h3 className="text-xl font-bold">
-                    ₹{payment.amount}
-                  </h3>
-
-                  <span className="
-                    px-3
-                    py-1
-                    rounded-full
-                    text-xs
-                    font-semibold
-                    bg-cyan-100
-                    text-cyan-700
-                  ">
-                    {
-                      payment.paymentType ||
-                      'Payment'
-                    }
-                  </span>
-
-                  {payment.status === 'Pending'
-                    ? (
-
-                      <button
-                        className="
-                          px-3
-                          py-1
-                          rounded-full
-                          text-xs
-                          font-semibold
-                          bg-yellow-100
-                          text-yellow-700
-                        "
-                      >
-                        Pending
-                      </button>
-
-                    )
-                    : (
-
-                      <span className="
-                        px-3
-                        py-1
-                        rounded-full
-                        text-xs
-                        font-semibold
-                        bg-emerald-100
-                        text-emerald-700
-                      ">
-                        Paid
-                      </span>
-                    )}
-                </div>
-
-                <p className="text-[#7c6ca8] text-sm">
-                  {payment.method} • {
-                    payment.date?.seconds
-                      ? new Date(
-                          payment.date.seconds * 1000
-                        ).toLocaleDateString()
-                      : payment.date
-                  }
-                </p>
-
-                {payment.notes && (
-
-                  <p className="text-[#8c84b3] text-sm mt-2">
-                    {payment.notes}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-
-      {payments.filter(
-        (payment) =>
-          payment.patient ===
-          patient.name
-      ).length === 0 && (
-
-        <div className="text-[#8c84b3] text-center py-10">
-          No payments found
-        </div>
-      )}
-    </div>
-  </div>
-)}
-
-      {/* Add Patient Modal */}
+      {/* ADD PATIENT */}
       {openModal && (
         <AddPatientModal
           close={() =>
@@ -808,7 +582,7 @@ export default function Patients({
         />
       )}
 
-      {/* Edit Patient Modal */}
+      {/* EDIT */}
       {selectedPatient && (
         <EditPatientModal
           patient={selectedPatient}
@@ -819,7 +593,7 @@ export default function Patients({
         />
       )}
 
-      {/* Add Session Modal */}
+      {/* SESSION */}
       {sessionPatient && (
         <AddSessionModal
           patient={sessionPatient}
@@ -830,7 +604,7 @@ export default function Patients({
         />
       )}
 
-      {/* Appointment History Modal */}
+      {/* APPOINTMENT HISTORY */}
       {historyPatient && (
         <PatientAppointmentHistoryModal
           patient={historyPatient}
