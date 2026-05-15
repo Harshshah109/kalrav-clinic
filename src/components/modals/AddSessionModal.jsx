@@ -78,24 +78,89 @@ export default function AddSessionModal({
     }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3">
 
-      <div className="w-full max-w-2xl bg-[#1b1b1b] border border-[#343434] rounded-3xl p-6 relative max-h-[90vh] overflow-y-auto">
+    <div
+      className="
+        fixed
+        inset-0
+        z-[9999]
+        overflow-y-auto
+        px-4
+        py-10
+        flex
+        justify-center
+      "
+      style={{
+        alignItems: 'flex-start',
+
+        background:
+          'rgba(15,15,25,0.35)',
+
+        backdropFilter:
+          'blur(4px)'
+      }}
+    >
+
+      <div className="
+        relative
+        w-full
+        max-w-2xl
+        max-h-[85vh]
+        overflow-y-auto
+        custom-scrollbar
+        bg-white/90
+        border
+        border-[#ece7ff]
+        rounded-[32px]
+        p-6
+        md:p-7
+        backdrop-blur-xl
+        shadow-[0_10px_40px_rgba(124,58,237,0.12)]
+        mt-2
+      ">
 
         {/* Close */}
         <button
           onClick={close}
-          className="absolute top-5 right-5 w-10 h-10 rounded-xl border border-[#404040] flex items-center justify-center hover:bg-[#252525]"
+          className="
+            absolute
+            top-5
+            right-5
+            w-11
+            h-11
+            rounded-2xl
+            border
+            border-[#ece7ff]
+            bg-[#faf8ff]
+            flex
+            items-center
+            justify-center
+            hover:bg-[#f5f3ff]
+            transition-all
+          "
         >
-          <X size={18} />
+          <X
+            size={18}
+            className="text-[#1f1147]"
+          />
         </button>
 
         {/* Title */}
-        <h2 className="text-3xl font-bold mb-2">
+        <h2 className="
+          text-4xl
+          font-bold
+          mb-2
+          text-[#1f1147]
+          pr-14
+        ">
           Add Session Note
         </h2>
 
-        <p className="text-zinc-400 mb-8">
+        <p className="
+          text-[#7c6ca8]
+          mb-8
+          text-lg
+        ">
           {patient.name}
         </p>
 
@@ -107,16 +172,33 @@ export default function AddSessionModal({
           {/* Therapist */}
           <div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
+            <label className="
+              text-sm
+              text-[#7c6ca8]
+              font-medium
+              mb-2
+              block
+            ">
               Therapist
             </label>
 
             <select
               name="therapist"
               onChange={handleChange}
-              className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+              className="
+                w-full
+                h-14
+                bg-[#faf8ff]
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                px-5
+                outline-none
+                text-[#1f1147]
+              "
               required
             >
+
               <option value="">
                 Select Therapist
               </option>
@@ -136,7 +218,13 @@ export default function AddSessionModal({
           {/* Date */}
           <div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
+            <label className="
+              text-sm
+              text-[#7c6ca8]
+              font-medium
+              mb-2
+              block
+            ">
               Session Date
             </label>
 
@@ -144,7 +232,17 @@ export default function AddSessionModal({
               type="date"
               name="sessionDate"
               onChange={handleChange}
-              className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+              className="
+                w-full
+                h-14
+                bg-[#faf8ff]
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                px-5
+                outline-none
+                text-[#1f1147]
+              "
               required
             />
           </div>
@@ -152,7 +250,13 @@ export default function AddSessionModal({
           {/* Time */}
           <div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
+            <label className="
+              text-sm
+              text-[#7c6ca8]
+              font-medium
+              mb-2
+              block
+            ">
               Session Time
             </label>
 
@@ -160,7 +264,17 @@ export default function AddSessionModal({
               type="time"
               name="sessionTime"
               onChange={handleChange}
-              className="w-full h-12 bg-[#222] border border-[#3a3a3a] rounded-xl px-4 outline-none"
+              className="
+                w-full
+                h-14
+                bg-[#faf8ff]
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                px-5
+                outline-none
+                text-[#1f1147]
+              "
               required
             />
           </div>
@@ -168,7 +282,13 @@ export default function AddSessionModal({
           {/* Notes */}
           <div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
+            <label className="
+              text-sm
+              text-[#7c6ca8]
+              font-medium
+              mb-2
+              block
+            ">
               Session Notes
             </label>
 
@@ -177,7 +297,18 @@ export default function AddSessionModal({
               rows="5"
               onChange={handleChange}
               placeholder="Describe today's therapy session..."
-              className="w-full bg-[#222] border border-[#3a3a3a] rounded-xl px-4 py-3 outline-none resize-none"
+              className="
+                w-full
+                bg-[#faf8ff]
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                px-5
+                py-4
+                outline-none
+                resize-none
+                text-[#1f1147]
+              "
               required
             />
           </div>
@@ -185,7 +316,13 @@ export default function AddSessionModal({
           {/* Progress */}
           <div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
+            <label className="
+              text-sm
+              text-[#7c6ca8]
+              font-medium
+              mb-2
+              block
+            ">
               Progress
             </label>
 
@@ -194,14 +331,31 @@ export default function AddSessionModal({
               rows="3"
               onChange={handleChange}
               placeholder="Patient showed improvement in..."
-              className="w-full bg-[#222] border border-[#3a3a3a] rounded-xl px-4 py-3 outline-none resize-none"
+              className="
+                w-full
+                bg-[#faf8ff]
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                px-5
+                py-4
+                outline-none
+                resize-none
+                text-[#1f1147]
+              "
             />
           </div>
 
           {/* Goal */}
           <div>
 
-            <label className="text-sm text-zinc-300 mb-2 block">
+            <label className="
+              text-sm
+              text-[#7c6ca8]
+              font-medium
+              mb-2
+              block
+            ">
               Next Goal
             </label>
 
@@ -210,16 +364,48 @@ export default function AddSessionModal({
               rows="3"
               onChange={handleChange}
               placeholder="Next session focus..."
-              className="w-full bg-[#222] border border-[#3a3a3a] rounded-xl px-4 py-3 outline-none resize-none"
+              className="
+                w-full
+                bg-[#faf8ff]
+                border
+                border-[#ece7ff]
+                rounded-2xl
+                px-5
+                py-4
+                outline-none
+                resize-none
+                text-[#1f1147]
+              "
             />
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-2">
+          <div className="
+            flex
+            gap-3
+            pt-2
+          ">
 
             <button
               type="submit"
-              className="flex items-center justify-center gap-2 px-6 h-12 rounded-xl bg-[#dffff2] text-black font-bold hover:opacity-90"
+              className="
+                flex
+                items-center
+                justify-center
+                gap-2
+                px-6
+                h-14
+                rounded-2xl
+                bg-gradient-to-r
+                from-violet-600
+                to-fuchsia-500
+                text-white
+                font-bold
+                hover:opacity-90
+                shadow-lg
+                shadow-violet-500/20
+                transition-all
+              "
             >
               <ClipboardPen size={18} />
 
@@ -229,7 +415,18 @@ export default function AddSessionModal({
             <button
               type="button"
               onClick={close}
-              className="px-6 h-12 rounded-xl border border-[#404040] hover:bg-[#252525]"
+              className="
+                px-6
+                h-14
+                rounded-2xl
+                border
+                border-[#ece7ff]
+                bg-white
+                text-[#1f1147]
+                font-semibold
+                hover:bg-[#faf8ff]
+                transition-all
+              "
             >
               Cancel
             </button>
