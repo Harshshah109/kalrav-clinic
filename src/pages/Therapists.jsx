@@ -3,7 +3,8 @@ import {
   Clock3,
   BriefcaseMedical,
   Pencil,
-  X
+  X,
+  CalendarDays
 } from 'lucide-react'
 
 import { useEffect, useState } from 'react'
@@ -14,6 +15,9 @@ import {
 
 import AddTherapistModal
   from '../components/modals/AddTherapistModal'
+
+import TherapistAppointmentAnalyticsModal
+  from '../components/modals/TherapistAppointmentAnalyticsModal'
 
 export default function Therapists() {
 
@@ -34,6 +38,10 @@ export default function Therapists() {
 
   const [profileData, setProfileData] =
     useState(null)
+
+  const [appointmentTherapist,
+    setAppointmentTherapist] =
+      useState(null)
 
   useEffect(() => {
 
@@ -309,6 +317,30 @@ export default function Therapists() {
                 <Pencil size={18} />
               </button>
             </div>
+
+            {/* ANALYTICS BUTTON */}
+            <button
+              onClick={() =>
+                setAppointmentTherapist(
+                  therapist
+                )
+              }
+              className="
+                mt-4
+                flex
+                items-center
+                gap-2
+                text-sm
+                text-violet-600
+                font-semibold
+                hover:text-fuchsia-500
+                transition-all
+              "
+            >
+              <CalendarDays size={16} />
+
+              View Appointment Analytics
+            </button>
           </div>
         ))}
       </div>
@@ -602,6 +634,17 @@ export default function Therapists() {
             setOpenEdit(false)
           }
           refresh={loadTherapists}
+        />
+      )}
+
+      {/* ANALYTICS MODAL */}
+      {appointmentTherapist && (
+
+        <TherapistAppointmentAnalyticsModal
+          therapist={appointmentTherapist}
+          close={() =>
+            setAppointmentTherapist(null)
+          }
         />
       )}
     </div>
