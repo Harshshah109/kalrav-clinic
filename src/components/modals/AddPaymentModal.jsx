@@ -231,16 +231,15 @@ export default function AddPaymentModal({
     }
 
   return (
-    <div className="
-      fixed
-      inset-0
-      z-50
-      bg-black/40
-      backdrop-blur-md
-      flex
-      items-center
-      justify-center
-      p-3
+    <div cclassName="
+        fixed
+        inset-0
+        z-[9999]
+        overflow-y-auto
+        px-4
+        py-10
+        flex
+        justify-center
     ">
 
       <div className="
