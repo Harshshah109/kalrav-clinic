@@ -20,20 +20,8 @@ import {
 } from '../services/patientService'
 
 import {
-  deleteAppointmentsByPatient
-} from '../services/appointmentService'
-
-import {
   getPayments
 } from '../services/paymentService'
-
-import {
-  doc,
-  deleteDoc
-} from 'firebase/firestore'
-
-import { db }
-  from '../services/firebase'
 
 import AddPatientModal
   from '../components/modals/AddPatientModal'
@@ -111,18 +99,35 @@ export default function Patients({
     }
 
   return (
+
     <div className="pb-10 relative isolate z-0">
 
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+      <div className="
+        flex
+        flex-col
+        md:flex-row
+        md:items-center
+        md:justify-between
+        gap-4
+        mb-8
+      ">
 
         <div>
 
-          <h1 className="text-5xl font-bold mb-2 text-[#1f1147]">
+          <h1 className="
+            text-5xl
+            font-bold
+            mb-2
+            text-[#1f1147]
+          ">
             Patients
           </h1>
 
-          <p className="text-[#7c6ca8] text-lg">
+          <p className="
+            text-[#7c6ca8]
+            text-lg
+          ">
             Manage patient records and sessions
           </p>
         </div>
@@ -275,7 +280,13 @@ export default function Patients({
             >
 
               {/* TOP */}
-              <div className="flex flex-col xl:flex-row xl:items-center gap-5">
+              <div className="
+                flex
+                flex-col
+                xl:flex-row
+                xl:items-center
+                gap-5
+              ">
 
                 {/* AVATAR */}
                 <div className="
@@ -292,122 +303,82 @@ export default function Patients({
                   text-lg
                   font-bold
                 ">
+
                   {patient.name?.slice(0, 2)}
                 </div>
 
                 {/* INFO */}
                 <div className="flex-1">
 
-                  <div className="flex flex-col md:flex-row md:items-center gap-3 mb-2">
+                  <div className="
+                    flex
+                    flex-col
+                    md:flex-row
+                    md:items-center
+                    gap-3
+                    mb-2
+                  ">
 
-                    <h2 className="text-2xl font-bold">
+                    <h2 className="
+                      text-2xl
+                      font-bold
+                    ">
                       {patient.name}
                     </h2>
 
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold w-fit ${
-                      patient.category === 'Finished'
-                        ? 'bg-zinc-200 text-zinc-700'
-                        : patient.category === 'Assessment'
-                        ? 'bg-yellow-100 text-yellow-700'
-                        : 'bg-emerald-100 text-emerald-700'
-                    }`}>
+                    <span className={`
+                      px-3
+                      py-1
+                      rounded-full
+                      text-xs
+                      font-semibold
+                      w-fit
+                      ${
+                        patient.category === 'Finished'
+                          ? 'bg-zinc-200 text-zinc-700'
+                          : patient.category === 'Assessment'
+                          ? 'bg-yellow-100 text-yellow-700'
+                          : 'bg-emerald-100 text-emerald-700'
+                      }
+                    `}>
 
                       {patient.category || 'Assessment'}
                     </span>
                   </div>
 
-                  <p className="text-[#7c6ca8] mb-3">
+                  <p className="
+                    text-[#7c6ca8]
+                    mb-3
+                  ">
                     {patient.condition} • Age {patient.age}
                   </p>
 
-                  <div className="flex flex-wrap gap-4 text-sm text-[#7c6ca8]">
+                  <div className="
+                    flex
+                    flex-wrap
+                    gap-4
+                    text-sm
+                    text-[#7c6ca8]
+                  ">
 
-                    <div className="flex items-center gap-2">
+                    <div className="
+                      flex
+                      items-center
+                      gap-2
+                    ">
                       <CalendarDays size={16} />
                       Sessions
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="
+                      flex
+                      items-center
+                      gap-2
+                    ">
                       <Phone size={16} />
                       {patient.phone}
                     </div>
                   </div>
-
-                  {/* FINANCE */}
-                  {role === 'admin' && (
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
-
-                      <div className="
-                        bg-[#faf8ff]
-                        rounded-2xl
-                        p-4
-                        border
-                        border-[#ece7ff]
-                      ">
-
-                        <div className="flex items-center gap-2 mb-2 text-[#8c84b3] text-sm">
-
-                          <IndianRupee size={15} />
-
-                          Total Paid
-                        </div>
-
-                        <h3 className="text-2xl font-bold text-emerald-500">
-                          ₹{patient.totalPaid || 0}
-                        </h3>
-                      </div>
-
-                      <div className="
-                        bg-[#faf8ff]
-                        rounded-2xl
-                        p-4
-                        border
-                        border-[#ece7ff]
-                      ">
-
-                        <div className="flex items-center gap-2 mb-2 text-[#8c84b3] text-sm">
-
-                          <IndianRupee size={15} />
-
-                          Wallet Balance
-                        </div>
-
-                        <h3 className="text-2xl font-bold text-cyan-500">
-                          ₹{patient.walletBalance || 0}
-                        </h3>
-                      </div>
-
-                      <div className="
-                        bg-[#faf8ff]
-                        rounded-2xl
-                        p-4
-                        border
-                        border-[#ece7ff]
-                      ">
-
-                        <div className="flex items-center gap-2 mb-2 text-[#8c84b3] text-sm">
-
-                          <AlertCircle size={15} />
-
-                          Pending Due
-                        </div>
-
-                        <h3 className={`text-2xl font-bold ${
-                          patient.pendingDue > 0
-                            ? 'text-yellow-500'
-                            : 'text-emerald-500'
-                        }`}>
-
-                          {
-                            patient.pendingDue > 0
-                              ? `₹${patient.pendingDue}`
-                              : 'No Due'
-                          }
-                        </h3>
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 {/* ACTIONS */}
@@ -507,7 +478,12 @@ export default function Patients({
                       : patient.id
                   )
                 }
-                className="mt-5 text-sm text-violet-600 font-semibold"
+                className="
+                  mt-5
+                  text-sm
+                  text-violet-600
+                  font-semibold
+                "
               >
                 {expandedPatient === patient.id
                   ? 'Hide Session History'
@@ -520,7 +496,7 @@ export default function Patients({
                 />
               )}
 
-              {/* PAYMENT TOGGLE */}
+              {/* PAYMENT HISTORY */}
               <button
                 onClick={() =>
 
@@ -531,7 +507,15 @@ export default function Patients({
                       : patient.id
                   )
                 }
-                className="mt-4 flex items-center gap-2 text-sm text-cyan-600 font-semibold"
+                className="
+                  mt-4
+                  flex
+                  items-center
+                  gap-2
+                  text-sm
+                  text-cyan-600
+                  font-semibold
+                "
               >
                 {expandedPayments === patient.id
                   ? (
@@ -567,7 +551,6 @@ export default function Patients({
 
                 View Appointment History
               </button>
-
             </div>
           ))}
       </div>
