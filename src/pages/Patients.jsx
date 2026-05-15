@@ -47,7 +47,7 @@ import AddSessionModal
 import SessionHistory
   from '../components/patients/SessionHistory'
 
-  import PatientAppointmentHistoryModal
+import PatientAppointmentHistoryModal
   from '../components/modals/PatientAppointmentHistoryModal'
 
 export default function Patients({
@@ -79,12 +79,16 @@ export default function Patients({
     setExpandedPayments] =
       useState(null)
 
-      const [historyPatient,
-  setHistoryPatient] =
-    useState(null)
+  const [historyPatient,
+    setHistoryPatient] =
+      useState(null)
 
   const [search, setSearch] =
     useState('')
+
+  const [patientFilter,
+    setPatientFilter] =
+      useState('Active')
 
   useEffect(() => {
 
@@ -156,6 +160,43 @@ export default function Patients({
         )}
       </div>
 
+      {/* Patient Type Toggle */}
+      <div className="
+        flex
+        flex-wrap
+        gap-3
+        mb-6
+      ">
+
+        {[
+          'Active',
+          'Assessment',
+          'Finished'
+        ].map((item) => (
+
+          <button
+            key={item}
+            onClick={() =>
+              setPatientFilter(item)
+            }
+            className={`
+              h-12
+              px-6
+              rounded-2xl
+              font-semibold
+              transition-all
+              ${
+                patientFilter === item
+                  ? 'bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white shadow-lg shadow-violet-500/20'
+                  : 'bg-white/75 border border-[#ece7ff] text-[#1f1147]'
+              }
+            `}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+
       {/* Search */}
       <div className="
         bg-white/75
@@ -199,13 +240,24 @@ export default function Patients({
 
         {patients
 
-          .filter((patient) =>
-            patient.name
-              ?.toLowerCase()
-              .includes(
-                search.toLowerCase()
-              )
-          )
+          .filter((patient) => {
+
+            const matchesSearch =
+              patient.name
+                ?.toLowerCase()
+                .includes(
+                  search.toLowerCase()
+                )
+
+            const matchesCategory =
+              (patient.category || 'Assessment') ===
+              patientFilter
+
+            return (
+              matchesSearch &&
+              matchesCategory
+            )
+          })
 
           .map((patient) => (
 
@@ -370,7 +422,6 @@ export default function Patients({
                 {/* Actions */}
                 <div className="flex gap-3">
 
-                  {/* Create Session */}
                   <button
                     onClick={() =>
                       setSessionPatient(patient)
@@ -391,10 +442,8 @@ export default function Patients({
                     <ClipboardPen size={18} />
                   </button>
 
-                  {/* ADMIN ONLY */}
                   {role === 'admin' && (
                     <>
-                      {/* Edit */}
                       <button
                         onClick={() =>
                           setSelectedPatient(patient)
@@ -415,7 +464,6 @@ export default function Patients({
                         <Pencil size={18} />
                       </button>
 
-                      {/* Delete */}
                       <button
                         onClick={async () => {
 
@@ -484,320 +532,6 @@ export default function Patients({
                   )}
                 </div>
               </div>
-
-              {/* Session History Toggle */}
-              <button
-                onClick={() =>
-
-                  setExpandedPatient(
-
-                    expandedPatient === patient.id
-                      ? null
-                      : patient.id
-                  )
-                }
-                className="mt-5 text-sm text-violet-600 font-semibold"
-              >
-                {expandedPatient === patient.id
-                  ? 'Hide Session History'
-                  : 'View Session History'}
-              </button>
-
-              {/* Session History */}
-              {expandedPatient === patient.id && (
-                <SessionHistory
-                  patient={patient}
-                />
-              )}
-
-              {/* PAYMENT HISTORY TOGGLE */}
-              <button
-                onClick={() =>
-
-                  setExpandedPayments(
-
-                    expandedPayments === patient.id
-                      ? null
-                      : patient.id
-                  )
-                }
-                className="mt-4 flex items-center gap-2 text-sm text-cyan-600 font-semibold"
-              >
-                {expandedPayments === patient.id
-                  ? (
-                    <>
-                      <ChevronUp size={16} />
-                      Hide Payments
-                    </>
-                  )
-                  : (
-                    <>
-                      <ChevronDown size={16} />
-                      View Payments
-                    </>
-                  )}
-              </button>
-              <button
-  onClick={() =>
-    setHistoryPatient(patient)
-  }
-  className="
-    mt-3
-    flex
-    items-center
-    gap-2
-    text-sm
-    text-violet-600
-    font-semibold
-    hover:text-fuchsia-500
-    transition-all
-  "
->
-  <CalendarDays size={16} />
-
-  View Appointment History
-</button>
-
-              {/* PAYMENT HISTORY */}
-              {expandedPayments === patient.id && (
-
-                <div className="
-                  mt-5
-                  bg-white/80
-                  border
-                  border-[#ece7ff]
-                  rounded-3xl
-                  p-5
-                ">
-
-                  <div className="flex items-center justify-between mb-5">
-
-                    <h3 className="text-xl font-bold">
-                      Payment History
-                    </h3>
-
-                    <span className="text-sm text-[#8c84b3]">
-                      {
-                        payments.filter(
-                          (payment) =>
-                            payment.patient ===
-                            patient.name
-                        ).length
-                      } payments
-                    </span>
-                  </div>
-
-                  <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
-
-                    {payments
-
-                      .filter(
-                        (payment) =>
-                          payment.patient ===
-                          patient.name
-                      )
-
-                      .sort((a, b) => {
-
-                        const dateA =
-                          a.createdAt?.seconds
-                            ? new Date(
-                                a.createdAt.seconds * 1000
-                              )
-                            : new Date(a.createdAt)
-
-                        const dateB =
-                          b.createdAt?.seconds
-                            ? new Date(
-                                b.createdAt.seconds * 1000
-                              )
-                            : new Date(b.createdAt)
-
-                        return dateB - dateA
-                      })
-
-                      .map((payment) => (
-
-                        <div
-                          key={payment.id}
-                          className="
-                            bg-[#faf8ff]
-                            border
-                            border-[#ece7ff]
-                            rounded-2xl
-                            p-4
-                          "
-                        >
-
-                          <div className="flex flex-col md:flex-row md:items-center gap-4">
-
-                            <div className="
-                              w-12
-                              h-12
-                              rounded-2xl
-                              bg-gradient-to-br
-                              from-violet-500
-                              to-fuchsia-500
-                              text-white
-                              flex
-                              items-center
-                              justify-center
-                            ">
-
-                              <IndianRupee size={20} />
-                            </div>
-
-                            <div className="flex-1">
-
-                              <div className="flex flex-wrap items-center gap-3 mb-2">
-
-                                <h3 className="text-xl font-bold">
-                                  ₹{payment.amount}
-                                </h3>
-
-                                <span className="
-                                  px-3
-                                  py-1
-                                  rounded-full
-                                  text-xs
-                                  font-semibold
-                                  bg-cyan-100
-                                  text-cyan-700
-                                ">
-                                  {
-                                    payment.paymentType ||
-                                    'Payment'
-                                  }
-                                </span>
-
-                                {payment.status === 'Pending'
-                                  ? (
-
-                                    <button
-                                      onClick={async () => {
-
-                                        const confirmPayment =
-                                          window.confirm(
-                                            'Mark this pending payment as paid?'
-                                          )
-
-                                        if (!confirmPayment)
-                                          return
-
-                                        const updatedDue =
-                                          Math.max(
-                                            Number(
-                                              patient.pendingDue || 0
-                                            ) -
-                                            Number(
-                                              payment.amount || 0
-                                            ),
-                                            0
-                                          )
-
-                                        const {
-                                          updatePayment
-                                        } = await import(
-                                          '../services/paymentService'
-                                        )
-
-                                        const {
-                                          updatePatient
-                                        } = await import(
-                                          '../services/patientService'
-                                        )
-
-                                        await updatePayment(
-                                          payment.id,
-                                          {
-                                            status: 'Paid',
-                                            paymentType:
-                                              'Due Clearance'
-                                          }
-                                        )
-
-                                        await updatePatient(
-                                          patient.id,
-                                          {
-                                            pendingDue:
-                                              updatedDue,
-
-                                            totalPaid:
-                                              Number(
-                                                patient.totalPaid || 0
-                                              ) +
-                                              Number(
-                                                payment.amount || 0
-                                              )
-                                          }
-                                        )
-
-                                        loadPatients()
-                                      }}
-                                      className="
-                                        px-3
-                                        py-1
-                                        rounded-full
-                                        text-xs
-                                        font-semibold
-                                        bg-yellow-100
-                                        text-yellow-700
-                                      "
-                                    >
-                                      Mark Paid
-                                    </button>
-
-                                  )
-                                  : (
-
-                                    <span className="
-                                      px-3
-                                      py-1
-                                      rounded-full
-                                      text-xs
-                                      font-semibold
-                                      bg-emerald-100
-                                      text-emerald-700
-                                    ">
-                                      Paid
-                                    </span>
-                                  )}
-                              </div>
-
-                              <p className="text-[#7c6ca8] text-sm">
-                                {payment.method} • {
-                                  payment.date?.seconds
-                                    ? new Date(
-                                        payment.date.seconds * 1000
-                                      ).toLocaleDateString()
-                                    : payment.date
-                                }
-                              </p>
-
-                              {payment.notes && (
-
-                                <p className="text-[#8c84b3] text-sm mt-2">
-                                  {payment.notes}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-
-                    {payments.filter(
-                      (payment) =>
-                        payment.patient ===
-                        patient.name
-                    ).length === 0 && (
-
-                      <div className="text-[#8c84b3] text-center py-10">
-                        No payments found
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
           ))}
       </div>
@@ -835,14 +569,14 @@ export default function Patients({
       )}
 
       {/* Appointment History Modal */}
-{historyPatient && (
-  <PatientAppointmentHistoryModal
-    patient={historyPatient}
-    close={() =>
-      setHistoryPatient(null)
-    }
-  />
-)}
+      {historyPatient && (
+        <PatientAppointmentHistoryModal
+          patient={historyPatient}
+          close={() =>
+            setHistoryPatient(null)
+          }
+        />
+      )}
     </div>
   )
 }
