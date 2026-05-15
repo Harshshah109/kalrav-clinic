@@ -517,11 +517,11 @@ export default function AddAppointmentModal({
 {/* COMBINED OPTIONS */}
 
 <option value="Nirali / Khushali">
-  Nirali / Khushali
+  Nirali / Khushali Thaker
 </option>
 
-<option value="Nirali / Dhrishi">
-  Nirali / Dhrishi
+<option value="Nirali / Drishi Lashkari">
+  Nirali / Drishi Lashkari
 </option>
             </select>
           </div>
