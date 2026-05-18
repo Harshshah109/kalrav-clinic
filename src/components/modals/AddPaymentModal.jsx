@@ -243,22 +243,59 @@ export default function AddPaymentModal({
         - Goes directly to wallet
         - Increases total paid
       */
-      else if (
-        form.paymentType ===
-        'Advance Payment'
-      ) {
+      /*
+  ADVANCE PAYMENT:
+  - Works like normal received payment
+  - First clears pending due
+  - Extra amount goes to wallet
+  - Full received amount increases total paid
+*/
+else if (
+  form.paymentType ===
+  'Advance Payment'
+) {
 
-        updatedWallet =
-          currentWallet +
-          paymentAmount
+  updatedPaid =
+    updatedPaid +
+    paymentAmount
 
-        updatedPaid =
-          updatedPaid +
-          paymentAmount
+  if (currentDue > 0) {
 
-        walletAddedAmount =
-          paymentAmount
-      }
+    dueClearedAmount =
+      Math.min(
+        currentDue,
+        paymentAmount
+      )
+
+    updatedDue =
+      currentDue -
+      dueClearedAmount
+
+    const extraAmount =
+      paymentAmount -
+      dueClearedAmount
+
+    if (extraAmount > 0) {
+
+      updatedWallet =
+        currentWallet +
+        extraAmount
+
+      walletAddedAmount =
+        extraAmount
+    }
+  }
+
+  else {
+
+    updatedWallet =
+      currentWallet +
+      paymentAmount
+
+    walletAddedAmount =
+      paymentAmount
+  }
+}
 
       /*
         ACTUAL PAYMENT RECEIVED:
