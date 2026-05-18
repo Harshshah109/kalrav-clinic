@@ -553,7 +553,7 @@ export default function Patients({
                           `}>
                             {
                               latestPendingPayment
-                                ? `₹${latestPendingPayment.amount || 0}`
+                                ? `₹${latestPendingPayment.remainingDue || latestPendingPayment.amount || 0}`
                                 : 'No Due'
                             }
                           </h3>
@@ -749,7 +749,7 @@ export default function Patients({
 
       {historyPatient && (
         <PatientAppointmentHistoryModal
-          patient={historyPatient}
+          patient={patient}
           close={() =>
             setHistoryPatient(null)
           }
