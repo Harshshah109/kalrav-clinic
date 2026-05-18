@@ -3,7 +3,8 @@ import {
   Plus,
   Trash2,
   AlertCircle,
-  Wallet
+  Wallet,
+  Search
 } from 'lucide-react'
 
 import {
@@ -41,6 +42,10 @@ export default function Payments() {
 
   const [selectedDate,
     setSelectedDate] =
+      useState('')
+
+  const [patientSearch,
+    setPatientSearch] =
       useState('')
 
   useEffect(() => {
@@ -85,6 +90,18 @@ export default function Payments() {
         if (!item.date)
           return false
 
+        const matchesPatient =
+          (item.patient || '')
+            .toLowerCase()
+            .includes(
+              patientSearch
+                .toLowerCase()
+                .trim()
+            )
+
+        if (!matchesPatient)
+          return false
+
         const paymentDate =
           item.date?.seconds
             ? new Date(
@@ -122,7 +139,11 @@ export default function Payments() {
         return true
       })
 
-    }, [payments, filter])
+    }, [
+      payments,
+      filter,
+      patientSearch
+    ])
 
   const totalRevenue =
     filteredPayments
@@ -669,8 +690,44 @@ export default function Payments() {
         </div>
       </div>
 
-      {/* DATE FILTER */}
-      <div className="mb-6">
+      {/* PATIENT SEARCH + DATE FILTER */}
+      <div className="mb-6 flex flex-col md:flex-row gap-4">
+
+        <div className="
+          flex
+          items-center
+          gap-3
+          bg-white/80
+          border
+          border-[#ece7ff]
+          rounded-2xl
+          px-5
+          h-14
+          flex-1
+        ">
+
+          <Search
+            size={20}
+            className="text-[#8c84b3]"
+          />
+
+          <input
+            type="text"
+            placeholder="Search patient name..."
+            value={patientSearch}
+            onChange={(e) =>
+              setPatientSearch(
+                e.target.value
+              )
+            }
+            className="
+              bg-transparent
+              outline-none
+              w-full
+              text-[#1f1147]
+            "
+          />
+        </div>
 
         <input
           type="date"
@@ -768,6 +825,21 @@ export default function Payments() {
 
               <div className="space-y-4 max-h-[700px] overflow-y-auto pr-2">
 
+                {todayPayments.length === 0 && (
+
+                  <div className="
+                    bg-white/75
+                    border
+                    border-[#ece7ff]
+                    rounded-3xl
+                    p-10
+                    text-center
+                    text-[#8c84b3]
+                  ">
+                    No payments found
+                  </div>
+                )}
+
                 {todayPayments.map((item) => (
 
                   <PaymentCard
@@ -792,6 +864,21 @@ export default function Payments() {
               </div>
 
               <div className="space-y-4 max-h-[900px] overflow-y-auto pr-2">
+
+                {previousPayments.length === 0 && (
+
+                  <div className="
+                    bg-white/75
+                    border
+                    border-[#ece7ff]
+                    rounded-3xl
+                    p-10
+                    text-center
+                    text-[#8c84b3]
+                  ">
+                    No payments found
+                  </div>
+                )}
 
                 {previousPayments.map((item) => (
 
