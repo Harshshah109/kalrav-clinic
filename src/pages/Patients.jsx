@@ -457,12 +457,20 @@ export default function Patients({
                           Pending Due
                         </div>
 
-                        <h3 className="
+                        <h3 className={`
                           text-2xl
                           font-bold
-                          text-yellow-500
-                        ">
-                          ₹{patient.pendingDue || 0}
+                          ${
+                            patient.pendingDue > 0
+                              ? 'text-yellow-500'
+                              : 'text-emerald-500'
+                          }
+                        `}>
+                          {
+                            patient.pendingDue > 0
+                              ? `₹${patient.pendingDue}`
+                              : 'No Due'
+                          }
                         </h3>
                       </div>
                     </div>
@@ -475,13 +483,13 @@ export default function Patients({
                   <button
                     onClick={() => {
 
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  })
+                      window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                      })
 
-  setSessionPatient(patient)
-}}
+                      setSessionPatient(patient)
+                    }}
                     className="
                       w-12
                       h-12
@@ -674,56 +682,198 @@ export default function Patients({
                           patient.name
                       )
 
-                      .map((payment) => (
+                      .sort((a, b) => {
 
-                        <div
-                          key={payment.id}
-                          className="
-                            bg-[#faf8ff]
-                            border
-                            border-[#ece7ff]
-                            rounded-2xl
-                            p-4
-                          "
-                        >
+                        const dateA =
+                          a.createdAt?.seconds
+                            ? new Date(
+                                a.createdAt.seconds * 1000
+                              )
+                            : a.date?.seconds
+                            ? new Date(
+                                a.date.seconds * 1000
+                              )
+                            : new Date(
+                                a.createdAt ||
+                                a.date
+                              )
 
-                          <div className="
-                            flex
-                            items-center
-                            justify-between
-                          ">
+                        const dateB =
+                          b.createdAt?.seconds
+                            ? new Date(
+                                b.createdAt.seconds * 1000
+                              )
+                            : b.date?.seconds
+                            ? new Date(
+                                b.date.seconds * 1000
+                              )
+                            : new Date(
+                                b.createdAt ||
+                                b.date
+                              )
 
-                            <div>
+                        return dateB - dateA
+                      })
 
-                              <h3 className="
-                                text-lg
-                                font-bold
-                              ">
-                                ₹{payment.amount}
-                              </h3>
+                      .map((payment) => {
 
-                              <p className="
-                                text-sm
-                                text-[#7c6ca8]
-                              ">
-                                {payment.method}
-                              </p>
-                            </div>
+                        const paymentDate =
+                          payment.date?.seconds
+                            ? new Date(
+                                payment.date.seconds * 1000
+                              ).toLocaleDateString()
+                            : payment.createdAt?.seconds
+                            ? new Date(
+                                payment.createdAt.seconds * 1000
+                              ).toLocaleDateString()
+                            : payment.date ||
+                              payment.createdAt ||
+                              'N/A'
 
-                            <span className="
-                              px-3
-                              py-1
-                              rounded-full
-                              text-xs
-                              font-semibold
-                              bg-emerald-100
-                              text-emerald-700
+                        return (
+
+                          <div
+                            key={payment.id}
+                            className="
+                              bg-[#faf8ff]
+                              border
+                              border-[#ece7ff]
+                              rounded-2xl
+                              p-4
+                            "
+                          >
+
+                            <div className="
+                              flex
+                              flex-col
+                              md:flex-row
+                              md:items-center
+                              gap-4
                             ">
-                              Paid
-                            </span>
+
+                              <div className="
+                                w-12
+                                h-12
+                                rounded-2xl
+                                bg-gradient-to-br
+                                from-violet-500
+                                to-fuchsia-500
+                                text-white
+                                flex
+                                items-center
+                                justify-center
+                              ">
+
+                                <IndianRupee size={20} />
+                              </div>
+
+                              <div className="flex-1">
+
+                                <div className="
+                                  flex
+                                  flex-wrap
+                                  items-center
+                                  gap-3
+                                  mb-2
+                                ">
+
+                                  <h3 className="
+                                    text-xl
+                                    font-bold
+                                    text-[#1f1147]
+                                  ">
+                                    ₹{payment.amount || 0}
+                                  </h3>
+
+                                  <span className="
+                                    px-3
+                                    py-1
+                                    rounded-full
+                                    text-xs
+                                    font-semibold
+                                    bg-cyan-100
+                                    text-cyan-700
+                                  ">
+                                    {
+                                      payment.paymentType ||
+                                      payment.type ||
+                                      'Payment'
+                                    }
+                                  </span>
+
+                                  {payment.status === 'Pending'
+                                    ? (
+
+                                      <span className="
+                                        px-3
+                                        py-1
+                                        rounded-full
+                                        text-xs
+                                        font-semibold
+                                        bg-yellow-100
+                                        text-yellow-700
+                                      ">
+                                        Pending
+                                      </span>
+
+                                    )
+                                    : (
+
+                                      <span className="
+                                        px-3
+                                        py-1
+                                        rounded-full
+                                        text-xs
+                                        font-semibold
+                                        bg-emerald-100
+                                        text-emerald-700
+                                      ">
+                                        Paid
+                                      </span>
+                                    )}
+                                </div>
+
+                                <p className="
+                                  text-sm
+                                  text-[#7c6ca8]
+                                ">
+                                  {
+                                    payment.method ||
+                                    payment.paymentMethod ||
+                                    'N/A'
+                                  } • {paymentDate}
+                                </p>
+
+                                {payment.notes && (
+
+                                  <p className="
+                                    text-[#8c84b3]
+                                    text-sm
+                                    mt-2
+                                  ">
+                                    {payment.notes}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      })}
+
+                    {payments.filter(
+                      (payment) =>
+                        payment.patient ===
+                        patient.name
+                    ).length === 0 && (
+
+                      <div className="
+                        text-[#8c84b3]
+                        text-center
+                        py-10
+                      ">
+                        No payments found
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
