@@ -7,9 +7,7 @@ import {
   Trash2,
   ClipboardPen,
   IndianRupee,
-  AlertCircle,
-  ChevronDown,
-  ChevronUp
+  AlertCircle
 } from 'lucide-react'
 
 import { useEffect, useState } from 'react'
@@ -63,10 +61,6 @@ export default function Patients({
     setExpandedPatient] =
       useState(null)
 
-  const [expandedPayments,
-    setExpandedPayments] =
-      useState(null)
-
   const [historyPatient,
     setHistoryPatient] =
       useState(null)
@@ -96,6 +90,92 @@ export default function Patients({
       setPatients(data || [])
 
       setPayments(paymentData || [])
+    }
+
+  const getPaymentDateObject =
+    (payment) => {
+
+      if (payment?.date?.seconds) {
+
+        return new Date(
+          payment.date.seconds * 1000
+        )
+      }
+
+      if (payment?.createdAt?.seconds) {
+
+        return new Date(
+          payment.createdAt.seconds * 1000
+        )
+      }
+
+      if (payment?.date) {
+
+        return new Date(payment.date)
+      }
+
+      if (payment?.createdAt) {
+
+        return new Date(payment.createdAt)
+      }
+
+      return new Date(0)
+    }
+
+  const formatPaymentDate =
+    (payment) => {
+
+      const date =
+        getPaymentDateObject(payment)
+
+      if (!date || isNaN(date.getTime()))
+        return 'N/A'
+
+      return date.toLocaleDateString(
+        'en-IN',
+        {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        }
+      )
+    }
+
+  const getLatestPendingPayment =
+    (patient) => {
+
+      const patientPendingPayments =
+        payments
+
+          .filter((payment) => {
+
+            const samePatient =
+              payment.patient === patient.name
+
+            const isPending =
+              payment.status === 'Pending'
+
+            return (
+              samePatient &&
+              isPending
+            )
+          })
+
+          .sort((a, b) => {
+
+            const dateA =
+              getPaymentDateObject(a)
+
+            const dateB =
+              getPaymentDateObject(b)
+
+            return dateB - dateA
+          })
+
+      return (
+        patientPendingPayments[0] ||
+        null
+      )
     }
 
   return (
@@ -262,643 +342,379 @@ export default function Patients({
             )
           })
 
-          .map((patient) => (
+          .map((patient) => {
 
-            <div
-              key={patient.id}
-              className="
-                bg-white/75
-                border
-                border-[#ece7ff]
-                rounded-3xl
-                p-5
-              "
-            >
+            const latestPendingPayment =
+              getLatestPendingPayment(patient)
 
-              {/* TOP */}
-              <div className="
-                flex
-                flex-col
-                xl:flex-row
-                xl:items-center
-                gap-5
-              ">
+            return (
 
-                {/* AVATAR */}
-                <div className="
-                  w-16
-                  h-16
-                  rounded-full
-                  bg-gradient-to-br
-                  from-violet-500
-                  to-fuchsia-500
-                  text-white
-                  flex
-                  items-center
-                  justify-center
-                  text-lg
-                  font-bold
-                ">
-                  {patient.name?.slice(0, 2)}
-                </div>
-
-                {/* INFO */}
-                <div className="flex-1">
-
-                  <div className="
-                    flex
-                    items-center
-                    gap-3
-                    mb-2
-                  ">
-
-                    <h2 className="
-                      text-2xl
-                      font-bold
-                    ">
-                      {patient.name}
-                    </h2>
-
-                    <span className={`
-                      px-3
-                      py-1
-                      rounded-full
-                      text-xs
-                      font-semibold
-                      ${
-                        patient.category === 'Finished'
-                          ? 'bg-zinc-200 text-zinc-700'
-                          : patient.category === 'Assessment'
-                          ? 'bg-yellow-100 text-yellow-700'
-                          : 'bg-emerald-100 text-emerald-700'
-                      }
-                    `}>
-                      {patient.category}
-                    </span>
-                  </div>
-
-                  <p className="
-                    text-[#7c6ca8]
-                    mb-3
-                  ">
-                    {patient.condition} • Age {patient.age}
-                  </p>
-
-                  <div className="
-                    flex
-                    flex-wrap
-                    gap-4
-                    text-sm
-                    text-[#7c6ca8]
-                  ">
-
-                    <div className="
-                      flex
-                      items-center
-                      gap-2
-                    ">
-                      <Phone size={16} />
-                      {patient.phone}
-                    </div>
-                  </div>
-
-                  {/* FINANCE */}
-                  {role === 'admin' && (
-
-                    <div className="
-                      grid
-                      grid-cols-1
-                      md:grid-cols-3
-                      gap-4
-                      mt-5
-                    ">
-
-                      <div className="
-                        bg-[#faf8ff]
-                        rounded-2xl
-                        p-4
-                        border
-                        border-[#ece7ff]
-                      ">
-
-                        <div className="
-                          flex
-                          items-center
-                          gap-2
-                          mb-2
-                          text-[#8c84b3]
-                          text-sm
-                        ">
-
-                          <IndianRupee size={15} />
-
-                          Total Paid
-                        </div>
-
-                        <h3 className="
-                          text-2xl
-                          font-bold
-                          text-emerald-500
-                        ">
-                          ₹{patient.totalPaid || 0}
-                        </h3>
-                      </div>
-
-                      <div className="
-                        bg-[#faf8ff]
-                        rounded-2xl
-                        p-4
-                        border
-                        border-[#ece7ff]
-                      ">
-
-                        <div className="
-                          flex
-                          items-center
-                          gap-2
-                          mb-2
-                          text-[#8c84b3]
-                          text-sm
-                        ">
-
-                          <IndianRupee size={15} />
-
-                          Wallet Balance
-                        </div>
-
-                        <h3 className="
-                          text-2xl
-                          font-bold
-                          text-cyan-500
-                        ">
-                          ₹{patient.walletBalance || 0}
-                        </h3>
-                      </div>
-
-                      <div className="
-                        bg-[#faf8ff]
-                        rounded-2xl
-                        p-4
-                        border
-                        border-[#ece7ff]
-                      ">
-
-                        <div className="
-                          flex
-                          items-center
-                          gap-2
-                          mb-2
-                          text-[#8c84b3]
-                          text-sm
-                        ">
-
-                          <AlertCircle size={15} />
-
-                          Pending Due
-                        </div>
-
-                        <h3 className={`
-                          text-2xl
-                          font-bold
-                          ${
-                            patient.pendingDue > 0
-                              ? 'text-yellow-500'
-                              : 'text-emerald-500'
-                          }
-                        `}>
-                          {
-                            patient.pendingDue > 0
-                              ? `₹${patient.pendingDue}`
-                              : 'No Due'
-                          }
-                        </h3>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* ACTIONS */}
-                <div className="flex gap-3">
-
-                  <button
-                    onClick={() => {
-
-                      window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                      })
-
-                      setSessionPatient(patient)
-                    }}
-                    className="
-                      w-12
-                      h-12
-                      rounded-2xl
-                      border
-                      border-[#ece7ff]
-                      flex
-                      items-center
-                      justify-center
-                    "
-                  >
-                    <ClipboardPen size={18} />
-                  </button>
-
-                  {role === 'admin' && (
-                    <>
-                      <button
-                        onClick={() => {
-
-                          window.scrollTo({
-                            top: 0,
-                            behavior: 'smooth'
-                          })
-
-                          setSelectedPatient(patient)
-                        }}
-                        className="
-                          w-12
-                          h-12
-                          rounded-2xl
-                          border
-                          border-[#ece7ff]
-                          flex
-                          items-center
-                          justify-center
-                        "
-                      >
-                        <Pencil size={18} />
-                      </button>
-
-                      <button
-                        onClick={async () => {
-
-                          const confirmDelete =
-                            window.confirm(
-                              'Delete patient permanently?'
-                            )
-
-                          if (!confirmDelete)
-                            return
-
-                          await deletePatient(
-                            patient.id
-                          )
-
-                          loadPatients()
-                        }}
-                        className="
-                          w-12
-                          h-12
-                          rounded-2xl
-                          border
-                          border-red-200
-                          text-red-500
-                          flex
-                          items-center
-                          justify-center
-                        "
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {/* SESSION HISTORY */}
-              <button
-                onClick={() =>
-
-                  setExpandedPatient(
-
-                    expandedPatient === patient.id
-                      ? null
-                      : patient.id
-                  )
-                }
+              <div
+                key={patient.id}
                 className="
-                  mt-5
-                  text-sm
-                  text-violet-600
-                  font-semibold
-                "
-              >
-                {expandedPatient === patient.id
-                  ? 'Hide Session History'
-                  : 'View Session History'}
-              </button>
-
-              {expandedPatient === patient.id && (
-                <SessionHistory
-                  patient={patient}
-                />
-              )}
-
-              {/* PAYMENT HISTORY */}
-              <button
-                onClick={() =>
-
-                  setExpandedPayments(
-
-                    expandedPayments === patient.id
-                      ? null
-                      : patient.id
-                  )
-                }
-                className="
-                  mt-4
-                  flex
-                  items-center
-                  gap-2
-                  text-sm
-                  text-cyan-600
-                  font-semibold
-                "
-              >
-                {expandedPayments === patient.id
-                  ? (
-                    <>
-                      <ChevronUp size={16} />
-                      Hide Payments
-                    </>
-                  )
-                  : (
-                    <>
-                      <ChevronDown size={16} />
-                      View Payments
-                    </>
-                  )}
-              </button>
-
-              {expandedPayments === patient.id && (
-
-                <div className="
-                  mt-5
-                  bg-white/80
+                  bg-white/75
                   border
                   border-[#ece7ff]
                   rounded-3xl
                   p-5
+                "
+              >
+
+                {/* TOP */}
+                <div className="
+                  flex
+                  flex-col
+                  xl:flex-row
+                  xl:items-center
+                  gap-5
                 ">
 
+                  {/* AVATAR */}
                   <div className="
+                    w-16
+                    h-16
+                    rounded-full
+                    bg-gradient-to-br
+                    from-violet-500
+                    to-fuchsia-500
+                    text-white
                     flex
                     items-center
-                    justify-between
-                    mb-5
+                    justify-center
+                    text-lg
+                    font-bold
                   ">
-
-                    <h3 className="
-                      text-xl
-                      font-bold
-                    ">
-                      Payment History
-                    </h3>
-
-                    <span className="
-                      text-sm
-                      text-[#8c84b3]
-                    ">
-                      {
-                        payments.filter(
-                          (payment) =>
-                            payment.patient ===
-                            patient.name
-                        ).length
-                      } payments
-                    </span>
+                    {patient.name?.slice(0, 2)}
                   </div>
 
-                  <div className="
-                    space-y-4
-                  ">
+                  {/* INFO */}
+                  <div className="flex-1">
 
-                    {payments
+                    <div className="
+                      flex
+                      items-center
+                      gap-3
+                      mb-2
+                    ">
 
-                      .filter(
-                        (payment) =>
-                          payment.patient ===
-                          patient.name
-                      )
+                      <h2 className="
+                        text-2xl
+                        font-bold
+                      ">
+                        {patient.name}
+                      </h2>
 
-                      .sort((a, b) => {
+                      <span className={`
+                        px-3
+                        py-1
+                        rounded-full
+                        text-xs
+                        font-semibold
+                        ${
+                          patient.category === 'Finished'
+                            ? 'bg-zinc-200 text-zinc-700'
+                            : patient.category === 'Assessment'
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-emerald-100 text-emerald-700'
+                        }
+                      `}>
+                        {patient.category}
+                      </span>
+                    </div>
 
-                        const dateA =
-                          a.createdAt?.seconds
-                            ? new Date(
-                                a.createdAt.seconds * 1000
-                              )
-                            : a.date?.seconds
-                            ? new Date(
-                                a.date.seconds * 1000
-                              )
-                            : new Date(
-                                a.createdAt ||
-                                a.date
-                              )
+                    <p className="
+                      text-[#7c6ca8]
+                      mb-3
+                    ">
+                      {patient.condition} • Age {patient.age}
+                    </p>
 
-                        const dateB =
-                          b.createdAt?.seconds
-                            ? new Date(
-                                b.createdAt.seconds * 1000
-                              )
-                            : b.date?.seconds
-                            ? new Date(
-                                b.date.seconds * 1000
-                              )
-                            : new Date(
-                                b.createdAt ||
-                                b.date
-                              )
-
-                        return dateB - dateA
-                      })
-
-                      .map((payment) => {
-
-                        const paymentDate =
-                          payment.date?.seconds
-                            ? new Date(
-                                payment.date.seconds * 1000
-                              ).toLocaleDateString()
-                            : payment.createdAt?.seconds
-                            ? new Date(
-                                payment.createdAt.seconds * 1000
-                              ).toLocaleDateString()
-                            : payment.date ||
-                              payment.createdAt ||
-                              'N/A'
-
-                        return (
-
-                          <div
-                            key={payment.id}
-                            className="
-                              bg-[#faf8ff]
-                              border
-                              border-[#ece7ff]
-                              rounded-2xl
-                              p-4
-                            "
-                          >
-
-                            <div className="
-                              flex
-                              flex-col
-                              md:flex-row
-                              md:items-center
-                              gap-4
-                            ">
-
-                              <div className="
-                                w-12
-                                h-12
-                                rounded-2xl
-                                bg-gradient-to-br
-                                from-violet-500
-                                to-fuchsia-500
-                                text-white
-                                flex
-                                items-center
-                                justify-center
-                              ">
-
-                                <IndianRupee size={20} />
-                              </div>
-
-                              <div className="flex-1">
-
-                                <div className="
-                                  flex
-                                  flex-wrap
-                                  items-center
-                                  gap-3
-                                  mb-2
-                                ">
-
-                                  <h3 className="
-                                    text-xl
-                                    font-bold
-                                    text-[#1f1147]
-                                  ">
-                                    ₹{payment.amount || 0}
-                                  </h3>
-
-                                  <span className="
-                                    px-3
-                                    py-1
-                                    rounded-full
-                                    text-xs
-                                    font-semibold
-                                    bg-cyan-100
-                                    text-cyan-700
-                                  ">
-                                    {
-                                      payment.paymentType ||
-                                      payment.type ||
-                                      'Payment'
-                                    }
-                                  </span>
-
-                                  {payment.status === 'Pending'
-                                    ? (
-
-                                      <span className="
-                                        px-3
-                                        py-1
-                                        rounded-full
-                                        text-xs
-                                        font-semibold
-                                        bg-yellow-100
-                                        text-yellow-700
-                                      ">
-                                        Pending
-                                      </span>
-
-                                    )
-                                    : (
-
-                                      <span className="
-                                        px-3
-                                        py-1
-                                        rounded-full
-                                        text-xs
-                                        font-semibold
-                                        bg-emerald-100
-                                        text-emerald-700
-                                      ">
-                                        Paid
-                                      </span>
-                                    )}
-                                </div>
-
-                                <p className="
-                                  text-sm
-                                  text-[#7c6ca8]
-                                ">
-                                  {
-                                    payment.method ||
-                                    payment.paymentMethod ||
-                                    'N/A'
-                                  } • {paymentDate}
-                                </p>
-
-                                {payment.notes && (
-
-                                  <p className="
-                                    text-[#8c84b3]
-                                    text-sm
-                                    mt-2
-                                  ">
-                                    {payment.notes}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      })}
-
-                    {payments.filter(
-                      (payment) =>
-                        payment.patient ===
-                        patient.name
-                    ).length === 0 && (
+                    <div className="
+                      flex
+                      flex-wrap
+                      gap-4
+                      text-sm
+                      text-[#7c6ca8]
+                    ">
 
                       <div className="
-                        text-[#8c84b3]
-                        text-center
-                        py-10
+                        flex
+                        items-center
+                        gap-2
                       ">
-                        No payments found
+                        <Phone size={16} />
+                        {patient.phone}
+                      </div>
+                    </div>
+
+                    {/* FINANCE */}
+                    {role === 'admin' && (
+
+                      <div className="
+                        grid
+                        grid-cols-1
+                        md:grid-cols-3
+                        gap-4
+                        mt-5
+                      ">
+
+                        <div className="
+                          bg-[#faf8ff]
+                          rounded-2xl
+                          p-4
+                          border
+                          border-[#ece7ff]
+                        ">
+
+                          <div className="
+                            flex
+                            items-center
+                            gap-2
+                            mb-2
+                            text-[#8c84b3]
+                            text-sm
+                          ">
+
+                            <IndianRupee size={15} />
+
+                            Total Paid
+                          </div>
+
+                          <h3 className="
+                            text-2xl
+                            font-bold
+                            text-emerald-500
+                          ">
+                            ₹{patient.totalPaid || 0}
+                          </h3>
+                        </div>
+
+                        <div className="
+                          bg-[#faf8ff]
+                          rounded-2xl
+                          p-4
+                          border
+                          border-[#ece7ff]
+                        ">
+
+                          <div className="
+                            flex
+                            items-center
+                            gap-2
+                            mb-2
+                            text-[#8c84b3]
+                            text-sm
+                          ">
+
+                            <IndianRupee size={15} />
+
+                            Wallet Balance
+                          </div>
+
+                          <h3 className="
+                            text-2xl
+                            font-bold
+                            text-cyan-500
+                          ">
+                            ₹{patient.walletBalance || 0}
+                          </h3>
+                        </div>
+
+                        <div className="
+                          bg-[#faf8ff]
+                          rounded-2xl
+                          p-4
+                          border
+                          border-[#ece7ff]
+                        ">
+
+                          <div className="
+                            flex
+                            items-center
+                            gap-2
+                            mb-2
+                            text-[#8c84b3]
+                            text-sm
+                          ">
+
+                            <AlertCircle size={15} />
+
+                            Latest Pending Due
+                          </div>
+
+                          <h3 className={`
+                            text-2xl
+                            font-bold
+                            ${
+                              latestPendingPayment
+                                ? 'text-yellow-500'
+                                : 'text-emerald-500'
+                            }
+                          `}>
+                            {
+                              latestPendingPayment
+                                ? `₹${latestPendingPayment.amount || 0}`
+                                : 'No Due'
+                            }
+                          </h3>
+
+                          {latestPendingPayment && (
+
+                            <p className="
+                              text-xs
+                              text-[#8c84b3]
+                              mt-1
+                            ">
+                              {formatPaymentDate(
+                                latestPendingPayment
+                              )}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
+
+                  {/* ACTIONS */}
+                  <div className="flex gap-3">
+
+                    <button
+                      onClick={() => {
+
+                        window.scrollTo({
+                          top: 0,
+                          behavior: 'smooth'
+                        })
+
+                        setSessionPatient(patient)
+                      }}
+                      className="
+                        w-12
+                        h-12
+                        rounded-2xl
+                        border
+                        border-[#ece7ff]
+                        flex
+                        items-center
+                        justify-center
+                      "
+                    >
+                      <ClipboardPen size={18} />
+                    </button>
+
+                    {role === 'admin' && (
+                      <>
+                        <button
+                          onClick={() => {
+
+                            window.scrollTo({
+                              top: 0,
+                              behavior: 'smooth'
+                            })
+
+                            setSelectedPatient(patient)
+                          }}
+                          className="
+                            w-12
+                            h-12
+                            rounded-2xl
+                            border
+                            border-[#ece7ff]
+                            flex
+                            items-center
+                            justify-center
+                          "
+                        >
+                          <Pencil size={18} />
+                        </button>
+
+                        <button
+                          onClick={async () => {
+
+                            const confirmDelete =
+                              window.confirm(
+                                'Delete patient permanently?'
+                              )
+
+                            if (!confirmDelete)
+                              return
+
+                            await deletePatient(
+                              patient.id
+                            )
+
+                            loadPatients()
+                          }}
+                          className="
+                            w-12
+                            h-12
+                            rounded-2xl
+                            border
+                            border-red-200
+                            text-red-500
+                            flex
+                            items-center
+                            justify-center
+                          "
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
-              )}
 
-              {/* APPOINTMENT HISTORY */}
-              <button
-                onClick={() =>
-                  setHistoryPatient(patient)
-                }
-                className="
-                  mt-3
-                  flex
-                  items-center
-                  gap-2
-                  text-sm
-                  text-violet-600
-                  font-semibold
-                "
-              >
-                <CalendarDays size={16} />
+                {/* SESSION HISTORY */}
+                <button
+                  onClick={() =>
 
-                View Appointment History
-              </button>
-            </div>
-          ))}
+                    setExpandedPatient(
+
+                      expandedPatient === patient.id
+                        ? null
+                        : patient.id
+                    )
+                  }
+                  className="
+                    mt-5
+                    text-sm
+                    text-violet-600
+                    font-semibold
+                  "
+                >
+                  {expandedPatient === patient.id
+                    ? 'Hide Session History'
+                    : 'View Session History'}
+                </button>
+
+                {expandedPatient === patient.id && (
+                  <SessionHistory
+                    patient={patient}
+                  />
+                )}
+
+                {/* APPOINTMENT HISTORY */}
+                <button
+                  onClick={() =>
+                    setHistoryPatient(patient)
+                  }
+                  className="
+                    mt-3
+                    flex
+                    items-center
+                    gap-2
+                    text-sm
+                    text-violet-600
+                    font-semibold
+                  "
+                >
+                  <CalendarDays size={16} />
+
+                  View Appointment History
+                </button>
+              </div>
+            )
+          })}
       </div>
 
       {/* MODALS */}
