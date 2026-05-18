@@ -239,66 +239,50 @@ export default function AddPaymentModal({
       }
 
       /*
-        ADVANCE PAYMENT:
-        - Goes directly to wallet
-        - Increases total paid
+        SESSION PAYMENT:
+        - If pending due is 0, only totalPaid increases
+        - If pending due exists, first clear pending due
+        - If extra remains after clearing due, add extra to wallet
       */
-      /*
-  ADVANCE PAYMENT:
-  - Works like normal received payment
-  - First clears pending due
-  - Extra amount goes to wallet
-  - Full received amount increases total paid
-*/
-else if (
-  form.paymentType ===
-  'Advance Payment'
-) {
+      else if (
+        form.paymentType ===
+        'Session Payment'
+      ) {
 
-  updatedPaid =
-    updatedPaid +
-    paymentAmount
+        updatedPaid =
+          updatedPaid +
+          paymentAmount
 
-  if (currentDue > 0) {
+        if (currentDue > 0) {
 
-    dueClearedAmount =
-      Math.min(
-        currentDue,
-        paymentAmount
-      )
+          dueClearedAmount =
+            Math.min(
+              currentDue,
+              paymentAmount
+            )
 
-    updatedDue =
-      currentDue -
-      dueClearedAmount
+          updatedDue =
+            currentDue -
+            dueClearedAmount
 
-    const extraAmount =
-      paymentAmount -
-      dueClearedAmount
+          const extraAmount =
+            paymentAmount -
+            dueClearedAmount
 
-    if (extraAmount > 0) {
+          if (extraAmount > 0) {
 
-      updatedWallet =
-        currentWallet +
-        extraAmount
+            updatedWallet =
+              currentWallet +
+              extraAmount
 
-      walletAddedAmount =
-        extraAmount
-    }
-  }
-
-  else {
-
-    updatedWallet =
-      currentWallet +
-      paymentAmount
-
-    walletAddedAmount =
-      paymentAmount
-  }
-}
+            walletAddedAmount =
+              extraAmount
+          }
+        }
+      }
 
       /*
-        ACTUAL PAYMENT RECEIVED:
+        ALL OTHER REAL PAYMENTS:
         - First clears pending due
         - If extra remains, add extra to wallet
         - Full received amount increases total paid
