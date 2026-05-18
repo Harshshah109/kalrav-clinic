@@ -17,10 +17,6 @@ import {
   deletePatient
 } from '../services/patientService'
 
-import {
-  getPayments
-} from '../services/paymentService'
-
 import AddPatientModal
   from '../components/modals/AddPatientModal'
 
@@ -41,9 +37,6 @@ export default function Patients({
 }) {
 
   const [patients, setPatients] =
-    useState([])
-
-  const [payments, setPayments] =
     useState([])
 
   const [openModal, setOpenModal] =
@@ -84,98 +77,7 @@ export default function Patients({
       const data =
         await getPatients()
 
-      const paymentData =
-        await getPayments()
-
       setPatients(data || [])
-
-      setPayments(paymentData || [])
-    }
-
-  const getPaymentDateObject =
-    (payment) => {
-
-      if (payment?.date?.seconds) {
-
-        return new Date(
-          payment.date.seconds * 1000
-        )
-      }
-
-      if (payment?.createdAt?.seconds) {
-
-        return new Date(
-          payment.createdAt.seconds * 1000
-        )
-      }
-
-      if (payment?.date) {
-
-        return new Date(payment.date)
-      }
-
-      if (payment?.createdAt) {
-
-        return new Date(payment.createdAt)
-      }
-
-      return new Date(0)
-    }
-
-  const formatPaymentDate =
-    (payment) => {
-
-      const date =
-        getPaymentDateObject(payment)
-
-      if (!date || isNaN(date.getTime()))
-        return 'N/A'
-
-      return date.toLocaleDateString(
-        'en-IN',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric'
-        }
-      )
-    }
-
-  const getLatestPendingPayment =
-    (patient) => {
-
-      const patientPendingPayments =
-        payments
-
-          .filter((payment) => {
-
-            const samePatient =
-              payment.patient === patient.name
-
-            const isPending =
-              payment.status === 'Pending'
-
-            return (
-              samePatient &&
-              isPending
-            )
-          })
-
-          .sort((a, b) => {
-
-            const dateA =
-              getPaymentDateObject(a)
-
-            const dateB =
-              getPaymentDateObject(b)
-
-            return dateB - dateA
-          })
-
-      return (
-        patientPendingPayments[0] ||
-        null
-      )
     }
 
   return (
@@ -344,8 +246,10 @@ export default function Patients({
 
           .map((patient) => {
 
-            const latestPendingPayment =
-              getLatestPendingPayment(patient)
+            const totalPendingDue =
+              Number(
+                patient.pendingDue || 0
+              )
 
             return (
 
@@ -539,37 +443,24 @@ export default function Patients({
 
                             <AlertCircle size={15} />
 
-                            Latest Pending Due
+                            Total Pending Due
                           </div>
 
                           <h3 className={`
                             text-2xl
                             font-bold
                             ${
-                              latestPendingPayment
+                              totalPendingDue > 0
                                 ? 'text-yellow-500'
                                 : 'text-emerald-500'
                             }
                           `}>
                             {
-                              latestPendingPayment
-                                ? `₹${latestPendingPayment.remainingDue || latestPendingPayment.amount || 0}`
+                              totalPendingDue > 0
+                                ? `₹${totalPendingDue}`
                                 : 'No Due'
                             }
                           </h3>
-
-                          {latestPendingPayment && (
-
-                            <p className="
-                              text-xs
-                              text-[#8c84b3]
-                              mt-1
-                            ">
-                              {formatPaymentDate(
-                                latestPendingPayment
-                              )}
-                            </p>
-                          )}
                         </div>
                       </div>
                     )}

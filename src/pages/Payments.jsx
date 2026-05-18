@@ -15,8 +15,7 @@ import {
 
 import {
   getPayments,
-  deletePayment,
-  updatePayment
+  deletePayment
 } from '../services/paymentService'
 
 import {
@@ -152,7 +151,8 @@ export default function Payments() {
 
         return (
           item.status === 'Paid' &&
-          item.method !== 'From Wallet'
+          item.method !== 'From Wallet' &&
+          item.paymentType !== 'Pending Payment'
         )
       })
 
@@ -257,257 +257,218 @@ export default function Payments() {
       : []
 
   const PaymentCard =
-    ({ item }) => (
+    ({ item }) => {
 
-      <div
-        className="
-          bg-white/75
-          border
-          border-[#ece7ff]
-          rounded-3xl
-          p-5
-          flex
-          flex-col
-          gap-5
-          backdrop-blur-xl
-          shadow-[0_10px_30px_rgba(124,58,237,0.08)]
-        "
-      >
+      const isPendingPayment =
+        item.status === 'Pending' ||
+        item.paymentType ===
+          'Pending Payment'
 
-        <div className="flex flex-col xl:flex-row xl:items-center gap-5">
+      return (
 
-          <div className="
-            w-14
-            h-14
-            rounded-2xl
-            bg-gradient-to-br
-            from-violet-500
-            to-fuchsia-500
-            text-white
+        <div
+          className="
+            bg-white/75
+            border
+            border-[#ece7ff]
+            rounded-3xl
+            p-5
             flex
-            items-center
-            justify-center
-          ">
+            flex-col
+            gap-5
+            backdrop-blur-xl
+            shadow-[0_10px_30px_rgba(124,58,237,0.08)]
+          "
+        >
 
-            <IndianRupee size={24} />
-          </div>
+          <div className="flex flex-col xl:flex-row xl:items-center gap-5">
 
-          <div className="flex-1">
-
-            <div className="flex flex-wrap items-center gap-3 mb-2">
-
-              <h2 className="text-2xl font-bold text-[#1f1147]">
-                {item.patient}
-              </h2>
-
-              <span className="
-                px-3
-                py-1
-                rounded-full
-                text-xs
-                font-semibold
-                bg-cyan-100
-                text-cyan-700
-              ">
-                {
-                  item.paymentType ||
-                  'Payment'
-                }
-              </span>
-            </div>
-
-            <p className="text-[#7c6ca8]">
-              {item.method} • {
-                item.date?.seconds
-                  ? new Date(
-                      item.date.seconds * 1000
-                    ).toLocaleDateString()
-                  : item.date
-              }
-            </p>
-          </div>
-
-          <div>
-
-            <h2 className="text-3xl font-bold text-[#1f1147]">
-              ₹{item.amount}
-            </h2>
-          </div>
-
-          <div>
-
-            {item.status === 'Pending'
-              ? (
-
-                <button
-                  onClick={async () => {
-
-                    const patient =
-                      patients.find(
-                        (p) =>
-                          p.name === item.patient
-                      )
-
-                    if (patient) {
-
-                      const updatedDue =
-                        Math.max(
-                          Number(
-                            patient.pendingDue || 0
-                          ) -
-                          Number(
-                            item.amount || 0
-                          ),
-                          0
-                        )
-
-                      await updatePayment(
-                        item.id,
-                        {
-                          status: 'Paid',
-                          paymentType:
-                            'Due Clearance'
-                        }
-                      )
-
-                      const {
-                        updatePatient
-                      } = await import(
-                        '../services/patientService'
-                      )
-
-                      await updatePatient(
-                        patient.id,
-                        {
-                          pendingDue:
-                            updatedDue,
-
-                          totalPaid:
-                            Number(
-                              patient.totalPaid || 0
-                            ) +
-                            Number(
-                              item.amount || 0
-                            )
-                        }
-                      )
-                    }
-
-                    loadData()
-                  }}
-                  className="
-                    px-5
-                    h-11
-                    rounded-2xl
-                    bg-amber-100
-                    text-amber-700
-                    font-semibold
-                  "
-                >
-                  Mark Paid
-                </button>
-
-              ) : (
-
-                <span className="
-                  px-4
-                  py-2
-                  rounded-full
-                  text-sm
-                  font-semibold
-                  bg-emerald-100
-                  text-emerald-700
-                ">
-                  Paid
-                </span>
-              )}
-          </div>
-
-          <button
-            onClick={async () => {
-
-              const confirmDelete =
-                window.confirm(
-                  'Delete payment and rollback balances?'
-                )
-
-              if (!confirmDelete)
-                return
-
-              await deletePayment(
-                item
-              )
-
-              loadData()
-            }}
-            className="
-              w-12
-              h-12
+            <div className="
+              w-14
+              h-14
               rounded-2xl
-              border
-              border-red-200
-              text-red-500
+              bg-gradient-to-br
+              from-violet-500
+              to-fuchsia-500
+              text-white
               flex
               items-center
               justify-center
-              hover:bg-red-50
-              transition-all
-            "
-          >
+            ">
 
-            <Trash2 size={18} />
-          </button>
-        </div>
+              <IndianRupee size={24} />
+            </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex-1">
 
-          <div className="
-            bg-[#faf8ff]
-            rounded-2xl
-            p-4
-            border
-            border-[#ece7ff]
-          ">
+              <div className="flex flex-wrap items-center gap-3 mb-2">
 
-            <p className="text-[#8c84b3] text-sm mb-2">
-              Remaining Wallet
-            </p>
+                <h2 className="text-2xl font-bold text-[#1f1147]">
+                  {item.patient}
+                </h2>
 
-            <h3 className="text-2xl font-bold text-cyan-500">
-              ₹{
-                item.remainingWallet || 0
-              }
-            </h3>
+                <span className={`
+                  px-3
+                  py-1
+                  rounded-full
+                  text-xs
+                  font-semibold
+                  ${
+                    isPendingPayment
+                      ? 'bg-amber-100 text-amber-700'
+                      : 'bg-cyan-100 text-cyan-700'
+                  }
+                `}>
+                  {
+                    isPendingPayment
+                      ? 'Pending Payment'
+                      : item.paymentType ||
+                        'Payment'
+                  }
+                </span>
+              </div>
+
+              <p className="text-[#7c6ca8]">
+                {
+                  isPendingPayment
+                    ? 'No payment method required'
+                    : item.method
+                } • {
+                  item.date?.seconds
+                    ? new Date(
+                        item.date.seconds * 1000
+                      ).toLocaleDateString()
+                    : item.date
+                }
+              </p>
+            </div>
+
+            <div>
+
+              <h2 className="text-3xl font-bold text-[#1f1147]">
+                ₹{item.amount}
+              </h2>
+            </div>
+
+            <div>
+
+              {isPendingPayment
+                ? (
+
+                  <span className="
+                    px-4
+                    py-2
+                    rounded-full
+                    text-sm
+                    font-semibold
+                    bg-amber-100
+                    text-amber-700
+                  ">
+                    Pending
+                  </span>
+
+                ) : (
+
+                  <span className="
+                    px-4
+                    py-2
+                    rounded-full
+                    text-sm
+                    font-semibold
+                    bg-emerald-100
+                    text-emerald-700
+                  ">
+                    Paid
+                  </span>
+                )}
+            </div>
+
+            <button
+              onClick={async () => {
+
+                const confirmDelete =
+                  window.confirm(
+                    'Delete payment and rollback balances?'
+                  )
+
+                if (!confirmDelete)
+                  return
+
+                await deletePayment(
+                  item
+                )
+
+                loadData()
+              }}
+              className="
+                w-12
+                h-12
+                rounded-2xl
+                border
+                border-red-200
+                text-red-500
+                flex
+                items-center
+                justify-center
+                hover:bg-red-50
+                transition-all
+              "
+            >
+
+              <Trash2 size={18} />
+            </button>
           </div>
 
-          <div className="
-            bg-[#faf8ff]
-            rounded-2xl
-            p-4
-            border
-            border-[#ece7ff]
-          ">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-            <p className="text-[#8c84b3] text-sm mb-2">
-              Remaining Due
-            </p>
+            <div className="
+              bg-[#faf8ff]
+              rounded-2xl
+              p-4
+              border
+              border-[#ece7ff]
+            ">
 
-            <h3 className={`text-2xl font-bold ${
-              item.remainingDue > 0
-                ? 'text-amber-500'
-                : 'text-emerald-500'
-            }`}>
+              <p className="text-[#8c84b3] text-sm mb-2">
+                Remaining Wallet
+              </p>
 
-              {
+              <h3 className="text-2xl font-bold text-cyan-500">
+                ₹{
+                  item.remainingWallet || 0
+                }
+              </h3>
+            </div>
+
+            <div className="
+              bg-[#faf8ff]
+              rounded-2xl
+              p-4
+              border
+              border-[#ece7ff]
+            ">
+
+              <p className="text-[#8c84b3] text-sm mb-2">
+                Remaining Due
+              </p>
+
+              <h3 className={`text-2xl font-bold ${
                 item.remainingDue > 0
-                  ? `₹${item.remainingDue}`
-                  : 'No Due'
-              }
-            </h3>
+                  ? 'text-amber-500'
+                  : 'text-emerald-500'
+              }`}>
+
+                {
+                  item.remainingDue > 0
+                    ? `₹${item.remainingDue}`
+                    : 'No Due'
+                }
+              </h3>
+            </div>
           </div>
         </div>
-      </div>
-    )
+      )
+    }
 
   return (
     <div className="pb-10 text-[#1f1147]">

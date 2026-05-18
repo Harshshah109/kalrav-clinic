@@ -98,25 +98,89 @@ export const deletePayment =
             patientData.totalPaid || 0
           )
 
-        const updatedWallet =
-          currentWallet -
-          Number(
-            payment.remainingWallet || 0
-          ) +
-          Number(
-            payment.previousWallet || 0
-          )
+        let updatedWallet =
+          currentWallet
 
-        const updatedDue =
-          Number(
-            payment.previousDue || 0
-          )
+        let updatedDue =
+          currentDue
 
-        const updatedPaid =
-          currentPaid -
+        let updatedPaid =
+          currentPaid
+
+        const amount =
           Number(
             payment.amount || 0
           )
+
+        const paymentType =
+          payment.paymentType ||
+          payment.type ||
+          ''
+
+        /*
+          Pending Payment:
+          - It only increased pending due
+          - It did not increase totalPaid
+          - It did not increase wallet
+        */
+        if (
+          paymentType ===
+          'Pending Payment'
+        ) {
+
+          updatedDue =
+            currentDue - amount
+        }
+
+        /*
+          Advance Payment:
+          - It increased wallet
+          - It increased totalPaid
+        */
+        else if (
+          paymentType ===
+          'Advance Payment'
+        ) {
+
+          updatedWallet =
+            currentWallet - amount
+
+          updatedPaid =
+            currentPaid - amount
+        }
+
+        /*
+          Normal / Session / Due Clearance payments:
+          - Restore previous wallet/due if available
+          - Reduce totalPaid by amount
+        */
+        else {
+
+          if (
+            payment.previousWallet !==
+            undefined
+          ) {
+
+            updatedWallet =
+              Number(
+                payment.previousWallet || 0
+              )
+          }
+
+          if (
+            payment.previousDue !==
+            undefined
+          ) {
+
+            updatedDue =
+              Number(
+                payment.previousDue || 0
+              )
+          }
+
+          updatedPaid =
+            currentPaid - amount
+        }
 
         const patientDoc =
           doc(

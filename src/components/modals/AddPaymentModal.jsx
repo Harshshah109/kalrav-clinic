@@ -64,12 +64,61 @@ export default function AddPaymentModal({
   const handleChange =
     (e) => {
 
+      const {
+        name,
+        value
+      } = e.target
+
+      if (
+        name === 'paymentType' &&
+        value === 'Pending Payment'
+      ) {
+
+        setForm({
+
+          ...form,
+
+          paymentType:
+            value,
+
+          method:
+            '',
+
+          status:
+            'Pending'
+        })
+
+        return
+      }
+
+      if (
+        name === 'paymentType' &&
+        form.paymentType === 'Pending Payment'
+      ) {
+
+        setForm({
+
+          ...form,
+
+          paymentType:
+            value,
+
+          method:
+            'Cash',
+
+          status:
+            'Paid'
+        })
+
+        return
+      }
+
       setForm({
 
         ...form,
 
-        [e.target.name]:
-          e.target.value
+        [name]:
+          value
       })
     }
 
@@ -83,6 +132,15 @@ export default function AddPaymentModal({
 
       const paymentAmount =
         Number(form.amount || 0)
+
+      if (paymentAmount <= 0) {
+
+        alert(
+          'Please enter a valid amount'
+        )
+
+        return
+      }
 
       const currentWallet =
         Number(
@@ -105,8 +163,47 @@ export default function AddPaymentModal({
           selectedPatient.totalPaid || 0
         )
 
-      /* FROM WALLET */
+      let adjustedMethod =
+        form.method
+
+      let paymentStatus =
+        'Paid'
+
+      let dueClearedAmount =
+        0
+
+      let walletAddedAmount =
+        0
+
+      /*
+        PENDING PAYMENT:
+        - Only adds to pending due
+        - Does not increase total paid
+        - Does not need method
+      */
       if (
+        form.paymentType ===
+        'Pending Payment'
+      ) {
+
+        updatedDue =
+          currentDue +
+          paymentAmount
+
+        paymentStatus =
+          'Pending'
+
+        adjustedMethod =
+          'Not Required'
+      }
+
+      /*
+        FROM WALLET:
+        - Deducts from wallet
+        - Clears pending due if available
+        - Does not increase total paid because no new money received
+      */
+      else if (
         form.method ===
         'From Wallet'
       ) {
@@ -127,6 +224,12 @@ export default function AddPaymentModal({
           currentWallet -
           paymentAmount
 
+        dueClearedAmount =
+          Math.min(
+            currentDue,
+            paymentAmount
+          )
+
         updatedDue =
           Math.max(
             currentDue -
@@ -135,7 +238,11 @@ export default function AddPaymentModal({
           )
       }
 
-      /* ADVANCE */
+      /*
+        ADVANCE PAYMENT:
+        - Goes directly to wallet
+        - Increases total paid
+      */
       else if (
         form.paymentType ===
         'Advance Payment'
@@ -148,50 +255,77 @@ export default function AddPaymentModal({
         updatedPaid =
           updatedPaid +
           paymentAmount
-      }
 
-      /* PENDING */
-      else if (
-        form.paymentType ===
-        'Pending Payment'
-      ) {
-
-        updatedDue =
-          currentDue +
+        walletAddedAmount =
           paymentAmount
       }
 
-      /* NORMAL */
+      /*
+        ACTUAL PAYMENT RECEIVED:
+        - First clears pending due
+        - If extra remains, add extra to wallet
+        - Full received amount increases total paid
+      */
       else {
 
         updatedPaid =
           updatedPaid +
           paymentAmount
 
-        updatedDue =
-          Math.max(
-            currentDue -
-            paymentAmount,
-            0
-          )
-      }
+        if (currentDue > 0) {
 
-      const paymentStatus =
-        form.paymentType ===
-        'Pending Payment'
-          ? 'Pending'
-          : 'Paid'
+          dueClearedAmount =
+            Math.min(
+              currentDue,
+              paymentAmount
+            )
+
+          updatedDue =
+            currentDue -
+            dueClearedAmount
+
+          const extraAmount =
+            paymentAmount -
+            dueClearedAmount
+
+          if (extraAmount > 0) {
+
+            updatedWallet =
+              currentWallet +
+              extraAmount
+
+            walletAddedAmount =
+              extraAmount
+          }
+        }
+
+        else {
+
+          updatedWallet =
+            currentWallet +
+            paymentAmount
+
+          walletAddedAmount =
+            paymentAmount
+        }
+      }
 
       /* SAVE PAYMENT */
       await addPayment({
 
         ...form,
 
+        method:
+          adjustedMethod,
+
         status:
           paymentStatus,
 
         patient:
           selectedPatient.name,
+
+        amount:
+          paymentAmount,
 
         previousWallet:
           currentWallet,
@@ -204,6 +338,12 @@ export default function AddPaymentModal({
 
         remainingDue:
           updatedDue,
+
+        dueClearedAmount:
+          dueClearedAmount,
+
+        walletAddedAmount:
+          walletAddedAmount,
 
         createdAt:
           new Date()
@@ -538,7 +678,16 @@ export default function AddPaymentModal({
           </div>
 
           {/* TYPE + METHOD */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className={`
+            grid
+            grid-cols-1
+            ${
+              form.paymentType === 'Pending Payment'
+                ? ''
+                : 'md:grid-cols-2'
+            }
+            gap-4
+          `}>
 
             {/* Type */}
             <div>
@@ -593,57 +742,78 @@ export default function AddPaymentModal({
             </div>
 
             {/* Method */}
-            <div>
+            {form.paymentType !==
+              'Pending Payment' && (
 
-              <label className="
-                text-sm
-                text-[#7c6ca8]
-                font-medium
-                mb-2
-                block
-              ">
-                Payment Method
-              </label>
+              <div>
 
-              <select
-                name="method"
-                value={form.method}
-                onChange={handleChange}
-                className="
-                  w-full
-                  h-14
-                  bg-white/80
-                  border
-                  border-[#ece7ff]
-                  rounded-2xl
-                  px-5
-                  outline-none
-                  text-[#1f1147]
-                "
-              >
+                <label className="
+                  text-sm
+                  text-[#7c6ca8]
+                  font-medium
+                  mb-2
+                  block
+                ">
+                  Payment Method
+                </label>
 
-                <option>
-                  Cash
-                </option>
+                <select
+                  name="method"
+                  value={form.method}
+                  onChange={handleChange}
+                  className="
+                    w-full
+                    h-14
+                    bg-white/80
+                    border
+                    border-[#ece7ff]
+                    rounded-2xl
+                    px-5
+                    outline-none
+                    text-[#1f1147]
+                  "
+                >
 
-                <option>
-                  UPI
-                </option>
+                  <option>
+                    Cash
+                  </option>
 
-                <option>
-                  Card
-                </option>
+                  <option>
+                    UPI
+                  </option>
 
-                <option>
-                  Bank Transfer
-                </option>
+                  <option>
+                    Card
+                  </option>
 
-                <option>
-                  From Wallet
-                </option>
-              </select>
-            </div>
+                  <option>
+                    Bank Transfer
+                  </option>
+
+                  <option>
+                    From Wallet
+                  </option>
+                </select>
+              </div>
+            )}
           </div>
+
+          {form.paymentType ===
+            'Pending Payment' && (
+
+            <div className="
+              bg-amber-50
+              border
+              border-amber-200
+              rounded-2xl
+              p-4
+              text-amber-700
+              text-sm
+              font-medium
+            ">
+              This will be added as pending due. No payment method is required and it will not be counted as paid income.
+            </div>
+          )}
 
           {/* NOTES */}
           <div>

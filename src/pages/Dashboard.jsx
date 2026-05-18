@@ -100,6 +100,16 @@ export default function Dashboard({
     return 'Good Evening'
   }
 
+  const isRealPaidPayment =
+    (item) => {
+
+      return (
+        item.status === 'Paid' &&
+        item.method !== 'From Wallet' &&
+        item.paymentType !== 'Pending Payment'
+      )
+    }
+
   const filterPayments = () => {
 
     const now =
@@ -109,7 +119,7 @@ export default function Dashboard({
       (item) => {
 
         if (
-          item.status !== 'Paid'
+          !isRealPaidPayment(item)
         ) return false
 
         if (!item.date)
@@ -168,14 +178,6 @@ export default function Dashboard({
   const totalRevenue =
     filteredPayments
 
-      .filter((item) => {
-
-        return (
-          item.status === 'Paid' &&
-          item.method !== 'From Wallet'
-        )
-      })
-
       .reduce(
         (sum, item) =>
           sum + Number(item.amount || 0),
@@ -188,9 +190,7 @@ export default function Dashboard({
       .filter((item) => {
 
         return (
-          item.method === 'Cash' &&
-          item.method !== 'From Wallet' &&
-          item.status === 'Paid'
+          item.method === 'Cash'
         )
       })
 
@@ -206,9 +206,7 @@ export default function Dashboard({
       .filter((item) => {
 
         return (
-          item.method !== 'Cash' &&
-          item.method !== 'From Wallet' &&
-          item.status === 'Paid'
+          item.method !== 'Cash'
         )
       })
 
