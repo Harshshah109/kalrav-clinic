@@ -218,6 +218,7 @@ export default function PatientAppointmentHistoryModal({
   return (
 
     <div
+      id="patient-appointment-history-modal"
       className="
         fixed
         inset-0

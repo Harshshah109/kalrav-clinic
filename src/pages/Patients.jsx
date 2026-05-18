@@ -695,9 +695,27 @@ export default function Patients({
 
                 {/* APPOINTMENT HISTORY */}
                 <button
-                  onClick={() =>
+                  onClick={() => {
+
                     setHistoryPatient(patient)
-                  }
+
+                    setTimeout(() => {
+
+                      const modal =
+                        document.getElementById(
+                          'patient-appointment-history-modal'
+                        )
+
+                      if (modal) {
+
+                        modal.scrollIntoView({
+                          behavior: 'smooth',
+                          block: 'start'
+                        })
+                      }
+
+                    }, 50)
+                  }}
                   className="
                     mt-3
                     flex
