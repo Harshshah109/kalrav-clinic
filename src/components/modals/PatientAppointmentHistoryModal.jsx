@@ -226,6 +226,7 @@ export default function PatientAppointmentHistoryModal({
         py-6
         flex
         justify-center
+        overflow-y-auto
       "
       style={{
         alignItems: 'flex-start',
@@ -243,7 +244,6 @@ export default function PatientAppointmentHistoryModal({
           relative
           w-full
           max-w-7xl
-          max-h-[95vh]
           rounded-[32px]
           border
           border-[#ece7ff]
