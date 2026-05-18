@@ -5,7 +5,11 @@ import {
 } from 'react'
 
 import {
-  X
+  X,
+  CalendarDays,
+  UserRound,
+  Clock3,
+  ClipboardList
 } from 'lucide-react'
 
 import {
@@ -61,21 +65,61 @@ export default function PatientAppointmentHistoryModal({
       setAppointments(filtered)
     }
 
+  const getAppointmentDate =
+    (item) => {
+
+      if (!item.date)
+        return null
+
+      return item.date?.seconds
+        ? new Date(
+            item.date.seconds * 1000
+          )
+        : new Date(item.date)
+    }
+
+  const formatDate =
+    (date) => {
+
+      if (!date)
+        return 'N/A'
+
+      return date.toLocaleDateString(
+        'en-IN',
+        {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        }
+      )
+    }
+
+  const formatTime =
+    (item) => {
+
+      if (item.time)
+        return item.time
+
+      if (item.appointmentTime)
+        return item.appointmentTime
+
+      if (item.startTime)
+        return item.startTime
+
+      return 'N/A'
+    }
+
   const filteredAppointments =
     useMemo(() => {
 
       return appointments.filter(
         (item) => {
 
-          if (!item.date)
-            return false
-
           const date =
-            item.date?.seconds
-              ? new Date(
-                  item.date.seconds * 1000
-                )
-              : new Date(item.date)
+            getAppointmentDate(item)
+
+          if (!date)
+            return false
 
           const now =
             new Date()
@@ -122,6 +166,25 @@ export default function PatientAppointmentHistoryModal({
       filter,
       selectedMonth,
       selectedYear
+    ])
+
+  const sortedAppointments =
+    useMemo(() => {
+
+      return [...filteredAppointments]
+        .sort((a, b) => {
+
+          const dateA =
+            getAppointmentDate(a)
+
+          const dateB =
+            getAppointmentDate(b)
+
+          return dateB - dateA
+        })
+
+    }, [
+      filteredAppointments
     ])
 
   const groupedData =
@@ -180,11 +243,14 @@ export default function PatientAppointmentHistoryModal({
         className="
           relative
           w-full
-          max-w-4xl
+          max-w-6xl
+          max-h-[85vh]
+          overflow-y-auto
+          custom-scrollbar
           rounded-[32px]
           border
           border-[#ece7ff]
-          bg-white
+          bg-white/95
           p-6
           shadow-2xl
         "
@@ -202,9 +268,12 @@ export default function PatientAppointmentHistoryModal({
             rounded-xl
             border
             border-[#ece7ff]
+            bg-white
             flex
             items-center
             justify-center
+            hover:bg-[#faf8ff]
+            transition-all
           "
         >
 
@@ -212,14 +281,24 @@ export default function PatientAppointmentHistoryModal({
         </button>
 
         {/* TITLE */}
-        <h2 className="
-          text-4xl
-          font-bold
-          text-[#1f1147]
-          mb-6
-        ">
-          Appointment History
-        </h2>
+        <div className="mb-6 pr-12">
+
+          <h2 className="
+            text-4xl
+            font-bold
+            text-[#1f1147]
+            mb-2
+          ">
+            Appointment History
+          </h2>
+
+          <p className="
+            text-[#7c6ca8]
+            text-lg
+          ">
+            {patient.name}
+          </p>
+        </div>
 
         {/* FILTERS */}
         <div className="
@@ -249,8 +328,8 @@ export default function PatientAppointmentHistoryModal({
                 transition-all
                 ${
                   filter === item
-                    ? 'bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white'
-                    : 'border border-[#ece7ff] text-[#1f1147]'
+                    ? 'bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white shadow-lg shadow-violet-500/20'
+                    : 'border border-[#ece7ff] text-[#1f1147] bg-white'
                 }
               `}
             >
@@ -264,6 +343,7 @@ export default function PatientAppointmentHistoryModal({
 
           <div className="
             flex
+            flex-wrap
             gap-4
             mb-6
           ">
@@ -283,6 +363,9 @@ export default function PatientAppointmentHistoryModal({
                   rounded-2xl
                   border
                   border-[#ece7ff]
+                  bg-[#faf8ff]
+                  text-[#1f1147]
+                  outline-none
                 "
               >
 
@@ -302,7 +385,7 @@ export default function PatientAppointmentHistoryModal({
                 ].map((month, index) => (
 
                   <option
-                                       key={month}
+                    key={month}
                     value={index}
                   >
                     {month}
@@ -324,6 +407,9 @@ export default function PatientAppointmentHistoryModal({
                 rounded-2xl
                 border
                 border-[#ece7ff]
+                bg-[#faf8ff]
+                text-[#1f1147]
+                outline-none
               "
             >
 
@@ -341,15 +427,110 @@ export default function PatientAppointmentHistoryModal({
           </div>
         )}
 
-        {/* TABLE */}
+        {/* SUMMARY CARDS */}
+        <div className="
+          grid
+          grid-cols-1
+          md:grid-cols-3
+          gap-4
+          mb-6
+        ">
+
+          <div className="
+            bg-[#faf8ff]
+            border
+            border-[#ece7ff]
+            rounded-3xl
+            p-5
+          ">
+
+            <div className="
+              flex
+              items-center
+              gap-3
+              text-[#7c6ca8]
+              mb-2
+            ">
+              <CalendarDays size={18} />
+              Total Appointments
+            </div>
+
+            <h3 className="
+              text-3xl
+              font-bold
+              text-[#1f1147]
+            ">
+              {filteredAppointments.length}
+            </h3>
+          </div>
+
+          <div className="
+            bg-[#faf8ff]
+            border
+            border-[#ece7ff]
+            rounded-3xl
+            p-5
+          ">
+
+            <div className="
+              flex
+              items-center
+              gap-3
+              text-[#7c6ca8]
+              mb-2
+            ">
+              <UserRound size={18} />
+              Therapists
+            </div>
+
+            <h3 className="
+              text-3xl
+              font-bold
+              text-[#1f1147]
+            ">
+              {groupedData.length}
+            </h3>
+          </div>
+
+          <div className="
+            bg-[#faf8ff]
+            border
+            border-[#ece7ff]
+            rounded-3xl
+            p-5
+          ">
+
+            <div className="
+              flex
+              items-center
+              gap-3
+              text-[#7c6ca8]
+              mb-2
+            ">
+              <ClipboardList size={18} />
+              Current Filter
+            </div>
+
+            <h3 className="
+              text-2xl
+              font-bold
+              text-[#1f1147]
+              capitalize
+            ">
+              {filter}
+            </h3>
+          </div>
+        </div>
+
+        {/* THERAPIST COUNT TABLE */}
         <div className="
           overflow-hidden
           rounded-3xl
           border
           border-[#ece7ff]
+          mb-7
         ">
 
-          {/* HEADER */}
           <div className="
             grid
             grid-cols-2
@@ -371,11 +552,10 @@ export default function PatientAppointmentHistoryModal({
             </div>
           </div>
 
-          {/* BODY */}
           {groupedData.length === 0 && (
 
             <div className="
-              py-16
+              py-12
               text-center
               text-[#7c6ca8]
             ">
@@ -422,6 +602,179 @@ export default function PatientAppointmentHistoryModal({
               </div>
             </div>
           ))}
+        </div>
+
+        {/* DATE WISE HISTORY */}
+        <div className="
+          rounded-3xl
+          border
+          border-[#ece7ff]
+          overflow-hidden
+        ">
+
+          <div className="
+            flex
+            items-center
+            justify-between
+            bg-[#faf8ff]
+            border-b
+            border-[#ece7ff]
+            px-6
+            py-4
+          ">
+
+            <h3 className="
+              text-xl
+              font-bold
+              text-[#1f1147]
+            ">
+              Date Wise Appointment Details
+            </h3>
+
+            <span className="
+              text-sm
+              text-[#8c84b3]
+            ">
+              {sortedAppointments.length} records
+            </span>
+          </div>
+
+          <div className="
+            overflow-x-auto
+          ">
+
+            <div className="
+              min-w-[850px]
+            ">
+
+              <div className="
+                grid
+                grid-cols-5
+                bg-white
+                border-b
+                border-[#ece7ff]
+                px-6
+                py-4
+                font-bold
+                text-[#1f1147]
+              ">
+
+                <div>
+                  Date
+                </div>
+
+                <div>
+                  Therapist
+                </div>
+
+                <div>
+                  Session Type
+                </div>
+
+                <div>
+                  Time
+                </div>
+
+                <div>
+                  Status
+                </div>
+              </div>
+
+              <div className="
+                max-h-[360px]
+                overflow-y-auto
+                custom-scrollbar
+              ">
+
+                {sortedAppointments.length === 0 && (
+
+                  <div className="
+                    py-14
+                    text-center
+                    text-[#7c6ca8]
+                  ">
+                    No date-wise appointments found
+                  </div>
+                )}
+
+                {sortedAppointments.map((item, index) => {
+
+                  const date =
+                    getAppointmentDate(item)
+
+                  return (
+
+                    <div
+                      key={item.id || index}
+                      className="
+                        grid
+                        grid-cols-5
+                        px-6
+                        py-4
+                        border-b
+                        border-[#f3efff]
+                        items-center
+                        text-[#433878]
+                      "
+                    >
+
+                      <div className="
+                        font-semibold
+                        text-[#1f1147]
+                      ">
+                        {formatDate(date)}
+                      </div>
+
+                      <div>
+                        {
+                          item.therapist ||
+                          item.therapistName ||
+                          'Unknown'
+                        }
+                      </div>
+
+                      <div>
+                        {
+                          item.sessionType ||
+                          item.type ||
+                          'Speech Therapy'
+                        }
+                      </div>
+
+                      <div className="
+                        flex
+                        items-center
+                        gap-2
+                      ">
+                        <Clock3 size={15} />
+                        {formatTime(item)}
+                      </div>
+
+                      <div>
+
+                        <span className={`
+                          px-3
+                          py-1
+                          rounded-full
+                          text-xs
+                          font-semibold
+                          ${
+                            item.status === 'Cancelled'
+                              ? 'bg-red-100 text-red-700'
+                              : item.status === 'Completed'
+                              ? 'bg-emerald-100 text-emerald-700'
+                              : 'bg-violet-100 text-violet-700'
+                          }
+                        `}>
+                          {item.status || 'Scheduled'}
+                        </span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
