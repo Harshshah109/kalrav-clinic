@@ -749,7 +749,7 @@ export default function Patients({
 
       {historyPatient && (
         <PatientAppointmentHistoryModal
-          patient={patient}
+          patient={historyPatient}
           close={() =>
             setHistoryPatient(null)
           }
