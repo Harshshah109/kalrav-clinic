@@ -93,7 +93,7 @@ const getPaymentDate =
     return new Date(0)
   }
 
-/* RECALCULATE PATIENT BALANCE FROM ALL PAYMENTS */
+/* RECALCULATE PATIENT + UPDATE ALL PAYMENT CARDS */
 const recalculatePatientPayments =
   async (patientName) => {
 
@@ -166,6 +166,18 @@ const recalculatePatientPayments =
         const method =
           payment.method || ''
 
+        const previousWallet =
+          walletBalance
+
+        const previousDue =
+          pendingDue
+
+        let dueClearedAmount =
+          0
+
+        let walletAddedAmount =
+          0
+
         /*
           PENDING PAYMENT:
           - Only adds pending due
@@ -180,8 +192,6 @@ const recalculatePatientPayments =
 
           pendingDue =
             pendingDue + amount
-
-          continue
         }
 
         /*
@@ -190,7 +200,7 @@ const recalculatePatientPayments =
           - Clear pending due if available
           - Does not increase totalPaid
         */
-        if (
+        else if (
           method ===
           'From Wallet'
         ) {
@@ -204,7 +214,7 @@ const recalculatePatientPayments =
               0
           }
 
-          const dueClearedAmount =
+          dueClearedAmount =
             Math.min(
               pendingDue,
               amount
@@ -219,8 +229,6 @@ const recalculatePatientPayments =
             pendingDue =
               0
           }
-
-          continue
         }
 
         /*
@@ -230,7 +238,7 @@ const recalculatePatientPayments =
           - If pending due exists, first clear due
           - If extra remains after clearing due, extra goes to wallet
         */
-        if (
+        else if (
           paymentType ===
           'Session Payment'
         ) {
@@ -240,7 +248,7 @@ const recalculatePatientPayments =
 
           if (pendingDue > 0) {
 
-            const dueClearedAmount =
+            dueClearedAmount =
               Math.min(
                 pendingDue,
                 amount
@@ -259,10 +267,11 @@ const recalculatePatientPayments =
               walletBalance =
                 walletBalance +
                 extraAmount
+
+              walletAddedAmount =
+                extraAmount
             }
           }
-
-          continue
         }
 
         /*
@@ -272,38 +281,92 @@ const recalculatePatientPayments =
           - Extra goes to wallet
           - If no pending due, full amount goes to wallet
         */
-        totalPaid =
-          totalPaid + amount
+        else {
 
-        if (pendingDue > 0) {
+          totalPaid =
+            totalPaid + amount
 
-          const dueClearedAmount =
-            Math.min(
-              pendingDue,
-              amount
-            )
+          if (pendingDue > 0) {
 
-          pendingDue =
-            pendingDue -
-            dueClearedAmount
+            dueClearedAmount =
+              Math.min(
+                pendingDue,
+                amount
+              )
 
-          const extraAmount =
-            amount -
-            dueClearedAmount
+            pendingDue =
+              pendingDue -
+              dueClearedAmount
 
-          if (extraAmount > 0) {
+            const extraAmount =
+              amount -
+              dueClearedAmount
+
+            if (extraAmount > 0) {
+
+              walletBalance =
+                walletBalance +
+                extraAmount
+
+              walletAddedAmount =
+                extraAmount
+            }
+          }
+
+          else {
 
             walletBalance =
-              walletBalance +
-              extraAmount
+              walletBalance + amount
+
+            walletAddedAmount =
+              amount
           }
         }
 
-        else {
+        /*
+          UPDATE THIS PAYMENT CARD ALSO
+          So after deleting any middle payment,
+          every remaining payment card shows correct
+          Remaining Wallet and Remaining Due.
+        */
+        const paymentDocRef =
+          doc(
+            db,
+            'payments',
+            payment.id
+          )
 
-          walletBalance =
-            walletBalance + amount
-        }
+        await updateDoc(
+          paymentDocRef,
+          {
+
+            previousWallet:
+              previousWallet < 0
+                ? 0
+                : previousWallet,
+
+            previousDue:
+              previousDue < 0
+                ? 0
+                : previousDue,
+
+            remainingWallet:
+              walletBalance < 0
+                ? 0
+                : walletBalance,
+
+            remainingDue:
+              pendingDue < 0
+                ? 0
+                : pendingDue,
+
+            dueClearedAmount:
+              dueClearedAmount,
+
+            walletAddedAmount:
+              walletAddedAmount
+          }
+        )
       }
 
       const patientDocRef =
@@ -349,7 +412,6 @@ export const deletePayment =
       const patientName =
         payment.patient
 
-      /* DELETE PAYMENT FIRST */
       const paymentDoc =
         doc(
           db,
@@ -361,12 +423,6 @@ export const deletePayment =
         paymentDoc
       )
 
-      /*
-        IMPORTANT:
-        After deleting, recalculate the full patient balance
-        from all remaining payments.
-        This fixes deletion from middle/old payments.
-      */
       await recalculatePatientPayments(
         patientName
       )
