@@ -222,9 +222,8 @@ export default function PatientAppointmentHistoryModal({
         fixed
         inset-0
         z-[9999]
-        overflow-y-auto
         px-4
-        py-10
+        py-6
         flex
         justify-center
       "
@@ -243,10 +242,8 @@ export default function PatientAppointmentHistoryModal({
         className="
           relative
           w-full
-          max-w-6xl
-          max-h-[85vh]
-          overflow-y-auto
-          custom-scrollbar
+          max-w-7xl
+          max-h-[95vh]
           rounded-[32px]
           border
           border-[#ece7ff]
@@ -680,11 +677,13 @@ export default function PatientAppointmentHistoryModal({
                 </div>
               </div>
 
-              <div className="
-                max-h-[360px]
-                overflow-y-auto
-                custom-scrollbar
-              ">
+              <div className={`
+                ${
+                  sortedAppointments.length > 20
+                    ? 'max-h-[520px] overflow-y-auto custom-scrollbar'
+                    : ''
+                }
+              `}>
 
                 {sortedAppointments.length === 0 && (
 
