@@ -58,9 +58,44 @@ export const updatePayment =
     )
   }
 
-/* DELETE PAYMENT WITH ROLLBACK */
-export const deletePayment =
-  async (payment) => {
+/* GET PAYMENT DATE FOR SORTING */
+const getPaymentDate =
+  (payment) => {
+
+    if (payment.createdAt?.seconds) {
+
+      return new Date(
+        payment.createdAt.seconds * 1000
+      )
+    }
+
+    if (payment.createdAt) {
+
+      return new Date(
+        payment.createdAt
+      )
+    }
+
+    if (payment.date?.seconds) {
+
+      return new Date(
+        payment.date.seconds * 1000
+      )
+    }
+
+    if (payment.date) {
+
+      return new Date(
+        payment.date
+      )
+    }
+
+    return new Date(0)
+  }
+
+/* RECALCULATE PATIENT BALANCE FROM ALL PAYMENTS */
+const recalculatePatientPayments =
+  async (patientName) => {
 
     try {
 
@@ -69,43 +104,54 @@ export const deletePayment =
           collection(db, 'patients')
         )
 
-      const patient =
+      const patientDocSnap =
         patientSnapshot.docs.find(
           (docItem) =>
 
             docItem.data().name ===
-            payment.patient
+            patientName
         )
 
-      /* ROLLBACK */
-      if (patient) {
+      if (!patientDocSnap)
+        return
 
-        const patientData =
-          patient.data()
+      const paymentsSnapshot =
+        await getDocs(
+          paymentRef
+        )
 
-        const currentWallet =
-          Number(
-            patientData.walletBalance || 0
+      const patientPayments =
+        paymentsSnapshot.docs
+
+          .map((docItem) => ({
+
+            id: docItem.id,
+
+            ...docItem.data()
+          }))
+
+          .filter((payment) =>
+
+            payment.patient ===
+            patientName
           )
 
-        const currentDue =
-          Number(
-            patientData.pendingDue || 0
+          .sort((a, b) =>
+
+            getPaymentDate(a) -
+            getPaymentDate(b)
           )
 
-        const currentPaid =
-          Number(
-            patientData.totalPaid || 0
-          )
+      let walletBalance =
+        0
 
-        let updatedWallet =
-          currentWallet
+      let pendingDue =
+        0
 
-        let updatedDue =
-          currentDue
+      let totalPaid =
+        0
 
-        let updatedPaid =
-          currentPaid
+      for (const payment of patientPayments) {
 
         const amount =
           Number(
@@ -117,101 +163,193 @@ export const deletePayment =
           payment.type ||
           ''
 
+        const method =
+          payment.method || ''
+
         /*
-          Pending Payment:
-          - It only increased pending due
-          - It did not increase totalPaid
-          - It did not increase wallet
+          PENDING PAYMENT:
+          - Only adds pending due
+          - Does not add total paid
+          - Does not affect wallet
         */
         if (
           paymentType ===
-          'Pending Payment'
+          'Pending Payment' ||
+          payment.status === 'Pending'
         ) {
 
-          updatedDue =
-            currentDue - amount
+          pendingDue =
+            pendingDue + amount
+
+          continue
         }
 
         /*
-          Advance Payment:
-          - It increased wallet
-          - It increased totalPaid
+          FROM WALLET:
+          - Deduct from wallet
+          - Clear pending due if available
+          - Does not increase totalPaid
         */
-        else if (
+        if (
+          method ===
+          'From Wallet'
+        ) {
+
+          walletBalance =
+            walletBalance - amount
+
+          if (walletBalance < 0) {
+
+            walletBalance =
+              0
+          }
+
+          const dueClearedAmount =
+            Math.min(
+              pendingDue,
+              amount
+            )
+
+          pendingDue =
+            pendingDue -
+            dueClearedAmount
+
+          if (pendingDue < 0) {
+
+            pendingDue =
+              0
+          }
+
+          continue
+        }
+
+        /*
+          SESSION PAYMENT:
+          - Always increases totalPaid
+          - If pending due is 0, wallet does not increase
+          - If pending due exists, first clear due
+          - If extra remains after clearing due, extra goes to wallet
+        */
+        if (
           paymentType ===
-          'Advance Payment'
+          'Session Payment'
         ) {
 
-          updatedWallet =
-            currentWallet - amount
+          totalPaid =
+            totalPaid + amount
 
-          updatedPaid =
-            currentPaid - amount
+          if (pendingDue > 0) {
+
+            const dueClearedAmount =
+              Math.min(
+                pendingDue,
+                amount
+              )
+
+            pendingDue =
+              pendingDue -
+              dueClearedAmount
+
+            const extraAmount =
+              amount -
+              dueClearedAmount
+
+            if (extraAmount > 0) {
+
+              walletBalance =
+                walletBalance +
+                extraAmount
+            }
+          }
+
+          continue
         }
 
         /*
-          Normal / Session / Due Clearance payments:
-          - Restore previous wallet/due if available
-          - Reduce totalPaid by amount
+          ALL OTHER REAL PAYMENTS:
+          - Increase totalPaid
+          - First clear pending due
+          - Extra goes to wallet
+          - If no pending due, full amount goes to wallet
         */
+        totalPaid =
+          totalPaid + amount
+
+        if (pendingDue > 0) {
+
+          const dueClearedAmount =
+            Math.min(
+              pendingDue,
+              amount
+            )
+
+          pendingDue =
+            pendingDue -
+            dueClearedAmount
+
+          const extraAmount =
+            amount -
+            dueClearedAmount
+
+          if (extraAmount > 0) {
+
+            walletBalance =
+              walletBalance +
+              extraAmount
+          }
+        }
+
         else {
 
-          if (
-            payment.previousWallet !==
-            undefined
-          ) {
-
-            updatedWallet =
-              Number(
-                payment.previousWallet || 0
-              )
-          }
-
-          if (
-            payment.previousDue !==
-            undefined
-          ) {
-
-            updatedDue =
-              Number(
-                payment.previousDue || 0
-              )
-          }
-
-          updatedPaid =
-            currentPaid - amount
+          walletBalance =
+            walletBalance + amount
         }
-
-        const patientDoc =
-          doc(
-            db,
-            'patients',
-            patient.id
-          )
-
-        await updateDoc(
-          patientDoc,
-          {
-
-            walletBalance:
-              updatedWallet < 0
-                ? 0
-                : updatedWallet,
-
-            pendingDue:
-              updatedDue < 0
-                ? 0
-                : updatedDue,
-
-            totalPaid:
-              updatedPaid < 0
-                ? 0
-                : updatedPaid
-          }
-        )
       }
 
-      /* DELETE PAYMENT */
+      const patientDocRef =
+        doc(
+          db,
+          'patients',
+          patientDocSnap.id
+        )
+
+      await updateDoc(
+        patientDocRef,
+        {
+
+          walletBalance:
+            walletBalance < 0
+              ? 0
+              : walletBalance,
+
+          pendingDue:
+            pendingDue < 0
+              ? 0
+              : pendingDue,
+
+          totalPaid:
+            totalPaid < 0
+              ? 0
+              : totalPaid
+        }
+      )
+
+    } catch (err) {
+
+      console.log(err)
+    }
+  }
+
+/* DELETE PAYMENT WITH FULL RECALCULATION */
+export const deletePayment =
+  async (payment) => {
+
+    try {
+
+      const patientName =
+        payment.patient
+
+      /* DELETE PAYMENT FIRST */
       const paymentDoc =
         doc(
           db,
@@ -221,6 +359,16 @@ export const deletePayment =
 
       await deleteDoc(
         paymentDoc
+      )
+
+      /*
+        IMPORTANT:
+        After deleting, recalculate the full patient balance
+        from all remaining payments.
+        This fixes deletion from middle/old payments.
+      */
+      await recalculatePatientPayments(
+        patientName
       )
 
     } catch (err) {
@@ -261,6 +409,10 @@ export const deletePaymentsByPatient =
           paymentDoc
         )
       }
+
+      await recalculatePatientPayments(
+        patientName
+      )
 
     } catch (err) {
 
