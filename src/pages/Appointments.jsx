@@ -102,6 +102,68 @@ function Appointments({
       }`
     }
 
+  const getSmartMessageDate =
+    (appointmentDate) => {
+
+      if (!appointmentDate)
+        return 'today'
+
+      const appointmentDateString =
+        appointmentDate?.seconds
+          ? formatDate(
+              new Date(
+                appointmentDate.seconds * 1000
+              )
+            )
+          : appointmentDate
+
+      const todayDate =
+        new Date()
+
+      const todayString =
+        formatDate(todayDate)
+
+      const tomorrowDate =
+        new Date()
+
+      tomorrowDate.setDate(
+        todayDate.getDate() + 1
+      )
+
+      const tomorrowString =
+        formatDate(tomorrowDate)
+
+      if (
+        appointmentDateString ===
+        todayString
+      ) {
+
+        return 'today'
+      }
+
+      if (
+        appointmentDateString ===
+        tomorrowString
+      ) {
+
+        return 'tomorrow'
+      }
+
+      const dateObject =
+        appointmentDate?.seconds
+          ? new Date(
+              appointmentDate.seconds * 1000
+            )
+          : new Date(appointmentDate)
+
+      return dateObject.toLocaleDateString(
+        'en-IN',
+        {
+          weekday: 'long'
+        }
+      )
+    }
+
   const today =
     formatDate(new Date())
 
@@ -392,10 +454,15 @@ function Appointments({
                   .replace(/\s+/g, '')
                   .replace('+', '')
 
+              const messageDate =
+                getSmartMessageDate(
+                  item.date
+                )
+
               const message =
 `Hello,
 
-Please confirm your therapy session today.
+Please confirm your therapy session ${messageDate}.
 
 Time: ${item.time}
 `
