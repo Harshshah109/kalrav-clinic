@@ -473,9 +473,15 @@ export default function Patients({
                 <div className="flex gap-3">
 
                   <button
-                    onClick={() =>
-                      setSessionPatient(patient)
-                    }
+                    onClick={() => {
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+
+  setSessionPatient(patient)
+}}
                     className="
                       w-12
                       h-12
